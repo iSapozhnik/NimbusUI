@@ -37,11 +37,12 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
                 NimbusFilledModifier(
                     isHovering: isHovering,
                     isPressed: configuration.isPressed,
-                    fill: Color.accentColor,
-                    hovering: Color.accentColor.secondary,//.opacity(0.7),
-                    pressed: .quaternary
+                    fill: .secondary,
+                    hovering: .primary.opacity(0.7),
+                    pressed: .primary
                 )
             )
+            .foregroundStyle(Color.accentColor)
             .clipShape(.rect(cornerRadii: cornerRadii))
             .onHover { isHovering in
                 self.isHovering = isHovering

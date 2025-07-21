@@ -11,7 +11,7 @@ import SwiftUI
 
 public extension EnvironmentValues {
     @Entry var nimbusAnimation: Animation = .smooth(duration: 0.2)
-    @Entry var nimbusAnimationFast: Animation = .easeInOut(duration: 0.1)
+    @Entry var nimbusAnimationFast: Animation = .easeInOut(duration: 0.2)
 }
 
 // MARK: Button
