@@ -11,13 +11,13 @@ import SwiftUI
 
 public extension EnvironmentValues {
     @Entry var nimbusAnimation: Animation = .smooth(duration: 0.2)
-    @Entry var nimbusAnimationFast: Animation = .easeInOut(duration: 0.2)
+    @Entry var nimbusAnimationFast: Animation = .easeInOut(duration: 0.1)
 }
 
 // MARK: Button
 
 public extension EnvironmentValues {
-    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii = .init(4)
+    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii = .init(6)
     @Entry var nimbusCompactButtonCornerRadii: RectangleCornerRadii = .init(8)
     
     @Entry var nimbusButtonMaterial: Material? = nil

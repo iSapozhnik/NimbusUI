@@ -8,6 +8,12 @@
 import SwiftUI
 
 public struct PrimaryProminentButtonStyle: ButtonStyle {
+    struct Appearence {
+        let fill: Color
+        let hover: Color
+        let press: Color
+    }
+    
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var animationFast
     @Environment(\.nimbusButtonCornerRadii) private var cornerRadii
@@ -37,17 +43,37 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
                 NimbusFilledModifier(
                     isHovering: isHovering,
                     isPressed: configuration.isPressed,
-                    fill: .secondary,
-                    hovering: .primary.opacity(0.7),
-                    pressed: .primary
+                    fill: AnyShapeStyle(tint(configuration: configuration).fill),
+                    hovering: AnyShapeStyle(tint(configuration: configuration).hover),
+                    pressed: AnyShapeStyle(tint(configuration: configuration).press),
                 )
             )
-            .foregroundStyle(Color.accentColor)
             .clipShape(.rect(cornerRadii: cornerRadii))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
-            .animation(animationFast, value: isHovering)
+    }
+    
+    private func tint(configuration: Configuration) -> Appearence {
+        let defaultAppearance = Appearence(
+            fill: .accentColor,
+            hover: Color.accentColor.darker(by: 0.1),
+            press: Color.accentColor.darker(by: 0.25)
+        )
+        if let role = configuration.role {
+            switch role {
+            case .cancel, .destructive:
+                return Appearence(
+                    fill: .red,
+                    hover: Color.red.darker(by: 0.1),
+                    press: Color.red.darker(by: 0.25)
+                )
+            default:
+                return defaultAppearance
+            }
+        } else {
+            return defaultAppearance
+        }
     }
 }
 
@@ -56,6 +82,8 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     VStack {
         HStack {
             Button("Prominent") {}
+                .buttonStyle(.primaryProminent)
+            Button("Prominent", role: .destructive) {}
                 .buttonStyle(.primaryProminent)
         }
         .frame(height: 40)
