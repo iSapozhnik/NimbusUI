@@ -31,23 +31,25 @@ struct OnboardingView: View {
             VStack(alignment: .leading, spacing: 24) {
                 HStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .frame(width: 80, height: 80)
+                        .frame(width: 120, height: 120)
                         .modifier(LevitatingViewModifier())
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
+                .frame(height: 200)
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Welcome to Launchy")
-                        .font(.system(size: 32))
-                        .bold()
-                    Text("It's a fun and quick app launcher and switcher")
-                        .font(.system(size: 18, weight: .light))
-                        .fixedSize(horizontal: false, vertical: true)
-                        .multilineTextAlignment(.leading)
-                }
-                HStack {
+                VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Welcome to Launchy")
+                            .font(.system(size: 32))
+                            .bold()
+                        Text("Fast and easy app launcher and switcher, with a lot of features and customization options")
+                            .font(.system(size: 18, weight: .light))
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
+                    }
+
                     Button(role: .none, action: {}) {
-                        Label("Next", systemImage: "arrow.right")
+                        Label("Continue", systemImage: "arrow.right")
                             .labelStyle(
                                 NimbusDividerLabelStyle(
                                     hasDivider: false,
@@ -58,15 +60,15 @@ struct OnboardingView: View {
                         
                     }
                     .buttonStyle(.primaryProminent)
-                    .frame(height: 40)
+                    .frame(height: 50)
                     .modifier(NimbusAspectRatioModifier())
-                    
                 }
+                .frame(height: 200)
             }
             .padding(80)
 
         }
-        .frame(width: 500, height: 400)
+        .frame(width: 600, height: 560)
     }
 }
 
