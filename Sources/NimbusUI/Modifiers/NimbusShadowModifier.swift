@@ -21,7 +21,7 @@ public struct NimbusShadowModifier: ViewModifier {
         case .none:
             content
         case .low:
-            content.shadow(color: Color.black.opacity(0.4), radius: 0, x: 0, y: 1)
+            content.shadow(color: Color.black.opacity(0.4), radius: 1, x: 0, y: 1)
         case .medium:
             content.shadow(color: Color.black.opacity(0.12), radius: 4, x: 0, y: 2)
         case .high:

@@ -31,6 +31,7 @@ struct NimbusDividerLabelStyle: LabelStyle {
                     .padding(.horizontal, contentHorizontalPadding)
                 if hasDivider {
                     Divider()
+                        .shadow(color: Color.primary.opacity(0.7), radius: 0, x: 1, y: 0)
                         .frame(height: 20)
                 }
                 configuration.title
@@ -44,6 +45,7 @@ struct NimbusDividerLabelStyle: LabelStyle {
                     .multilineTextAlignment(.center)
                 if hasDivider {
                     Divider()
+                        .shadow(color: Color.primary.opacity(0.7), radius: 0, x: 1, y: 0)
                         .frame(height: 20)
                 }
                 configuration.icon

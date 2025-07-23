@@ -51,6 +51,10 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
             .modifier(NimbusShadowModifier(elevation: elevation))
             .modifier(NimbusInnerShadowModifier())
             .modifier(NimbusGradientBorderModifier(width: 1, direction: .vertical))
+            .overlay {
+                UnevenRoundedRectangle(cornerRadii: cornerRadii)
+                    .strokeBorder(AnyShapeStyle(tint(configuration: configuration).hover), lineWidth: 1)
+            }
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
