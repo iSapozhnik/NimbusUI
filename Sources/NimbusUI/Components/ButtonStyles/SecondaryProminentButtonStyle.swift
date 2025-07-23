@@ -1,13 +1,19 @@
 //
-//  PrimaryDefaultButtonStyle 2.swift
+//  SecondaryProminentButtonStyle.swift
 //  NimbusUI
 //
-//  Created by Ivan Sapozhnik on 21.07.25.
+//  Created by Ivan Sapozhnik on 23.07.25.
 //
 
 import SwiftUI
 
-public struct PrimaryProminentButtonStyle: ButtonStyle {
+public struct SecondaryProminentButtonStyle: ButtonStyle {
+    struct Appearance {
+        let fill: Color
+        let hover: Color
+        let press: Color
+    }
+    
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var animationFast
@@ -33,10 +39,9 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration
             .label
-            .bold()
             .foregroundStyle(.white)
             .padding(.horizontal, horizontalPadding)
-            .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
+            .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(
@@ -50,22 +55,27 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
             .clipShape(.rect(cornerRadii: cornerRadii))
             .modifier(NimbusShadowModifier(elevation: elevation))
             .modifier(NimbusInnerShadowModifier())
-            .modifier(NimbusGradientBorderModifier(width: 1, direction: .vertical))
+            .modifier(
+                NimbusGradientBorderModifier(
+                    width: 1,
+                    direction: .vertical
+                )
+            )
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
     }
     
-    private func tint(configuration: Configuration) -> ButtonAppearance {
+    private func tint(configuration: Configuration) -> Appearance {
         let color = theme.accentColor
         let destructiveColor = theme.errorColor
         
-        let defaultAppearance = ButtonAppearance(
+        let defaultAppearance = Appearance(
             fill: color,
             hover: color.darker(by: 0.1),
             press: color.darker(by: 0.25)
         )
-        let destructiveAppearance = ButtonAppearance(
+        let destructiveAppearance = Appearance(
             fill: destructiveColor,
             hover: destructiveColor.darker(by: 0.1),
             press: destructiveColor.darker(by: 0.25)
@@ -85,72 +95,54 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
 
 @available(macOS 15.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-
-    @Previewable @Environment(\.nimbusLabelContentHorizontalMediumPadding) var contentPadding
-
-    VStack {
+    
+    @Previewable @Environment(\.nimbusLabelContentHorizontalSmallPadding) var contentPadding
+    
+    VStack(alignment: .leading) {
         HStack {
             Button("Ok") {}
-                .buttonStyle(.primaryProminent)
+                .buttonStyle(.secondaryProminent)
             Button("Cancel", role: .destructive) {}
-                .buttonStyle(.primaryProminent)
+                .buttonStyle(.secondaryProminent)
         }
         .frame(height: 40)
         
         HStack {
             Button("Delete", systemImage: "trash", role: .destructive) {}
-                .buttonStyle(.primaryProminent)
+                .buttonStyle(.secondaryProminent)
             Button(role: .none, action: {}) {
                 Label("Sign In", systemImage: "arrow.up")
             }
-            .buttonStyle(.primaryProminent)
+            .buttonStyle(.secondaryProminent)
         }
         .frame(height: 40)
         HStack {
             Button(role: .destructive, action: {}) {
                 Label("Delete", systemImage: "trash")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
+                    .labelStyle(NimbusDividerLabelStyle(contentHorizontalPadding: contentPadding))
             }
-            .buttonStyle(.primaryProminent)
+            .buttonStyle(.secondaryProminent)
             Button(role: .none, action: {}) {
                 Label("Sign In", systemImage: "arrow.up")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
+                    .labelStyle(NimbusDividerLabelStyle(contentHorizontalPadding: contentPadding))
 
             }
-            .buttonStyle(.primaryProminent)
+            .buttonStyle(.secondaryProminent)
         }
         .frame(height: 40)
         
         HStack {
             Button(role: .destructive, action: {}) {
                 Label("Delete", systemImage: "trash")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            hasDivider: false,
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
+                    .labelStyle(NimbusDividerLabelStyle(hasDivider: false))
             }
-            .buttonStyle(.primaryProminent)
+            .buttonStyle(.secondaryProminent)
             Button(role: .none, action: {}) {
                 Label("Sign In", systemImage: "arrow.up")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            hasDivider: false,
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
+                    .labelStyle(NimbusDividerLabelStyle(hasDivider: false))
 
             }
-            .buttonStyle(.primaryProminent)
+            .buttonStyle(.secondaryProminent)
         }
         .frame(height: 40)
         
@@ -165,19 +157,13 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
                         )
                     )
             }
-            .buttonStyle(.primaryProminent)
+            .buttonStyle(.secondaryProminent)
             Button(role: .none, action: {}) {
                 Label("Next", systemImage: "arrow.right")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            hasDivider: false,
-                            iconAlignment: .trailing,
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
+                    .labelStyle(NimbusDividerLabelStyle(hasDivider: false, iconAlignment: .trailing))
 
             }
-            .buttonStyle(.primaryProminent)
+            .buttonStyle(.secondaryProminent)
         }
         .frame(height: 40)
     }

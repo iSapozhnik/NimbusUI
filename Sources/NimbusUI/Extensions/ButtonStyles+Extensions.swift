@@ -15,6 +15,10 @@ public extension ButtonStyle where Self == PrimaryProminentButtonStyle {
     static var primaryProminent: Self { .init() }
 }
 
+public extension ButtonStyle where Self == SecondaryProminentButtonStyle {
+    static var secondaryProminent: Self { .init() }
+}
+
 public extension ButtonStyle where Self == SecondaryBorderedButtonStyle {
     static var secondaryBordered: Self { .init() }
 }

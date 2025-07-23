@@ -18,6 +18,8 @@ public enum Elevation: Int, CaseIterable, Hashable, Sendable {
 // MARK: - Common
 
 public extension EnvironmentValues {
+    @Entry var nimbusTheme: NimbusTheming = NimbusTheme.default
+    
     @Entry var nimbusAnimation: Animation = .smooth(duration: 0.2)
     @Entry var nimbusAnimationFast: Animation = .easeInOut(duration: 0.1)
 }
@@ -25,7 +27,7 @@ public extension EnvironmentValues {
 // MARK: Button
 
 public extension EnvironmentValues {
-    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii = .init(6)
+    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii = .init(12)
     @Entry var nimbusCompactButtonCornerRadii: RectangleCornerRadii = .init(8)
     
     @Entry var nimbusButtonMaterial: Material? = nil
@@ -48,3 +50,10 @@ public extension EnvironmentValues {
     @Entry var nimbusElevation: Elevation = .low
 }
 
+// MARK: Labels
+
+public extension EnvironmentValues {
+    @Entry var nimbusLabelIconContentSpacing: CGFloat = 4
+    @Entry var nimbusLabelContentHorizontalSmallPadding: CGFloat = 2
+    @Entry var nimbusLabelContentHorizontalMediumPadding: CGFloat = 6
+}

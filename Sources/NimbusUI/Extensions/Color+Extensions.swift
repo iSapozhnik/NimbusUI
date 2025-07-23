@@ -11,11 +11,11 @@ import SwiftUI
 //    func lighter(by amount: Double = 0.2) -> Color {
 //        return self.adjustBrightness(by: abs(amount))
 //    }
-//    
+//
 //    func darker(by amount: Double = 0.2) -> Color {
 //        return self.adjustBrightness(by: -abs(amount))
 //    }
-//    
+//
 //    private func adjustBrightness(by amount: Double) -> Color {
 //        var nsColor = NSColor(self)
 //        var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alpha: CGFloat = 0
@@ -43,6 +43,10 @@ extension Color {
     
     func darker(by amount: Double = 0.2) -> Color {
         Color(nsColor: NSColor(self).darker(amount: amount))
+    }
+    
+    static func primaryColor(light: Color, dark: Color, scheme: ColorScheme) -> Color {
+        scheme == .dark ? dark : light
     }
 }
 

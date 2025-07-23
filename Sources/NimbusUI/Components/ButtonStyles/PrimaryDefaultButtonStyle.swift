@@ -8,11 +8,15 @@
 import SwiftUI
 
 public struct PrimaryDefaultButtonStyle: ButtonStyle {
+    @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var animationFast
     @Environment(\.nimbusButtonCornerRadii) private var cornerRadii
     @Environment(\.nimbusMinHeight) private var minHeight
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.nimbusElevation) private var elevation
 
+    
     @State private var isHovering: Bool
     
     public init() {
@@ -28,23 +32,34 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
     #endif
     
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
+        let color = theme.primaryColor(for: colorScheme)
+        let defaultAppearance = ButtonAppearance(
+            fill: color,
+            hover: color.darker(by: 0.1),
+            press: color.darker(by: 0.25)
+        )
+        return configuration
+            .label
+            .bold()
             .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(
                     isHovering: isHovering,
                     isPressed: configuration.isPressed,
-                    fill: .quinary,
-                    hovering: .quaternary.opacity(0.7),
-                    pressed: .quaternary
+                    fill: AnyShapeStyle(defaultAppearance.fill),
+                    hovering: AnyShapeStyle(defaultAppearance.hover),
+                    pressed: AnyShapeStyle(defaultAppearance.press)
                 )
             )
             .clipShape(.rect(cornerRadii: cornerRadii))
+            .modifier(NimbusShadowModifier(elevation: elevation))
+            .modifier(NimbusInnerShadowModifier())
+            .modifier(NimbusGradientBorderModifier(width: 1, direction: .vertical))
+//            .modifier(NimbusBorderedModifier(isHovering: isHovering))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
-            .animation(animationFast, value: isHovering)
     }
 }
 

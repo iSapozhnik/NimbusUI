@@ -14,7 +14,8 @@ struct NimbusAspectRatioModifier: ViewModifier {
     @Environment(\.nimbusAspectRatioContentMode) private var contentMode
     @Environment(\.nimbusAspectRatioHasFixedHeight) private var hasFixedHeight
 
-    @ViewBuilder func body(content: Content) -> some View {
+    @ViewBuilder
+    func body(content: Content) -> some View {
         if let contentMode {
             Group {
                 if isConstrained {
