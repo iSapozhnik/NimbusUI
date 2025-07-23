@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+public enum Elevation: Int, CaseIterable, Hashable, Sendable {
+    case none = 0
+    case low
+    case medium
+    case high
+    case extreme
+}
+
 // MARK: - Common
 
 public extension EnvironmentValues {
@@ -37,5 +45,6 @@ public extension EnvironmentValues {
     @Entry var nimbusAspectRatio: CGFloat?
     @Entry var nimbusAspectRatioContentMode: ContentMode? = .fit
     @Entry var nimbusAspectRatioHasFixedHeight: Bool = true
+    @Entry var nimbusElevation: Elevation = .low
 }
 

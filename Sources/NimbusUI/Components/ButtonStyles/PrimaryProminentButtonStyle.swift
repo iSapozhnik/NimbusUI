@@ -18,6 +18,7 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     @Environment(\.nimbusAnimationFast) private var animationFast
     @Environment(\.nimbusButtonCornerRadii) private var cornerRadii
     @Environment(\.nimbusMinHeight) private var minHeight
+    @Environment(\.nimbusElevation) private var elevation
 
     @State private var isHovering: Bool
     
@@ -49,6 +50,9 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
                 )
             )
             .clipShape(.rect(cornerRadii: cornerRadii))
+            .modifier(NimbusShadowModifier(elevation: elevation))
+            .modifier(NimbusInnerShadowModifier())
+            .modifier(NimbusGradientBorderModifier(width: 2, direction: .vertical))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
