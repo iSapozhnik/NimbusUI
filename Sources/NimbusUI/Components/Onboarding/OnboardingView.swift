@@ -8,10 +8,37 @@
 import SwiftUI
 import FluidGradient
 
-struct OnboardingView: View {
-    @Environment(\.nimbusLabelContentHorizontalMediumPadding) var contentPadding
+/// A model representing a single onboarding feature page.
+public struct Feature: Identifiable {
+    public let id = UUID()
+    public let title: String
+    public let description: String
+    public let image: Image
     
-    var body: some View {
+    public init(
+        title: String,
+        description: String,
+        image: Image
+    ) {
+        self.title = title
+        self.description = description
+        self.image = image
+    }
+}
+
+/// A reusable onboarding view for macOS, displaying a sequence of features with page control and navigation.
+public struct OnboardingView: View {
+    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var contentPadding
+    @Environment(\.nimbusAnimationFast) private var fastAnimation
+    
+    public let features: [Feature]
+    @State private var currentIndex: Int = 0
+    
+    public init(features: [Feature]) {
+        self.features = features
+    }
+    
+    public var body: some View {
         ZStack {
             FluidGradient(blobs: [.red, .green, .blue],
                           highlights: [.yellow, .orange, .purple],
@@ -27,51 +54,82 @@ struct OnboardingView: View {
                     endPoint: .bottom
                 )
             )
-            
-            VStack(alignment: .leading, spacing: 24) {
-                HStack {
-                    RoundedRectangle(cornerRadius: 16)
-                        .frame(width: 120, height: 120)
-                        .modifier(LevitatingViewModifier())
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .frame(height: 200)
-                
+            .overlay(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 24) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Welcome to Launchy")
-                            .font(.system(size: 32))
-                            .bold()
-                        Text("Fast and easy app launcher and switcher, with a lot of features and customization options")
-                            .font(.system(size: 18, weight: .light))
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
-                    }
-
-                    Button(role: .none, action: {}) {
-                        Label("Continue", systemImage: "arrow.right")
-                            .labelStyle(
-                                NimbusDividerLabelStyle(
-                                    hasDivider: false,
-                                    iconAlignment: .trailing,
-                                    contentHorizontalPadding: contentPadding
-                                )
-                            )
+                    FeaturePageView(feature: features[currentIndex])
                         
+                    Spacer()
+                    PageControlView(currentIndex: currentIndex, total: features.count)
+                    HStack {
+                        Button(action: {
+                            withAnimation(fastAnimation) {
+                                if currentIndex < features.count - 1 {
+                                    currentIndex += 1
+                                }
+                            }
+                        }) {
+                            let isLast = currentIndex == features.count - 1
+                            Label(isLast ? "Finish" : "Continue", systemImage: isLast ? "checkmark" : "arrow.right")
+                                .labelStyle(
+                                    NimbusDividerLabelStyle(
+                                        hasDivider: true,
+                                        iconAlignment: .trailing,
+                                        contentHorizontalPadding: contentPadding
+                                    )
+                                )
+                        }
+                        .buttonStyle(.primaryProminent)
+                        .frame(height: 40)
+                        .modifier(NimbusAspectRatioModifier())
+                        Spacer()
                     }
-                    .buttonStyle(.primaryProminent)
-                    .frame(height: 50)
-                    .modifier(NimbusAspectRatioModifier())
                 }
-                .frame(height: 200)
+                .padding(80)
             }
-            .padding(80)
-
         }
         .frame(width: 600, height: 560)
     }
 }
 
+#if DEBUG
 #Preview {
-    OnboardingView()
+    let features = [
+        Feature(
+            title: "Welcome to Launchy",
+            description: "Fast and easy app launcher and switcher, with a lot of features and customization options",
+            image: Image(systemName: "sparkles")
+        ),
+        Feature(
+            title: "Organize Your Apps",
+            description: "Effortlessly group your most-used applications into custom folders for even faster access. Keep your workspace tidy and find what you need in an instant.",
+            image: Image(systemName: "folder")
+        ),
+        Feature(
+            title: "Customize",
+            description: "Personalize your launcher with themes and shortcuts.",
+            image: Image(systemName: "paintbrush")
+        ),
+        Feature(
+            title: "Quick Search",
+            description: "Find and launch any app instantly with powerful search and filtering capabilities.",
+            image: Image(systemName: "magnifyingglass")
+        ),
+        Feature(
+            title: "Keyboard Shortcuts",
+            description: "Boost your productivity by launching and switching apps using customizable keyboard shortcuts.",
+            image: Image(systemName: "command")
+        ),
+        Feature(
+            title: "Seamless Integration",
+            description: "Integrates smoothly with your workflow and supports drag-and-drop for easy app management.",
+            image: Image(systemName: "arrow.triangle.branch")
+        ),
+        Feature(
+            title: "Light & Dark Mode",
+            description: "Enjoy a beautiful interface that adapts to your system appearance, day or night.",
+            image: Image(systemName: "moon.stars")
+        )
+    ]
+    return OnboardingView(features: features)
 }
+#endif
