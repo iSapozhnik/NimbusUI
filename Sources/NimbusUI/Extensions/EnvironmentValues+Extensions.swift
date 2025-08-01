@@ -31,7 +31,7 @@ public extension EnvironmentValues {
 // MARK: Button
 
 public extension EnvironmentValues {
-    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii = .init(12)
+    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii = NimbusTheme.default.cornerRadii
     @Entry var nimbusCompactButtonCornerRadii: RectangleCornerRadii = .init(8)
     
     @Entry var nimbusButtonMaterial: Material? = nil
