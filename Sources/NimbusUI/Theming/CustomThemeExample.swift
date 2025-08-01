@@ -283,7 +283,7 @@ internal struct CustomThemeContentView: View {
 }
 
 /// Reusable section for displaying a collection of colors
-private struct ColorSection: View {
+internal struct ColorSection: View {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.colorScheme) private var colorScheme
     
@@ -310,7 +310,7 @@ private struct ColorSection: View {
 }
 
 /// Individual color swatch component
-private struct ColorSwatch: View {
+internal struct ColorSwatch: View {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.colorScheme) private var colorScheme
     

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SnapshotTests.swift
 //  NimbusUI
 //
 //  Created by Ivan Sapozhnik on 01.08.25.
@@ -39,6 +39,18 @@ private let recording = false
     )
 }
 
+@MainActor
+@Test func showcaseMaritimeTheme() async throws {
+    assertSnapshot(
+        of: SnapshotUtility.view(
+            from: MaritimeThemeExampleView()
+                .environment(\.nimbusTheme, MaritimeTheme())
+        ),
+        as: .image,
+        record: recording
+    )
+}
+
 struct ShowcaseView: View {
     var body: some View {
         HStack {
@@ -56,6 +68,31 @@ struct ShowcaseView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(.primary)
                 CustomThemeContentView()
+                    .environment(\.colorScheme, .dark)
+            }
+        }
+        .padding()
+        .background(.black)
+    }
+}
+
+struct MaritimeShowcaseView: View {
+    var body: some View {
+        HStack {
+            VStack {
+                Text("Light Mode")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                MaritimeThemeContentView()
+                    .environment(\.colorScheme, .light)
+            }
+            VStack {
+                Text("Dark Mode")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                MaritimeThemeContentView()
                     .environment(\.colorScheme, .dark)
             }
         }

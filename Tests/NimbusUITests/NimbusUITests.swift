@@ -102,3 +102,44 @@ func hexColorsApproximatelyEqual(_ color1: String, _ color2: String, tolerance: 
     let invalidColor = Color(hex: "invalid")
     #expect(invalidColor.hexString != primaryLight.hexString)
 }
+
+@Test func maritimeThemeIntegration() async throws {
+    let theme = MaritimeTheme()
+    
+    // Test that the maritime theme colors are correctly initialized with hex values
+    let primaryLight = theme.primaryColor(for: .light)
+    let primaryDark = theme.primaryColor(for: .dark)
+    let accent = theme.accentColor(for: .light) 
+    let error = theme.errorColor(for: .light)
+    let success = theme.successColor(for: .light)
+    let warning = theme.warningColor(for: .light)
+    let background = theme.backgroundColor(for: .light)
+    
+    // Verify dark mode variants are different from light mode
+    #expect(primaryDark.hexString != primaryLight.hexString)
+    
+    // Verify that all maritime colors are different from each other
+    #expect(primaryLight.hexString != accent.hexString)
+    #expect(accent.hexString == error.hexString) // Both use Red Pantone in maritime theme
+    #expect(error.hexString != success.hexString)
+    #expect(success.hexString != warning.hexString)
+    #expect(warning.hexString != background.hexString)
+    
+    // Verify that hex color initializer produces consistent results for maritime colors
+    let directPrimaryColor = Color(hex: "#457B9D") // Cerulean
+    #expect(primaryLight.hexString == directPrimaryColor.hexString)
+    
+    let directAccentColor = Color(hex: "#E63946") // Red Pantone
+    #expect(accent.hexString == directAccentColor.hexString)
+    
+    let directBackgroundColor = Color(hex: "#F1FAEE") // Honeydew
+    #expect(background.hexString == directBackgroundColor.hexString)
+    
+    // Verify maritime theme has structured corner radius (8pt vs 12pt warm theme)
+    #expect(theme.cornerRadii.topLeading == 8)
+    
+    // Verify maritime theme is different from warm theme
+    let warmTheme = CustomWarmTheme()
+    #expect(theme.primaryColor(for: .light).hexString != warmTheme.primaryColor(for: .light).hexString)
+    #expect(theme.cornerRadii.topLeading != warmTheme.cornerRadii.topLeading)
+}
