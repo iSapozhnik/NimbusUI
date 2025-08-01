@@ -15,6 +15,7 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     @Environment(\.nimbusMinHeight) private var minHeight
     @Environment(\.nimbusElevation) private var elevation
     @Environment(\.nimbusHorizontalPadding) private var horizontalPadding
+    @Environment(\.colorScheme) private var colorScheme
 
     @State private var isHovering: Bool
     
@@ -61,8 +62,8 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     }
     
     private func tint(configuration: Configuration) -> ButtonAppearance {
-        let color = theme.accentColor
-        let destructiveColor = theme.errorColor
+        let color = theme.accentColor(for: colorScheme)
+        let destructiveColor = theme.errorColor(for: colorScheme)
         
         let defaultAppearance = ButtonAppearance(
             fill: color,

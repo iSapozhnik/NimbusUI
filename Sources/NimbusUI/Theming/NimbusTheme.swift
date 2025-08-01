@@ -1,5 +1,5 @@
 //
-//  DefaultNimbusTheme.swift
+//  NimbusTheme.swift
 //  NimbusUI
 //
 //  Created by Ivan Sapozhnik on 23.07.25.
@@ -7,26 +7,153 @@
 
 import SwiftUI
 
+/// Default implementation of NimbusTheming with modern, accessible colors
+/// that work well in both light and dark color schemes.
 public struct NimbusTheme: NimbusTheming, Sendable {
-    public let accentColor = Color.accentColor
-    public let errorColor = Color.red
+    public init() {}
+    
+    // MARK: - Brand Colors
     
     public func primaryColor(for scheme: ColorScheme) -> Color {
-        Color.primaryColor(light: Color(red: 0.4, green: 0.6, blue: 1.0),
-                           dark: Color(red: 0.2, green: 0.3, blue: 0.8),
-                           scheme: scheme)
+        Color.adaptiveColor(
+            light: Color(red: 0.4, green: 0.6, blue: 1.0),
+            dark: Color(red: 0.5, green: 0.7, blue: 1.0),
+            scheme: scheme
+        )
     }
     
-    public let secondaryColor = Color("SecondaryColor")
-    public let tertiaryColor = Color("TertiaryColor")
+    public func secondaryColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.5, green: 0.5, blue: 0.5),
+            dark: Color(red: 0.7, green: 0.7, blue: 0.7),
+            scheme: scheme
+        )
+    }
     
-    public let primaryTextColor = Color("PrimaryTextColor")
-    public let secondaryTextColor = Color("SecondaryTextColor")
-    public let tertiaryTextColor = Color("TertiaryTextColor")
+    public func tertiaryColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.7, green: 0.7, blue: 0.7),
+            dark: Color(red: 0.5, green: 0.5, blue: 0.5),
+            scheme: scheme
+        )
+    }
+    
+    public func accentColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: .accentColor,
+            dark: .accentColor,
+            scheme: scheme
+        )
+    }
+    
+    // MARK: - Semantic Colors
+    
+    public func errorColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.9, green: 0.3, blue: 0.3),
+            dark: Color(red: 1.0, green: 0.4, blue: 0.4),
+            scheme: scheme
+        )
+    }
+    
+    public func successColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.2, green: 0.7, blue: 0.3),
+            dark: Color(red: 0.3, green: 0.8, blue: 0.4),
+            scheme: scheme
+        )
+    }
+    
+    public func warningColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 1.0, green: 0.6, blue: 0.0),
+            dark: Color(red: 1.0, green: 0.7, blue: 0.2),
+            scheme: scheme
+        )
+    }
+    
+    public func infoColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.2, green: 0.6, blue: 0.9),
+            dark: Color(red: 0.4, green: 0.7, blue: 1.0),
+            scheme: scheme
+        )
+    }
+    
+    // MARK: - Background Colors
+    
+    public func backgroundColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 1.0, green: 1.0, blue: 1.0),
+            dark: Color(red: 0.1, green: 0.1, blue: 0.1),
+            scheme: scheme
+        )
+    }
+    
+    public func secondaryBackgroundColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.97, green: 0.97, blue: 0.97),
+            dark: Color(red: 0.15, green: 0.15, blue: 0.15),
+            scheme: scheme
+        )
+    }
+    
+    public func tertiaryBackgroundColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.94, green: 0.94, blue: 0.94),
+            dark: Color(red: 0.2, green: 0.2, blue: 0.2),
+            scheme: scheme
+        )
+    }
+    
+    // MARK: - Text Colors
+    
+    public func primaryTextColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.1, green: 0.1, blue: 0.1),
+            dark: Color(red: 0.95, green: 0.95, blue: 0.95),
+            scheme: scheme
+        )
+    }
+    
+    public func secondaryTextColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.4, green: 0.4, blue: 0.4),
+            dark: Color(red: 0.7, green: 0.7, blue: 0.7),
+            scheme: scheme
+        )
+    }
+    
+    public func tertiaryTextColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.6, green: 0.6, blue: 0.6),
+            dark: Color(red: 0.5, green: 0.5, blue: 0.5),
+            scheme: scheme
+        )
+    }
+    
+    // MARK: - Border Colors
+    
+    public func borderColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.8, green: 0.8, blue: 0.8),
+            dark: Color(red: 0.3, green: 0.3, blue: 0.3),
+            scheme: scheme
+        )
+    }
+    
+    public func secondaryBorderColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.9, green: 0.9, blue: 0.9),
+            dark: Color(red: 0.25, green: 0.25, blue: 0.25),
+            scheme: scheme
+        )
+    }
+    
+    // MARK: - Material & Styling
     
     public let backgroundMaterial: Material? = Material.thinMaterial
-    
-    public let cornerRadii = RectangleCornerRadii.init(8)
+    public let cornerRadii = RectangleCornerRadii(8)
 }
 
 extension NimbusTheme {
