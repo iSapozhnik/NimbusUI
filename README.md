@@ -170,8 +170,11 @@ NimbusUI is built around several core systems:
 4. **Accessibility** - Built-in macOS accessibility support
 5. **Developer Experience** - Intuitive APIs and clear documentation
 
-## Preview
-![](Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseWarmTheme.1.png)
+## Themes
+
+| Nimbus Theme (Default) | Maritime Theme | Warm Theme |
+|------------------------|----------------|------------|
+| ![](Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseNimbusTheme.1.png) | ![](Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseMaritimeTheme.1.png) | ![](Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseWarmTheme.1.png) |
 
 ## 🛠️ Development
 
