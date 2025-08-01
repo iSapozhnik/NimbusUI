@@ -202,7 +202,7 @@ struct CustomThemeExampleView: View {
 }
 
 /// Internal content view that uses the properly set theme environment
-private struct CustomThemeContentView: View {
+internal struct CustomThemeContentView: View {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.colorScheme) private var colorScheme
     
