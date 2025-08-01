@@ -46,6 +46,7 @@ struct ShowcaseView: View {
                 Text("Light Mode")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .foregroundStyle(.primary)
                 CustomThemeContentView()
                     .environment(\.colorScheme, .light)
             }
@@ -53,16 +54,18 @@ struct ShowcaseView: View {
                 Text("Dark Mode")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .foregroundStyle(.primary)
                 CustomThemeContentView()
                     .environment(\.colorScheme, .dark)
             }
         }
+        .padding()
+        .background(.black)
     }
 }
 
 fileprivate enum SnapshotUtility<Content> where Content: View {
 
-    @MainActor
     static func view(from content: Content, colorScheme: ColorScheme) -> NSView {
         let nsView = NSHostingView(
             rootView: content
@@ -70,22 +73,17 @@ fileprivate enum SnapshotUtility<Content> where Content: View {
                 .fixedSize()
         )
         nsView.layoutSubtreeIfNeeded()
-        nsView.isFlipped = true
-        let fittingSize = nsView.fittingSize
-        nsView.frame = NSRect(origin: .zero, size: fittingSize)
+        nsView.frame = NSRect(origin: .zero, size: nsView.fittingSize)
         return nsView
     }
     
-    @MainActor
     static func view(from content: Content) -> NSView {
         let nsView = NSHostingView(
             rootView: content
                 .fixedSize()
         )
         nsView.layoutSubtreeIfNeeded()
-        nsView.isFlipped = true
-        let fittingSize = nsView.fittingSize
-        nsView.frame = NSRect(origin: .zero, size: fittingSize)
+        nsView.frame = NSRect(origin: .zero, size: nsView.fittingSize)
         return nsView
     }
 }
