@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FluidGradient
+import SmoothGradient
 
 /// A model representing a single onboarding feature page.
 public struct Feature: Identifiable {
@@ -28,6 +29,7 @@ public struct Feature: Identifiable {
 
 /// A reusable onboarding view for macOS, displaying a sequence of features with page control and navigation.
 public struct OnboardingView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var overrideContentPadding
     @Environment(\.nimbusAnimationFast) private var overrideFastAnimation
@@ -50,13 +52,10 @@ public struct OnboardingView: View {
                           blur: 0.75)
             .overlay(
                 LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: Color.white.opacity(0), location: 0),
-                        .init(color: Color.white, location: 1)
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+                    gradient: .smooth(from: theme.backgroundColor(for: colorScheme).opacity(0), to: theme.backgroundColor(for: colorScheme), curve: .easeInOut), // ⬅️
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
             )
             .overlay(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 24) {
@@ -135,6 +134,6 @@ public struct OnboardingView: View {
         )
     ]
     return OnboardingView(features: features)
-        .environment(\.nimbusTheme, MaritimeTheme())
+        .environment(\.nimbusTheme, NimbusTheme())
 }
 #endif

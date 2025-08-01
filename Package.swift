@@ -16,8 +16,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Cindori/FluidGradient.git", from: "1.0.0"),
-//        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", upToNextMajor: "1.18.6"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .upToNextMajor(from: "1.18.6"))
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .upToNextMajor(from: "1.18.6")),
+        .package(url: "https://github.com/raymondjavaxx/SmoothGradient.git", .upToNextMajor(from: "1.0.1"))
 
     ],
     targets: [
@@ -26,7 +26,9 @@ let package = Package(
         .target(
             name: "NimbusUI",
             dependencies: [
-                .product(name: "FluidGradient", package: "FluidGradient")
+                .product(name: "FluidGradient", package: "FluidGradient"),
+                .product(name: "SmoothGradient", package: "SmoothGradient")
+
             ]
         ),
         .testTarget(
