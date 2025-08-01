@@ -272,6 +272,9 @@ private struct CustomThemeContentView: View {
                 
                 // Corner Radius Demo Section
                 CornerRadiusDemoSection()
+                
+                // Button Styles Showcase Section
+                ButtonStylesSection()
             }
             .padding(40)
         }
@@ -452,6 +455,251 @@ private struct CornerRadiusDemoSection: View {
                         .foregroundColor(theme.secondaryTextColor(for: colorScheme))
                 }
             }
+        }
+    }
+}
+
+/// Comprehensive button styles showcase section
+private struct ButtonStylesSection: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            // Section Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Button Styles Showcase")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Comprehensive demonstration of all 4 available button styles with various configurations and theme colors")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            // Primary Default Style
+            ButtonStyleDemo(
+                title: "Primary Default",
+                description: "Uses theme.primaryColor (\(theme.primaryColor(for: colorScheme).hexString)) with built-in hover states",
+                styleType: .primaryDefault,
+                examples: [
+                    .init(title: "Basic Text", button: AnyView(Button("Default Action") {})),
+                    .init(title: "With Icon", button: AnyView(Button("Save", systemImage: "square.and.arrow.down") {})),
+                    .init(title: "Label Style", button: AnyView(
+                        Button(action: {}) {
+                            Label("Export", systemImage: "square.and.arrow.up")
+                        }
+                    ))
+                ]
+            )
+            
+            // Primary Prominent Style
+            ButtonStyleDemo(
+                title: "Primary Prominent",
+                description: "Uses theme.accentColor (\(theme.accentColor(for: colorScheme).hexString)) for normal, theme.errorColor (\(theme.errorColor(for: colorScheme).hexString)) for destructive",
+                styleType: .primaryProminent,
+                examples: [
+                    .init(title: "Normal Action", button: AnyView(Button("Continue") {})),
+                    .init(title: "Destructive Role", button: AnyView(Button("Delete", role: .destructive) {})),
+                    .init(title: "Cancel Role", button: AnyView(Button("Cancel", role: .cancel) {})),
+                    .init(title: "Success Tint", button: AnyView(
+                        Button("Complete") {}
+                            .tint(theme.successColor(for: colorScheme))
+                    )),
+                    .init(title: "Warning Tint", button: AnyView(
+                        Button("Warning", systemImage: "exclamationmark.triangle") {}
+                            .tint(theme.warningColor(for: colorScheme))
+                    )),
+                    .init(title: "Icon + Destructive", button: AnyView(
+                        Button("Delete", systemImage: "trash", role: .destructive) {}
+                    ))
+                ]
+            )
+            
+            // Secondary Prominent Style
+            ButtonStyleDemo(
+                title: "Secondary Prominent",
+                description: "Similar to Primary Prominent with different visual treatment and sizing",
+                styleType: .secondaryProminent,
+                examples: [
+                    .init(title: "Normal Action", button: AnyView(Button("Apply") {})),
+                    .init(title: "Destructive Role", button: AnyView(Button("Remove", role: .destructive) {})),
+                    .init(title: "Success Tint", button: AnyView(
+                        Button("Approve", systemImage: "checkmark") {}
+                            .tint(theme.successColor(for: colorScheme))
+                    )),
+                    .init(title: "With Complex Label", button: AnyView(
+                        Button(action: {}) {
+                            Label("Process", systemImage: "gear")
+                        }
+                    ))
+                ]
+            )
+            
+            // Secondary Bordered Style
+            ButtonStyleDemo(
+                title: "Secondary Bordered",
+                description: "Subtle bordered style using system colors (.quinary, .quaternary) - adapts to system theme",
+                styleType: .secondaryBordered,
+                examples: [
+                    .init(title: "Basic Action", button: AnyView(Button("Options") {})),
+                    .init(title: "With Icon", button: AnyView(Button("Settings", systemImage: "gearshape") {})),
+                    .init(title: "Cancel Action", button: AnyView(Button("Cancel") {})),
+                    .init(title: "More Actions", button: AnyView(
+                        Button(action: {}) {
+                            Label("More", systemImage: "ellipsis")
+                        }
+                    ))
+                ]
+            )
+            
+            // Size Comparison Section
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Size Comparison")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("All button styles at standard height with varying content")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 12) {
+                    Button("Primary Default") {}
+                        .buttonStyle(.primaryDefault)
+                        .frame(height: 40)
+                    
+                    Button("Primary Prominent") {}
+                        .buttonStyle(.primaryProminent)
+                        .frame(height: 40)
+                    
+                    Button("Secondary Prominent") {}
+                        .buttonStyle(.secondaryProminent)
+                        .frame(height: 40)
+                    
+                    Button("Secondary Bordered") {}
+                        .buttonStyle(.secondaryBordered)
+                        .frame(height: 40)
+                }
+            }
+            
+            // Usage Notes
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Developer Usage Notes")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    BulletPoint("Use .primaryDefault for main theme-colored actions")
+                    BulletPoint("Use .primaryProminent for primary CTAs with automatic destructive styling")
+                    BulletPoint("Use .secondaryProminent for secondary important actions")
+                    BulletPoint("Use .secondaryBordered for subtle, system-integrated actions")
+                    BulletPoint("Apply .tint() modifier to override colors for specific semantic meanings")
+                    BulletPoint("Button roles (.destructive, .cancel) automatically apply appropriate colors")
+                    BulletPoint("All styles support Label views with system images")
+                }
+            }
+        }
+    }
+}
+
+/// Individual button style demonstration section
+private struct ButtonStyleDemo: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    enum StyleType {
+        case primaryDefault, primaryProminent, secondaryProminent, secondaryBordered
+    }
+    
+    struct ButtonExample {
+        let title: String
+        let button: AnyView
+    }
+    
+    let title: String
+    let description: String
+    let styleType: StyleType
+    let examples: [ButtonExample]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Style Header
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            // Examples Grid
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: min(examples.count, 3)), spacing: 12) {
+                ForEach(examples.indices, id: \.self) { index in
+                    let example = examples[index]
+                    
+                    VStack(spacing: 6) {
+                        // Apply the button style based on type
+                        Group {
+                            switch styleType {
+                            case .primaryDefault:
+                                example.button.buttonStyle(.primaryDefault)
+                            case .primaryProminent:
+                                example.button.buttonStyle(.primaryProminent)
+                            case .secondaryProminent:
+                                example.button.buttonStyle(.secondaryProminent)
+                            case .secondaryBordered:
+                                example.button.buttonStyle(.secondaryBordered)
+                            }
+                        }
+                        .frame(height: 36)
+                        
+                        Text(example.title)
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                            .multilineTextAlignment(.center)
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+    }
+}
+
+/// Simple bullet point component for usage notes
+private struct BulletPoint: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    let text: String
+    
+    init(_ text: String) {
+        self.text = text
+    }
+    
+    var body: some View {
+        HStack(alignment: .center) {
+            Text("•")
+                .foregroundColor(theme.accentColor(for: colorScheme))
+                .fontWeight(.medium)
+            
+            Text(text)
+                .font(.caption)
+                .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
