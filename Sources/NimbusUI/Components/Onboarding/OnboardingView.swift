@@ -47,7 +47,7 @@ public struct OnboardingView: View {
             FluidGradient(blobs: [.red, .green, .blue],
                           highlights: [.yellow, .orange, .purple],
                           speed: 1,
-                          blur: 0.85)
+                          blur: 0.75)
             .overlay(
                 LinearGradient(
                     gradient: Gradient(stops: [
@@ -135,5 +135,6 @@ public struct OnboardingView: View {
         )
     ]
     return OnboardingView(features: features)
+        .environment(\.nimbusTheme, MaritimeTheme())
 }
 #endif

@@ -10,7 +10,6 @@ import SwiftUI
 public struct NimbusFilledModifier: ViewModifier {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusHasBackground) private var hasBackground
-    @Environment(\.nimbusButtonMaterial) private var material
     @Environment(\.nimbusButtonHighlightOnHover) private var highlightOnHover
 
     private let isHovering: Bool, isPressed: Bool
@@ -63,7 +62,7 @@ public struct NimbusFilledModifier: ViewModifier {
     public func body(content: Content) -> some View {
         if hasBackground {
             content
-                .background(with: material) {
+                .background {
                     Group {
                         if isEnabled {
                             if isPressed {
