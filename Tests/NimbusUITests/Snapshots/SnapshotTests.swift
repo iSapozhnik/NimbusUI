@@ -43,7 +43,7 @@ private let recording = false
 @Test func showcaseMaritimeTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
-            from: MaritimeThemeExampleView()
+            from: ShowcaseView()
                 .environment(\.nimbusTheme, MaritimeTheme())
         ),
         as: .image,

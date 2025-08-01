@@ -10,11 +10,11 @@ import SwiftUI
 public struct PrimaryDefaultButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.nimbusAnimationFast) private var animationFast
-    @Environment(\.nimbusButtonCornerRadii) private var cornerRadii
-    @Environment(\.nimbusMinHeight) private var minHeight
+    @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
+    @Environment(\.nimbusButtonCornerRadii) private var overrideCornerRadii
+    @Environment(\.nimbusMinHeight) private var overrideMinHeight
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.nimbusElevation) private var elevation
+    @Environment(\.nimbusElevation) private var overrideElevation
 
     
     @State private var isHovering: Bool
@@ -38,6 +38,11 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
             hover: color.darker(by: 0.1),
             press: color.darker(by: 0.25)
         )
+        
+        let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
+        let minHeight = overrideMinHeight ?? theme.minHeight
+        let elevation = overrideElevation ?? theme.elevation
+        
         return configuration
             .label
             .bold()

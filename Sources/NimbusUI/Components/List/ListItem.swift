@@ -45,11 +45,12 @@ public enum ListRoundedCornerBehavior: String, Hashable, Equatable,
 
 public struct ListItem<Content, V>: View where Content: View, V: Hashable {
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.nimbusListItemCornerRadii) private var itemCornerRadii
-    @Environment(\.nimbusCornerRadii) private var cornerRadii
-    @Environment(\.nimbusListItemHeight) private var itemHeight
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.nimbusListItemCornerRadii) private var overrideItemCornerRadii
+    @Environment(\.nimbusCornerRadii) private var overrideCornerRadii
+    @Environment(\.nimbusListItemHeight) private var overrideItemHeight
     @Environment(\.nimbusListItemHighlightOnHover) private var highlightOnHover
-    @Environment(\.nimbusAnimationFast) private var animationFast
+    @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
     @Environment(\.nimbusHasDividers) private var hasDividers
 
 
@@ -72,6 +73,22 @@ public struct ListItem<Content, V>: View where Content: View, V: Hashable {
     @State private var tintOpacity: CGFloat = .zero
     
     @ViewBuilder var content: (Binding<V>) -> Content
+    
+    private var itemHeight: CGFloat {
+        overrideItemHeight ?? theme.listItemHeight
+    }
+    
+    private var animationFast: Animation {
+        overrideAnimationFast ?? theme.animationFast
+    }
+    
+    private var itemCornerRadii: RectangleCornerRadii {
+        overrideItemCornerRadii ?? theme.listItemCornerRadii
+    }
+    
+    private var cornerRadii: RectangleCornerRadii {
+        overrideCornerRadii ?? theme.cornerRadii
+    }
     
     public var body: some View {
         Color.clear

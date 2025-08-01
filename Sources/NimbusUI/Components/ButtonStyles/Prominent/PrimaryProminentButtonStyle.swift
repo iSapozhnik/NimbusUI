@@ -10,11 +10,11 @@ import SwiftUI
 public struct PrimaryProminentButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.nimbusAnimationFast) private var animationFast
-    @Environment(\.nimbusButtonCornerRadii) private var cornerRadii
-    @Environment(\.nimbusMinHeight) private var minHeight
-    @Environment(\.nimbusElevation) private var elevation
-    @Environment(\.nimbusHorizontalPadding) private var horizontalPadding
+    @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
+    @Environment(\.nimbusButtonCornerRadii) private var overrideCornerRadii
+    @Environment(\.nimbusMinHeight) private var overrideMinHeight
+    @Environment(\.nimbusElevation) private var overrideElevation
+    @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var isHovering: Bool
@@ -32,6 +32,11 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     #endif
     
     public func makeBody(configuration: Configuration) -> some View {
+        let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
+        let minHeight = overrideMinHeight ?? theme.minHeight
+        let elevation = overrideElevation ?? theme.elevation
+        let horizontalPadding = overrideHorizontalPadding ?? theme.horizontalPadding
+        
         configuration
             .label
             .bold()
@@ -91,8 +96,11 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
 @available(macOS 15.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
 
-    @Previewable @Environment(\.nimbusLabelContentHorizontalMediumPadding) var contentPadding
+    @Previewable @Environment(\.nimbusLabelContentHorizontalMediumPadding) var overrideContentPadding
+    @Previewable @Environment(\.nimbusTheme) var theme
 
+    let contentPadding = overrideContentPadding ?? theme.labelContentSpacing
+    
     VStack {
         HStack {
             Button("Ok") {}

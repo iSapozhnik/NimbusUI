@@ -166,6 +166,19 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
     
     public let backgroundMaterial: Material? = Material.thinMaterial
     public let cornerRadii = RectangleCornerRadii(12) // Slightly more rounded for friendly feel
+    
+    // MARK: - Design Tokens
+    
+    public let animation = Animation.smooth(duration: 0.2)
+    public let animationFast = Animation.easeInOut(duration: 0.1)
+    public let minHeight: CGFloat = 30
+    public let horizontalPadding: CGFloat = 8
+    public let elevation = Elevation.low
+    public let buttonCornerRadii = RectangleCornerRadii(12)
+    public let compactButtonCornerRadii = RectangleCornerRadii(8)
+    public let listItemCornerRadii = RectangleCornerRadii(2)
+    public let listItemHeight: CGFloat = 44
+    public let labelContentSpacing: CGFloat = 6
 }
 
 // MARK: - Usage Example

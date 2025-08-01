@@ -28,8 +28,9 @@ public struct Feature: Identifiable {
 
 /// A reusable onboarding view for macOS, displaying a sequence of features with page control and navigation.
 public struct OnboardingView: View {
-    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var contentPadding
-    @Environment(\.nimbusAnimationFast) private var fastAnimation
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var overrideContentPadding
+    @Environment(\.nimbusAnimationFast) private var overrideFastAnimation
     
     public let features: [Feature]
     @State private var currentIndex: Int = 0
@@ -39,6 +40,9 @@ public struct OnboardingView: View {
     }
     
     public var body: some View {
+        let contentPadding = overrideContentPadding ?? theme.labelContentSpacing
+        let fastAnimation = overrideFastAnimation ?? theme.animationFast
+        
         ZStack {
             FluidGradient(blobs: [.red, .green, .blue],
                           highlights: [.yellow, .orange, .purple],

@@ -79,6 +79,38 @@ public protocol NimbusTheming: Sendable {
     
     /// Corner radii configuration for consistent rounded corners
     var cornerRadii: RectangleCornerRadii { get }
+    
+    // MARK: - Design Tokens
+    
+    /// Animation configuration for standard transitions
+    var animation: Animation { get }
+    
+    /// Fast animation configuration for quick interactions
+    var animationFast: Animation { get }
+    
+    /// Minimum height for interactive elements
+    var minHeight: CGFloat { get }
+    
+    /// Standard horizontal padding for components
+    var horizontalPadding: CGFloat { get }
+    
+    /// Default elevation level for components
+    var elevation: Elevation { get }
+    
+    /// Button corner radii configuration
+    var buttonCornerRadii: RectangleCornerRadii { get }
+    
+    /// Compact button corner radii configuration
+    var compactButtonCornerRadii: RectangleCornerRadii { get }
+    
+    /// List item corner radii configuration
+    var listItemCornerRadii: RectangleCornerRadii { get }
+    
+    /// List item height configuration
+    var listItemHeight: CGFloat { get }
+    
+    /// Label content spacing configuration
+    var labelContentSpacing: CGFloat { get }
 }
 
 // MARK: - Convenience Methods
