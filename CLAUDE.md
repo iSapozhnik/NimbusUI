@@ -45,6 +45,13 @@ swift package resolve
 - `.primaryDefault` / `.primaryProminent` - Primary buttons
 - `.secondaryProminent` / `.secondaryBordered` - Secondary buttons
 
+**Enhanced Button + Label API**: Auto-detection system that applies `NimbusDividerLabelStyle` when Label environment values are set:
+- `nimbusButtonHasDivider: Bool?` - Controls divider visibility (nil = no styling, true/false = apply with/without divider)
+- `nimbusButtonIconAlignment: HorizontalAlignment?` - Controls icon position (leading/trailing)
+- `nimbusButtonContentPadding: CGFloat?` - Controls label content padding
+- All button styles automatically apply label styling when environment values are present
+- Maintains full backward compatibility with plain text buttons
+
 ### Key Components
 
 **Onboarding System** (`Sources/NimbusUI/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
@@ -89,6 +96,36 @@ Button("Custom") { }
     .environment(\.nimbusMinHeight, 50)
 ```
 
+### Enhanced Button + Label API Usage
+The enhanced API provides flexible button configurations:
+
+```swift
+// Plain text button (no changes needed)
+Button("Save") { }
+    .buttonStyle(.primaryProminent)
+
+// Label with default divider (auto-applied)
+Button(action: {}) {
+    Label("Delete", systemImage: "trash")
+}
+.buttonStyle(.primaryProminent)
+.environment(\.nimbusButtonHasDivider, true)
+
+// Label without divider
+Button(action: {}) {
+    Label("Export", systemImage: "square.and.arrow.up")
+}
+.buttonStyle(.primaryProminent)
+.environment(\.nimbusButtonHasDivider, false)
+
+// Label with trailing icon
+Button(action: {}) {
+    Label("Next", systemImage: "arrow.right")
+}
+.buttonStyle(.primaryProminent)
+.environment(\.nimbusButtonIconAlignment, .trailing)
+```
+
 ### Design Tokens (Available from Theme)
 - **Layout**: `minHeight`, `horizontalPadding`, `listItemHeight`
 - **Animations**: `animation`, `animationFast`
@@ -97,6 +134,19 @@ Button("Custom") { }
 - **Spacing**: `labelContentSpacing`
 
 All styling should go through the theme system with environment overrides when needed.
+
+## Known Issues & Workarounds
+
+### SwiftUI Preview Layout Bug
+**Issue**: `.sizeThatFitsLayout` preview trait causes content clipping when used with VStacks containing multiple HStacks with Button+Label combinations.
+
+**Symptoms**: Preview content gets cut off vertically, especially with complex button layouts using Labels and dividers.
+
+**Workaround**: Remove `traits: .sizeThatFitsLayout` from previews and use standard `#Preview` instead.
+
+**Affected Files**: All button style preview files now include documentation comments about this limitation.
+
+**Root Cause**: SwiftUI framework bug in layout calculation system - not related to custom code.
 
 ## Design System Specialist Guidance
 
@@ -123,6 +173,9 @@ Use the Task tool with specialized design system knowledge for:
 - **Behavioral vs Design**: Keep behavioral flags as environment-only, put visual properties in theme
 - **Type Safety**: Use strong typing to prevent design inconsistencies
 - **Documentation**: Include examples showing both theme defaults and override usage
+- **Button API Pattern**: Use `AutoLabelDetectionModifier` to conditionally apply `NimbusDividerLabelStyle` only when environment values are set
+- **Backward Compatibility**: Ensure new APIs don't break existing plain text button usage
+- **Preview Best Practices**: Avoid `traits: .sizeThatFitsLayout` for complex layouts; document SwiftUI limitations
 
 ### Code Quality Requirements
 - Follow Swift API Design Guidelines
