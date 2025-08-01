@@ -13,56 +13,51 @@ import XCTest
 import Foundation
 import AppKit
 
+private let recording = false
+
 @MainActor
-@Test func showcaseNimbusDefaultLightMode() async throws {
+@Test func showcaseNimbusTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
-            from: CustomThemeContentView()
-                .environment(\.nimbusTheme, NimbusTheme()),
-            colorScheme: .light
+            from: ShowcaseView()
+                .environment(\.nimbusTheme, NimbusTheme())
         ),
-        as: .image(perceptualPrecision: 0.9),
-        record: false
+        as: .image,
+        record: recording
     )
 }
 
 @MainActor
-@Test func showcaseNimbusDefaultDarkMode() async throws {
+@Test func showcaseWarmTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
-            from: CustomThemeContentView()
-                .environment(\.nimbusTheme, NimbusTheme()),
-            colorScheme: .dark
+            from: ShowcaseView()
+                .environment(\.nimbusTheme, CustomWarmTheme())
         ),
-        as: .image(perceptualPrecision: 0.9),
-        record: false
+        as: .image,
+        record: recording
     )
 }
 
-@MainActor
-@Test func showcaseWarmThemeLightMode() async throws {
-    assertSnapshot(
-        of: SnapshotUtility.view(
-            from: CustomThemeContentView()
-                .environment(\.nimbusTheme, CustomWarmTheme()),
-            colorScheme: .light
-        ),
-        as: .image(perceptualPrecision: 0.9),
-        record: false
-    )
-}
-
-@MainActor
-@Test func showcaseWarmThemeDarkMode() async throws {
-    assertSnapshot(
-        of: SnapshotUtility.view(
-            from: CustomThemeContentView()
-                .environment(\.nimbusTheme, CustomWarmTheme()),
-            colorScheme: .dark
-        ),
-        as: .image(perceptualPrecision: 0.9),
-        record: false
-    )
+struct ShowcaseView: View {
+    var body: some View {
+        HStack {
+            VStack {
+                Text("Light Mode")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                CustomThemeContentView()
+                    .environment(\.colorScheme, .light)
+            }
+            VStack {
+                Text("Dark Mode")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                CustomThemeContentView()
+                    .environment(\.colorScheme, .dark)
+            }
+        }
+    }
 }
 
 fileprivate enum SnapshotUtility<Content> where Content: View {
@@ -72,7 +67,19 @@ fileprivate enum SnapshotUtility<Content> where Content: View {
         let nsView = NSHostingView(
             rootView: content
                 .environment(\.colorScheme, colorScheme)
-                .frame(minWidth:480, minHeight: 300)
+                .fixedSize()
+        )
+        nsView.layoutSubtreeIfNeeded()
+        nsView.isFlipped = true
+        let fittingSize = nsView.fittingSize
+        nsView.frame = NSRect(origin: .zero, size: fittingSize)
+        return nsView
+    }
+    
+    @MainActor
+    static func view(from content: Content) -> NSView {
+        let nsView = NSHostingView(
+            rootView: content
                 .fixedSize()
         )
         nsView.layoutSubtreeIfNeeded()
