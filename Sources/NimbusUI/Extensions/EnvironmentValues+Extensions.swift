@@ -18,10 +18,14 @@ public enum Elevation: Int, CaseIterable, Hashable, Sendable {
 // MARK: - Common
 
 public extension EnvironmentValues {
+    @Entry var nimbusCornerRadii: RectangleCornerRadii = .init(12)
+
     @Entry var nimbusTheme: NimbusTheming = NimbusTheme.default
     
     @Entry var nimbusAnimation: Animation = .smooth(duration: 0.2)
     @Entry var nimbusAnimationFast: Animation = .easeInOut(duration: 0.1)
+    
+    @Entry var nimbusHasDividers: Bool = true
 }
 
 // MARK: Button
@@ -56,4 +60,20 @@ public extension EnvironmentValues {
     @Entry var nimbusLabelIconContentSpacing: CGFloat = 4
     @Entry var nimbusLabelContentHorizontalSmallPadding: CGFloat = 2
     @Entry var nimbusLabelContentHorizontalMediumPadding: CGFloat = 6
+}
+
+// MARK: List
+
+public extension EnvironmentValues {
+    @Entry var nimbusListItemCornerRadii: RectangleCornerRadii = .init(2)
+
+    @Entry var nimbusListItemHeight: CGFloat = 44
+    @Entry var nimbusListItemHighlightOnHover: Bool = true
+
+    @Entry var nimbusItemBeingHovered: Bool = false
+    @Entry var nimbusListFixedHeightUntil: CGFloat? = nil
+    
+    @Entry var nimbusListRoundedTopCornerBehavior: ListRoundedCornerBehavior = .never
+    @Entry var nimbusListRoundedBottomCornerBehavior: ListRoundedCornerBehavior = .never
+
 }
