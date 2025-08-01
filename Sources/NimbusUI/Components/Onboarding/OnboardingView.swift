@@ -55,7 +55,7 @@ public struct OnboardingView: View {
                     gradient: .smooth(from: theme.backgroundColor(for: colorScheme).opacity(0), to: theme.backgroundColor(for: colorScheme), curve: .easeInOut), // ⬅️
                             startPoint: .top,
                             endPoint: .bottom
-                        )
+                    )
             )
             .overlay(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 24) {

@@ -16,6 +16,12 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     @Environment(\.nimbusElevation) private var overrideElevation
     @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
     @Environment(\.colorScheme) private var colorScheme
+    
+    // Button Label Configuration
+    @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
+    @Environment(\.nimbusButtonIconAlignment) private var overrideIconAlignment
+    @Environment(\.nimbusButtonContentPadding) private var overrideContentPadding
+    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var overrideLabelContentPadding
 
     @State private var isHovering: Bool
     
@@ -37,8 +43,16 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
         let elevation = overrideElevation ?? theme.elevation
         let horizontalPadding = overrideHorizontalPadding ?? theme.horizontalPadding
         
-        configuration
-            .label
+        // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
+        let content = configuration.label
+            .modifier(AutoLabelDetectionModifier(
+                hasDivider: overrideHasDivider,
+                iconAlignment: overrideIconAlignment, 
+                contentPadding: overrideContentPadding ?? overrideLabelContentPadding,
+                theme: theme
+            ))
+        
+        content
             .bold()
             .foregroundStyle(.white)
             .padding(.horizontal, horizontalPadding)
@@ -102,6 +116,13 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     let contentPadding = overrideContentPadding ?? theme.labelContentSpacing
     
     VStack {
+        Text("Enhanced Button API - Flexible Usage")
+            .font(.headline)
+            .padding(.bottom)
+        
+        Text("Plain Text Buttons (no changes needed)")
+            .font(.subheadline)
+            .foregroundColor(.secondary)
         HStack {
             Button("Ok") {}
                 .buttonStyle(.primaryProminent)
@@ -109,6 +130,11 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
                 .buttonStyle(.primaryProminent)
         }
         .frame(height: 40)
+        
+        Text("Label Buttons - Enhanced API")
+            .font(.subheadline)
+            .foregroundColor(.secondary)
+            .padding(.top)
         
         HStack {
             Button("Delete", systemImage: "trash", role: .destructive) {}
@@ -122,77 +148,77 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
         HStack {
             Button(role: .destructive, action: {}) {
                 Label("Delete", systemImage: "trash")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
             }
             .buttonStyle(.primaryProminent)
+            .environment(\.nimbusButtonHasDivider, true) // Enhanced API - auto-applies divider
+            
             Button(role: .none, action: {}) {
                 Label("Sign In", systemImage: "arrow.up")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
-
             }
             .buttonStyle(.primaryProminent)
+            .environment(\.nimbusButtonContentPadding, contentPadding) // Enhanced API - auto-applies with custom padding
         }
         .frame(height: 40)
         
         HStack {
             Button(role: .destructive, action: {}) {
                 Label("Delete", systemImage: "trash")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            hasDivider: false,
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
             }
             .buttonStyle(.primaryProminent)
+            .environment(\.nimbusButtonHasDivider, false) // Enhanced API - no divider
+            
             Button(role: .none, action: {}) {
                 Label("Sign In", systemImage: "arrow.up")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            hasDivider: false,
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
-
             }
             .buttonStyle(.primaryProminent)
+            .environment(\.nimbusButtonHasDivider, false) // Enhanced API - no divider
+            .environment(\.nimbusButtonContentPadding, contentPadding)
         }
         .frame(height: 40)
         
         HStack {
             Button(role: .destructive, action: {}) {
                 Label("Delete", systemImage: "trash")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            hasDivider: true,
-                            iconAlignment: .trailing,
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
             }
             .buttonStyle(.primaryProminent)
+            .environment(\.nimbusButtonHasDivider, true) // Enhanced API - with divider
+            .environment(\.nimbusButtonIconAlignment, .trailing) // Enhanced API - trailing icon
+            
             Button(role: .none, action: {}) {
                 Label("Next", systemImage: "arrow.right")
-                    .labelStyle(
-                        NimbusDividerLabelStyle(
-                            hasDivider: false,
-                            iconAlignment: .trailing,
-                            contentHorizontalPadding: contentPadding
-                        )
-                    )
-
             }
             .buttonStyle(.primaryProminent)
+            .environment(\.nimbusButtonHasDivider, false) // Enhanced API - no divider
+            .environment(\.nimbusButtonIconAlignment, .trailing) // Enhanced API - trailing icon
         }
         .frame(height: 40)
     }
+    .fixedSize()
     .padding()
+}
+
+// MARK: - Auto Label Detection Modifier
+
+private struct AutoLabelDetectionModifier: ViewModifier {
+    let hasDivider: Bool?
+    let iconAlignment: HorizontalAlignment?
+    let contentPadding: CGFloat?
+    let theme: NimbusTheming
+    
+    func body(content: Content) -> some View {
+        // Apply NimbusDividerLabelStyle when any of the button label settings are configured
+        if hasDivider != nil || iconAlignment != nil || contentPadding != nil {
+            content
+                .labelStyle(
+                    NimbusDividerLabelStyle(
+                        hasDivider: hasDivider ?? true,
+                        iconAlignment: iconAlignment ?? .leading,
+                        contentHorizontalPadding: contentPadding ?? theme.labelContentSpacing
+                    )
+                )
+        } else {
+            // No special label configuration, return content as-is
+            content
+        }
+    }
 }

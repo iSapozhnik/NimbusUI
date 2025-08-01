@@ -15,6 +15,12 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
     @Environment(\.nimbusMinHeight) private var overrideMinHeight
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.nimbusElevation) private var overrideElevation
+    
+    // Button Label Configuration
+    @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
+    @Environment(\.nimbusButtonIconAlignment) private var overrideIconAlignment
+    @Environment(\.nimbusButtonContentPadding) private var overrideContentPadding
+    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var overrideLabelContentPadding
 
     
     @State private var isHovering: Bool
@@ -43,8 +49,16 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
         let minHeight = overrideMinHeight ?? theme.minHeight
         let elevation = overrideElevation ?? theme.elevation
         
-        return configuration
-            .label
+        // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
+        let content = configuration.label
+            .modifier(AutoLabelDetectionModifier(
+                hasDivider: overrideHasDivider,
+                iconAlignment: overrideIconAlignment, 
+                contentPadding: overrideContentPadding ?? overrideLabelContentPadding,
+                theme: theme
+            ))
+        
+        return content
             .bold()
             .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
             .opacity(isEnabled ? 1 : 0.5)
@@ -80,5 +94,31 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
         }
         .frame(height: 40)
             .padding()
+    }
+}
+
+// MARK: - Auto Label Detection Modifier
+
+private struct AutoLabelDetectionModifier: ViewModifier {
+    let hasDivider: Bool?
+    let iconAlignment: HorizontalAlignment?
+    let contentPadding: CGFloat?
+    let theme: NimbusTheming
+    
+    func body(content: Content) -> some View {
+        // Apply NimbusDividerLabelStyle when any of the button label settings are configured
+        if hasDivider != nil || iconAlignment != nil || contentPadding != nil {
+            content
+                .labelStyle(
+                    NimbusDividerLabelStyle(
+                        hasDivider: hasDivider ?? true,
+                        iconAlignment: iconAlignment ?? .leading,
+                        contentHorizontalPadding: contentPadding ?? theme.labelContentSpacing
+                    )
+                )
+        } else {
+            // No special label configuration, return content as-is
+            content
+        }
     }
 }

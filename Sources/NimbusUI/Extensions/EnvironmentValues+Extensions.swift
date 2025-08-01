@@ -36,6 +36,10 @@ public extension EnvironmentValues {
     @Entry var nimbusButtonMaterial: Material? = nil
     @Entry var nimbusButtonHighlightOnHover: Bool = true
     
+    // Button Label Configuration
+    @Entry var nimbusButtonHasDivider: Bool? = nil
+    @Entry var nimbusButtonIconAlignment: HorizontalAlignment? = nil
+    @Entry var nimbusButtonContentPadding: CGFloat? = nil
 }
 
 // MARK: View
