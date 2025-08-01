@@ -27,9 +27,11 @@ swift package resolve
 
 ### Core Systems
 
-**Theme System**: Protocol-based theming using `NimbusTheming` protocol with environment injection via `@Environment(\.nimbusTheme)`. Default theme provided by `NimbusTheme.default`.
+**Theme System**: Enhanced protocol-based theming using `NimbusTheming` protocol with environment injection via `@Environment(\.nimbusTheme)`. Themes provide default values for 11 design tokens (layout, animations, corner radii, elevation, spacing). Environment values serve as optional overrides using the pattern `override ?? theme.property`. Available themes: `NimbusTheme.default`, `MaritimeTheme()`, `CustomWarmTheme()`.
 
-**Environment Configuration**: Extensive use of SwiftUI `@Entry` environment values for configurable parameters (animations, padding, corner radii, hover states).
+**Environment Configuration**: SwiftUI `@Entry` environment values used for two purposes:
+- **Design Token Overrides**: Optional values (`nil` by default) that override theme defaults
+- **Behavioral Configuration**: Component-specific settings (hover states, dividers, borders)
 
 **Modifier System**: Custom view modifiers for consistent styling:
 - `NimbusFilledModifier` - Fill backgrounds with interaction states
@@ -68,18 +70,33 @@ Sources/NimbusUI/
 
 ## Usage Patterns
 
-Components require proper environment setup:
+### Theme-First Architecture
+Components use theme defaults with optional environment overrides:
+
 ```swift
 import NimbusUI
 
-// Apply theme environment
-.environment(\.nimbusTheme, NimbusTheme.default)
+// Basic theme application
+Button("Action") { }
+    .buttonStyle(.primaryDefault)
+    .environment(\.nimbusTheme, NimbusTheme.default)
 
-// Use button styles
-Button("Action") { }.buttonStyle(.primaryDefault)
+// Theme with property overrides
+Button("Custom") { }
+    .buttonStyle(.primaryDefault) 
+    .environment(\.nimbusTheme, MaritimeTheme())
+    .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(16))
+    .environment(\.nimbusMinHeight, 50)
 ```
 
-All styling should go through the theme system and environment values rather than hardcoded values.
+### Design Tokens (Available from Theme)
+- **Layout**: `minHeight`, `horizontalPadding`, `listItemHeight`
+- **Animations**: `animation`, `animationFast`
+- **Corner Radii**: `cornerRadii`, `buttonCornerRadii`, `compactButtonCornerRadii`, `listItemCornerRadii`  
+- **Elevation**: `elevation`
+- **Spacing**: `labelContentSpacing`
+
+All styling should go through the theme system with environment overrides when needed.
 
 ## Design System Specialist Guidance
 
@@ -100,11 +117,12 @@ Use the Task tool with specialized design system knowledge for:
 5. **Composability**: Components should work well together and be easily combinable
 
 ### Component Development Standards
-- Use protocol-based design for theming and configuration
-- Leverage SwiftUI's environment system (`@Environment`) for configuration
-- Create reusable view modifiers for consistent styling
-- Ensure type safety to prevent design inconsistencies
-- Maintain comprehensive usage examples and guidelines
+- **Theme Integration**: Access theme via `@Environment(\.nimbusTheme)` for design token defaults
+- **Override Pattern**: Use `@Environment(\.nimbusProperty) private var overrideProperty` and apply as `overrideProperty ?? theme.property`
+- **Design Token Usage**: Prefer theme-provided values over hardcoded constants
+- **Behavioral vs Design**: Keep behavioral flags as environment-only, put visual properties in theme
+- **Type Safety**: Use strong typing to prevent design inconsistencies
+- **Documentation**: Include examples showing both theme defaults and override usage
 
 ### Code Quality Requirements
 - Follow Swift API Design Guidelines
