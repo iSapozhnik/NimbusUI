@@ -18,12 +18,11 @@ public enum Elevation: Int, CaseIterable, Hashable, Sendable {
 // MARK: - Common
 
 public extension EnvironmentValues {
-    @Entry var nimbusCornerRadii: RectangleCornerRadii = .init(12)
+    @Entry var nimbusCornerRadii: RectangleCornerRadii? = nil
 
     @Entry var nimbusTheme: NimbusTheming = NimbusTheme.default
     
-    @Entry var nimbusAnimation: Animation = .smooth(duration: 0.2)
-    @Entry var nimbusAnimationFast: Animation = .easeInOut(duration: 0.1)
+    @Entry var nimbusAnimationFast: Animation? = nil
     
     @Entry var nimbusHasDividers: Bool = true
 }
@@ -31,8 +30,8 @@ public extension EnvironmentValues {
 // MARK: Button
 
 public extension EnvironmentValues {
-    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii = .init(12)
-    @Entry var nimbusCompactButtonCornerRadii: RectangleCornerRadii = .init(8)
+    @Entry var nimbusButtonCornerRadii: RectangleCornerRadii? = nil
+    @Entry var nimbusCompactButtonCornerRadii: RectangleCornerRadii? = nil
     
     @Entry var nimbusButtonMaterial: Material? = nil
     @Entry var nimbusButtonHighlightOnHover: Bool = true
@@ -42,8 +41,8 @@ public extension EnvironmentValues {
 // MARK: View
 
 public extension EnvironmentValues {
-    @Entry var nimbusMinHeight: CGFloat = 30
-    @Entry var nimbusHorizontalPadding: CGFloat = 8
+    @Entry var nimbusMinHeight: CGFloat? = nil
+    @Entry var nimbusHorizontalPadding: CGFloat? = nil
     
     @Entry var nimbusIsBordered: Bool = true
     @Entry var nimbusHasBackground: Bool = true
@@ -51,23 +50,21 @@ public extension EnvironmentValues {
     @Entry var nimbusAspectRatio: CGFloat?
     @Entry var nimbusAspectRatioContentMode: ContentMode? = .fit
     @Entry var nimbusAspectRatioHasFixedHeight: Bool = true
-    @Entry var nimbusElevation: Elevation = .low
+    @Entry var nimbusElevation: Elevation? = nil
 }
 
 // MARK: Labels
 
 public extension EnvironmentValues {
-    @Entry var nimbusLabelIconContentSpacing: CGFloat = 4
-    @Entry var nimbusLabelContentHorizontalSmallPadding: CGFloat = 2
-    @Entry var nimbusLabelContentHorizontalMediumPadding: CGFloat = 6
+    @Entry var nimbusLabelContentHorizontalMediumPadding: CGFloat? = nil
 }
 
 // MARK: List
 
 public extension EnvironmentValues {
-    @Entry var nimbusListItemCornerRadii: RectangleCornerRadii = .init(2)
+    @Entry var nimbusListItemCornerRadii: RectangleCornerRadii? = nil
 
-    @Entry var nimbusListItemHeight: CGFloat = 44
+    @Entry var nimbusListItemHeight: CGFloat? = nil
     @Entry var nimbusListItemHighlightOnHover: Bool = true
 
     @Entry var nimbusItemBeingHovered: Bool = false

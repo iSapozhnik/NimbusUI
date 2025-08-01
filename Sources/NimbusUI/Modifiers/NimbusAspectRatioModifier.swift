@@ -9,10 +9,15 @@
 import SwiftUI
 
 struct NimbusAspectRatioModifier: ViewModifier {
-    @Environment(\.nimbusMinHeight) private var minHeight
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.nimbusMinHeight) private var overrideMinHeight
     @Environment(\.nimbusAspectRatio) private var aspectRatio
     @Environment(\.nimbusAspectRatioContentMode) private var contentMode
     @Environment(\.nimbusAspectRatioHasFixedHeight) private var hasFixedHeight
+
+    private var minHeight: CGFloat {
+        overrideMinHeight ?? theme.minHeight
+    }
 
     @ViewBuilder
     func body(content: Content) -> some View {

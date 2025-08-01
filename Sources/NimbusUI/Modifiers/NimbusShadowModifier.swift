@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct NimbusShadowModifier: ViewModifier {
+    @Environment(\.nimbusTheme) private var theme
     @Environment(\.nimbusElevation) private var envElevation
     private let elevation: Elevation?
 
@@ -16,7 +17,7 @@ public struct NimbusShadowModifier: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        let effectiveElevation = elevation ?? envElevation
+        let effectiveElevation = elevation ?? envElevation ?? theme.elevation
         switch effectiveElevation {
         case .none:
             content

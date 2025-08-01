@@ -1,4 +1,4 @@
-// swift-tools-version: 6.1
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -15,7 +15,10 @@ let package = Package(
             targets: ["NimbusUI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Cindori/FluidGradient.git", from: "1.0.0")
+        .package(url: "https://github.com/Cindori/FluidGradient.git", from: "1.0.0"),
+//        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", upToNextMajor: "1.18.6"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .upToNextMajor(from: "1.18.6"))
+
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -28,7 +31,10 @@ let package = Package(
         ),
         .testTarget(
             name: "NimbusUITests",
-            dependencies: ["NimbusUI"]
+            dependencies: [
+                "NimbusUI",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ]
         ),
     ]
 )

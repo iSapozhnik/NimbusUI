@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "3DE76602-B757-43FD-B242-77E20772E635",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "SNAPSHOT_ARTIFACTS",
+        "value" : "\/Users\/isapozhnik\/Developer\/NimbusUI\/Tests\/NimbusUITests\/Snapshots\/FailedSnapshots"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "NimbusUITests",
+        "name" : "NimbusUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

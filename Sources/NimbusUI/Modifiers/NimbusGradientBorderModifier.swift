@@ -8,7 +8,8 @@
 import SwiftUI
 
 public struct NimbusGradientBorderModifier: ViewModifier {
-    @Environment(\.nimbusButtonCornerRadii) private var cornerRadii
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.nimbusButtonCornerRadii) private var overrideCornerRadii
     
     public enum Direction {
         case vertical, horizontal
@@ -23,6 +24,7 @@ public struct NimbusGradientBorderModifier: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
+        let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
 //        content
 //            .clipShape(.rect(cornerRadii: cornerRadii))
 //            .background {

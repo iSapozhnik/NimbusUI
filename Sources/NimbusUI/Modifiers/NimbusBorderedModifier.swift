@@ -10,9 +10,10 @@ import SwiftUI
 /// A stylized modifier that constructs a bordered appearance.
 public struct NimbusBorderedModifier: ViewModifier {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.nimbusTheme) private var theme
     @Environment(\.nimbusIsBordered) private var isBordered
     @Environment(\.nimbusHasBackground) private var hasBackground
-    @Environment(\.nimbusCompactButtonCornerRadii) private var cornerRadii
+    @Environment(\.nimbusCompactButtonCornerRadii) private var overrideCornerRadii
 
     private let isHovering: Bool
     private let fill: AnyShapeStyle, hovering: AnyShapeStyle
@@ -57,6 +58,8 @@ public struct NimbusBorderedModifier: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
+        let cornerRadii = overrideCornerRadii ?? theme.compactButtonCornerRadii
+        
         content
             .clipShape(.rect(cornerRadii: cornerRadii))
             .background {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NimbusDividerLabelStyle: LabelStyle {
-    @Environment(\.nimbusLabelIconContentSpacing) var contentSpacing
+    @Environment(\.nimbusTheme) var theme
     
     private let hasDivider: Bool
     private let iconAlignment: HorizontalAlignment
@@ -25,7 +25,7 @@ struct NimbusDividerLabelStyle: LabelStyle {
     }
     
     func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: contentSpacing) {
+        HStack(spacing: theme.labelContentSpacing) {
             if iconAlignment == .leading {
                 configuration.icon
                     .padding(.horizontal, contentHorizontalPadding)
