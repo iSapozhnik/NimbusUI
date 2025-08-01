@@ -86,7 +86,9 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
 }
 
 @available(macOS 15.0, *)
-#Preview(traits: .sizeThatFitsLayout) {
+// Note: .sizeThatFitsLayout trait causes content clipping with 
+// VStack containing multiple HStacks with Button+Label combinations  
+#Preview {
     VStack {
         HStack {
             Button("Normal") {}

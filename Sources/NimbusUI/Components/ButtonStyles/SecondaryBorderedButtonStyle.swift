@@ -64,101 +64,102 @@ public struct SecondaryBorderedButtonStyle: ButtonStyle {
     }
 }
 
-@available(macOS 15.0, *)
-#Preview(traits: .sizeThatFitsLayout) {
+struct SecondaryBorderedButtonStylePreview: View {
+    @Environment(\.nimbusLabelContentHorizontalMediumPadding) var overrideContentPadding
+    @Environment(\.nimbusTheme) var theme
+    @Environment(\.colorScheme) var colorScheme
     
-    @Previewable @Environment(\.nimbusLabelContentHorizontalMediumPadding) var overrideContentPadding
-    @Previewable @Environment(\.nimbusTheme) var theme
-    
-    let contentPadding = overrideContentPadding ?? theme.labelContentSpacing
-    
-    VStack(alignment: .leading, spacing: 16) {
-        Text("Enhanced SecondaryBordered API - Flexible Usage")
-            .font(.headline)
-            .padding(.bottom)
+    var body: some View {
+        let contentPadding = overrideContentPadding ?? theme.labelContentSpacing
         
-        Text("Plain Text Buttons (no changes needed)")
-            .font(.subheadline)
-            .foregroundColor(.secondary)
-        HStack {
-            Button("Normal") {}
+        VStack(alignment: .leading, spacing: 16) {
+            
+            Text("Plain Text Buttons (no changes needed)")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            HStack {
+                Button("Normal") {}
+                    .buttonStyle(.secondaryBordered)
+                Button("Save") {}
+                    .buttonStyle(.secondaryBordered)
+                Button("Cancel", role: .destructive) {}
+                    .buttonStyle(.secondaryBordered)
+            }
+            
+            Text("Label Buttons - Enhanced API")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .padding(.top)
+            
+            HStack {
+                Button(action: {}) {
+                    Label("Delete", systemImage: "trash")
+                }
                 .buttonStyle(.secondaryBordered)
-            Button("Save") {}
+                .environment(\.nimbusButtonHasDivider, true) // Enhanced API - auto-applies divider
+                
+                Button(action: {}) {
+                    Label("Export", systemImage: "square.and.arrow.up")
+                }
                 .buttonStyle(.secondaryBordered)
-            Button("Cancel", role: .destructive) {}
+                .environment(\.nimbusButtonContentPadding, contentPadding) // Enhanced API - auto-applies with custom padding
+            }
+            
+            HStack {
+                Button(action: {}) {
+                    Label("Download", systemImage: "arrow.down.circle")
+                }
                 .buttonStyle(.secondaryBordered)
-        }
-        .frame(height: 40)
-        
-        Text("Label Buttons - Enhanced API")
-            .font(.subheadline)
-            .foregroundColor(.secondary)
-            .padding(.top)
-        
-        HStack {
-            Button(action: {}) {
-                Label("Delete", systemImage: "trash")
+                .environment(\.nimbusButtonHasDivider, false) // Enhanced API - no divider
+                
+                Button(action: {}) {
+                    Label("Settings", systemImage: "gear")
+                }
+                .buttonStyle(.secondaryBordered)
+                .environment(\.nimbusButtonHasDivider, false) // Enhanced API - no divider
+                .environment(\.nimbusButtonContentPadding, contentPadding)
             }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonHasDivider, true) // Enhanced API - auto-applies divider
             
-            Button(action: {}) {
-                Label("Export", systemImage: "square.and.arrow.up")
+            HStack {
+                Button(action: {}) {
+                    Label("Previous", systemImage: "arrow.left")
+                }
+                .buttonStyle(.secondaryBordered)
+                .environment(\.nimbusButtonHasDivider, true) // Enhanced API - with divider
+                .environment(\.nimbusButtonIconAlignment, .leading) // Enhanced API - leading icon (default)
+                
+                Button(action: {}) {
+                    Label("Next", systemImage: "arrow.right")
+                }
+                .buttonStyle(.secondaryBordered)
+                .environment(\.nimbusButtonHasDivider, true) // Enhanced API - with divider
+                .environment(\.nimbusButtonIconAlignment, .trailing) // Enhanced API - trailing icon
             }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonContentPadding, contentPadding) // Enhanced API - auto-applies with custom padding
-        }
-        .frame(height: 40)
-        
-        HStack {
-            Button(action: {}) {
-                Label("Download", systemImage: "arrow.down.circle")
-            }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonHasDivider, false) // Enhanced API - no divider
             
-            Button(action: {}) {
-                Label("Settings", systemImage: "gear")
+            HStack {
+                Button(action: {}) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+                .buttonStyle(.secondaryBordered)
+                .environment(\.nimbusButtonIconAlignment, .trailing) // Enhanced API - trailing icon, no divider
+                
+                Button(action: {}) {
+                    Label("Custom Padding", systemImage: "textformat")
+                }
+                .buttonStyle(.secondaryBordered)
+                .environment(\.nimbusButtonContentPadding, 16) // Enhanced API - custom padding
             }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonHasDivider, false) // Enhanced API - no divider
-            .environment(\.nimbusButtonContentPadding, contentPadding)
         }
-        .frame(height: 40)
-        
-        HStack {
-            Button(action: {}) {
-                Label("Previous", systemImage: "arrow.left")
-            }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonHasDivider, true) // Enhanced API - with divider
-            .environment(\.nimbusButtonIconAlignment, .leading) // Enhanced API - leading icon (default)
-            
-            Button(action: {}) {
-                Label("Next", systemImage: "arrow.right")
-            }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonHasDivider, true) // Enhanced API - with divider
-            .environment(\.nimbusButtonIconAlignment, .trailing) // Enhanced API - trailing icon
-        }
-        .frame(height: 40)
-        
-        HStack {
-            Button(action: {}) {
-                Label("Share", systemImage: "square.and.arrow.up")
-            }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonIconAlignment, .trailing) // Enhanced API - trailing icon, no divider
-            
-            Button(action: {}) {
-                Label("Custom Padding", systemImage: "textformat")
-            }
-            .buttonStyle(.secondaryBordered)
-            .environment(\.nimbusButtonContentPadding, 16) // Enhanced API - custom padding
-        }
-        .frame(height: 40)
+        .padding()
+        .background(theme.backgroundColor(for: colorScheme))
     }
-//    .padding()
+}
+
+@available(macOS 15.0, *)
+// Note: .sizeThatFitsLayout trait causes content clipping with 
+// VStack containing multiple HStacks with Button+Label combinations
+#Preview {
+    SecondaryBorderedButtonStylePreview()
 }
 
 // MARK: - Auto Label Detection Modifier

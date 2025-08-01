@@ -51,6 +51,19 @@ private let recording = false
     )
 }
 
+// MARK: SecondaryBorderedButtonStyle
+@MainActor
+@Test func showcaseSecondaryBorderedButtonStyle() async throws {
+    assertSnapshot(
+        of: SnapshotUtility.view(
+            from: ThemedSecondaryBorderedButtonStylePreview()
+                .environment(\.nimbusTheme, NimbusTheme())
+        ),
+        as: .image,
+        record: recording
+    )
+}
+
 struct ShowcaseView: View {
     var body: some View {
         HStack {
@@ -68,6 +81,31 @@ struct ShowcaseView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(.primary)
                 CustomThemeContentView()
+                    .environment(\.colorScheme, .dark)
+            }
+        }
+        .padding()
+        .background(.black)
+    }
+}
+
+struct ThemedSecondaryBorderedButtonStylePreview: View {
+    var body: some View {
+        HStack {
+            VStack {
+                Text("Light Mode")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                SecondaryBorderedButtonStylePreview()
+                    .environment(\.colorScheme, .light)
+            }
+            VStack {
+                Text("Dark Mode")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                SecondaryBorderedButtonStylePreview()
                     .environment(\.colorScheme, .dark)
             }
         }
