@@ -179,6 +179,13 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
     public let listItemCornerRadii = RectangleCornerRadii(2)
     public let listItemHeight: CGFloat = 44
     public let labelContentSpacing: CGFloat = 6
+    public let checkboxSize: CGFloat = 16
+    public let checkboxCornerRadii = RectangleCornerRadii(4)
+    public let checkboxBorderWidth: CGFloat = 1
+    public let checkboxItemSpacing: CGFloat = 12
+    public let checkboxItemTextSpacing: CGFloat = 4
+    public let checkboxItemPadding: CGFloat = 16
+    public let checkboxItemMinHeight: CGFloat = 44
     
     // MARK: - Scroller Design Tokens
     

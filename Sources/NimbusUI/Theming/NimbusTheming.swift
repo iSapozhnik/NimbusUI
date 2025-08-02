@@ -112,6 +112,27 @@ public protocol NimbusTheming: Sendable {
     /// Label content spacing configuration
     var labelContentSpacing: CGFloat { get }
     
+    /// Checkbox size configuration (24x24 default)
+    var checkboxSize: CGFloat { get }
+    
+    /// Checkbox corner radii configuration
+    var checkboxCornerRadii: RectangleCornerRadii { get }
+    
+    /// Checkbox border width configuration
+    var checkboxBorderWidth: CGFloat { get }
+    
+    /// Checkbox item spacing configuration (spacing between checkbox and text)
+    var checkboxItemSpacing: CGFloat { get }
+    
+    /// Checkbox item text spacing configuration (spacing between title and subtitle)
+    var checkboxItemTextSpacing: CGFloat { get }
+    
+    /// Checkbox item padding configuration
+    var checkboxItemPadding: CGFloat { get }
+    
+    /// Checkbox item minimum height configuration
+    var checkboxItemMinHeight: CGFloat { get }
+    
     // MARK: - Scroller Design Tokens
     
     /// Scroller track width (thickness of the entire scroller)
