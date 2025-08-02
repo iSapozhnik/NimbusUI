@@ -307,6 +307,12 @@ internal struct CustomThemeContentView: View {
                 
                 // Button Styles Showcase Section
                 ButtonStylesSection()
+                
+                // Checkbox Components Section
+                CheckboxComponentsSection()
+                
+                // Scroller Components Section
+                ScrollerComponentsSection()
             }
             .padding(40)
         }
@@ -698,6 +704,281 @@ private struct ButtonStyleDemo: View {
                             .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
                             .multilineTextAlignment(.center)
                     }
+                }
+            }
+        }
+        .padding(16)
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+    }
+}
+
+/// Checkbox components showcase section
+private struct CheckboxComponentsSection: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var standaloneCheckbox1: Bool = false
+    @State private var standaloneCheckbox2: Bool = true
+    @State private var itemCheckbox1: Bool = false
+    @State private var itemCheckbox2: Bool = true
+    @State private var itemCheckbox3: Bool = false
+    @State private var itemCheckbox4: Bool = true
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            // Section Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Checkbox Components")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("NimbusCheckbox and NimbusCheckboxItem components with warm theme customization")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            // Standalone Checkbox Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusCheckbox - Size Customization")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Default 16pt vs Custom 20pt checkbox sizes")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 24) {
+                    VStack(spacing: 8) {
+                        NimbusCheckbox(isOn: $standaloneCheckbox1)
+                        Text("Default (16pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                    
+                    VStack(spacing: 8) {
+                        NimbusCheckbox(isOn: $standaloneCheckbox2)
+                            .environment(\.nimbusCheckboxSize, 20)
+                        Text("Custom (20pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                }
+            }
+            
+            // Checkbox Item Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusCheckboxItem - Position Customization")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Leading vs trailing checkbox positions with title and subtitle support")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 16) {
+                    // Leading position examples
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Leading Position")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            NimbusCheckboxItem(
+                                "Enable warm theme features",
+                                isOn: $itemCheckbox1,
+                                checkboxPosition: .leading
+                            )
+                            
+                            NimbusCheckboxItem(
+                                "Advanced settings",
+                                subtitle: "Configure additional warm theme options",
+                                isOn: $itemCheckbox2,
+                                checkboxPosition: .leading
+                            )
+                        }
+                    }
+                    
+                    // Trailing position examples
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Trailing Position")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            NimbusCheckboxItem(
+                                "Friendly rounded corners",
+                                isOn: $itemCheckbox3,
+                                checkboxPosition: .trailing
+                            )
+                            
+                            NimbusCheckboxItem(
+                                "Enhanced accessibility",
+                                subtitle: "Improved touch targets and contrast",
+                                isOn: $itemCheckbox4,
+                                checkboxPosition: .trailing
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Usage Notes
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Checkbox Theme Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    BulletPoint("Uses theme.primaryColor (\(theme.primaryColor(for: colorScheme).hexString)) for checked state")
+                    BulletPoint("Inherits warm theme's 12pt corner radius for friendly appearance")
+                    BulletPoint("Supports environment overrides for size and positioning")
+                    BulletPoint("NimbusCheckboxItem provides flexible title/subtitle layouts")
+                }
+            }
+        }
+        .padding(16)
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+    }
+}
+
+/// Scroller components showcase section
+private struct ScrollerComponentsSection: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var scrollerValue1: Float = 0.3
+    @State private var scrollerKnobProportion1: Float = 0.2
+    @State private var scrollerValue2: Float = 0.6
+    @State private var scrollerKnobProportion2: Float = 0.3
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            // Section Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Scroller Components")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("NimbusScroller and NimbusScrollView with warm theme scroller customization")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            // Standalone Scroller Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusScroller - Width Customization")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Default 18pt vs Custom 24pt scroller width (warm theme uses wider 18pt vs default 16pt)")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 40) {
+                    VStack(spacing: 8) {
+                        NimbusScroller(
+                            type: .vertical,
+                            value: $scrollerValue1,
+                            knobProportion: $scrollerKnobProportion1
+                        )
+                        .frame(height: 120)
+                        
+                        Text("Default (18pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                    
+                    VStack(spacing: 8) {
+                        NimbusScroller(
+                            type: .vertical,
+                            value: $scrollerValue2,
+                            knobProportion: $scrollerKnobProportion2
+                        )
+                        .environment(\.nimbusScrollerWidth, 24)
+                        .environment(\.nimbusScrollerKnobWidth, 10)
+                        .frame(height: 120)
+                        
+                        Text("Custom (24pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                }
+            }
+            
+            // ScrollView Integration Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusScrollView Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Custom scrollers integrated with scrollable content")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                NimbusScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(0..<8, id: \.self) { index in
+                            HStack {
+                                Circle()
+                                    .fill(theme.primaryColor(for: colorScheme))
+                                    .frame(width: 12, height: 12)
+                                
+                                Text("Scrollable content item \(index + 1)")
+                                    .font(.subheadline)
+                                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                                
+                                Spacer()
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                        }
+                    }
+                    .padding(16)
+                }
+                .frame(height: 150)
+                .background(theme.backgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+                .overlay(
+                    RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                        .stroke(theme.borderColor(for: colorScheme), lineWidth: 1)
+                )
+            }
+            
+            // Usage Notes
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Scroller Theme Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    BulletPoint("Warm theme uses 18pt scroller width (vs 16pt default) for better accessibility")
+                    BulletPoint("Custom knob width of 8pt provides comfortable drag targets")
+                    BulletPoint("Enhanced opacity settings (0.4 vs 0.3) for better visibility")
+                    BulletPoint("Responsive animation duration (0.15s) matches warm theme feel")
                 }
             }
         }
