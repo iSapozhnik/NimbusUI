@@ -79,6 +79,14 @@ public extension EnvironmentValues {
 
 }
 
+// MARK: Checkbox
+
+public extension EnvironmentValues {
+    @Entry var nimbusCheckboxSize: CGFloat? = nil
+    @Entry var nimbusCheckboxCornerRadii: RectangleCornerRadii? = nil
+    @Entry var nimbusCheckboxBorderWidth: CGFloat? = nil
+}
+
 // MARK: Scroller
 
 public extension EnvironmentValues {

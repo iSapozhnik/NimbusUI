@@ -176,6 +176,9 @@ public struct MaritimeTheme: NimbusTheming, Sendable {
     public let listItemCornerRadii = RectangleCornerRadii(2)
     public let listItemHeight: CGFloat = 44
     public let labelContentSpacing: CGFloat = 6
+    public let checkboxSize: CGFloat = 16
+    public let checkboxCornerRadii = RectangleCornerRadii(4)
+    public let checkboxBorderWidth: CGFloat = 1
     
     // MARK: - Scroller Design Tokens
     
