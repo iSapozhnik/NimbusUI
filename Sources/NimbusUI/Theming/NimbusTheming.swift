@@ -151,6 +151,9 @@ public protocol NimbusTheming: Sendable {
     
     /// Scroller animation duration
     var scrollerAnimationDuration: TimeInterval { get }
+    
+    /// Scroller slot visibility
+    var scrollerShowSlot: Bool { get }
 }
 
 // MARK: - Convenience Methods

@@ -18,6 +18,7 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
     @Environment(\.nimbusScrollerKnobWidth) private var overrideScrollerKnobWidth
     @Environment(\.nimbusScrollerKnobPadding) private var overrideScrollerKnobPadding
     @Environment(\.nimbusScrollerSlotCornerRadius) private var overrideSlotCornerRadius
+    @Environment(\.nimbusScrollerShowScrollerSlot) private var overrideShowSlot
     
     // Legacy environment overrides (keeping for backward compatibility)
     @Environment(\.nimbusScrollerKnobCornerRadius) private var overrideKnobCornerRadius
@@ -32,6 +33,7 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
     private let content: Content
     private var showsVerticalScrollIndicator: Bool
     private var showsHorizontalScrollIndicator: Bool
+    private var showsScrollerSlot: Bool
     private let contentInsets: NSEdgeInsets
     
     /// Creates a NimbusScrollView with the specified content and configuration
@@ -44,6 +46,7 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
     ) {
         self.showsVerticalScrollIndicator = true
         self.showsHorizontalScrollIndicator = true
+        self.showsScrollerSlot = true
         self.contentInsets = contentInsets
         self.content = content()
     }
@@ -98,6 +101,14 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
             configureScroller(horizontalScroller)
             scrollView.horizontalScroller = horizontalScroller
         }
+        
+        // Configure slot visibility
+        if let horizontalScroller = scrollView.horizontalScroller as? Scroller {
+            horizontalScroller.showScrollerSlot = showsScrollerSlot
+        }
+        if let verticalScroller = scrollView.verticalScroller as? Scroller {
+            verticalScroller.showScrollerSlot = showsScrollerSlot
+        }
     }
     
     private func configureScroller(_ scroller: Scroller) {
@@ -110,6 +121,7 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
         scroller.scrollerKnobWidth = overrideScrollerKnobWidth ?? theme.scrollerKnobWidth
         scroller.scrollerKnobPadding = overrideScrollerKnobPadding ?? theme.scrollerKnobPadding
         scroller.scrollerSlotCornerRadius = overrideSlotCornerRadius ?? theme.scrollerSlotCornerRadius
+        scroller.showScrollerSlot = overrideShowSlot ?? theme.scrollerShowSlot
         
         // Apply legacy configuration for backward compatibility
         scroller.knobCornerRadius = overrideKnobCornerRadius ?? theme.scrollerKnobCornerRadius
@@ -160,6 +172,15 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
     public func hideScrollers() -> NimbusScrollView {
         return showsScrollers(vertical: false, horizontal: false)
     }
+
+    /// Sets the scroller slot visibility
+    /// - Parameter show: Whether to show the scroller slot
+    /// - Returns: A new NimbusScrollView instance with updated scroller slot visibility
+    public func showScrollerSlot(_ show: Bool) -> NimbusScrollView {
+        var newScrollView = self
+        newScrollView.showsScrollerSlot = show
+        return newScrollView
+    }
 }
 
 // MARK: - Convenience Modifiers
@@ -183,6 +204,11 @@ public extension View {
     /// Sets the slot corner radius
     func slotCornerRadius(_ radius: CGFloat) -> some View {
         environment(\.nimbusScrollerSlotCornerRadius, radius)
+    }
+    
+    /// Sets the scroller slot visibility
+    func showScrollerSlot(_ show: Bool) -> some View {
+        environment(\.nimbusScrollerShowScrollerSlot, show)
     }
     
     // Legacy modifiers (keeping for backward compatibility)
@@ -321,6 +347,7 @@ private struct NimbusScrollViewPreview: View {
                     }
                     .padding(16)
                 }
+                .showScrollerSlot(false)
                 .showsHorizontalScroller(false)
                 .scrollerWidth(20)
                 .knobWidth(8)

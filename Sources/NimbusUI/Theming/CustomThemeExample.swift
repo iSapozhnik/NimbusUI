@@ -187,6 +187,7 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
     public let scrollerKnobWidth: CGFloat = 8
     public let scrollerKnobPadding: CGFloat = 2.5
     public let scrollerSlotCornerRadius: CGFloat = 6
+    public let scrollerShowSlot: Bool = true
     
     // Auto-calculated knob corner radius (based on knob width and padding)
     public var scrollerKnobCornerRadius: CGFloat {

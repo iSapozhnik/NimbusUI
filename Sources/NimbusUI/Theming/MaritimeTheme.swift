@@ -184,6 +184,7 @@ public struct MaritimeTheme: NimbusTheming, Sendable {
     public let scrollerKnobWidth: CGFloat = 5
     public let scrollerKnobPadding: CGFloat = 1.5
     public let scrollerSlotCornerRadius: CGFloat = 3
+    public let scrollerShowSlot: Bool = true
     
     // Auto-calculated knob corner radius (based on knob width and padding)
     public var scrollerKnobCornerRadius: CGFloat {

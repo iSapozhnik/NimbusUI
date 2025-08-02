@@ -18,6 +18,7 @@ public struct NimbusScroller: NSViewRepresentable {
     @Environment(\.nimbusScrollerKnobWidth) private var overrideScrollerKnobWidth
     @Environment(\.nimbusScrollerKnobPadding) private var overrideScrollerKnobPadding
     @Environment(\.nimbusScrollerSlotCornerRadius) private var overrideSlotCornerRadius
+    @Environment(\.nimbusScrollerShowScrollerSlot) private var overrideShowScrollerSlot
     
     // Legacy environment overrides (keeping for backward compatibility)
     @Environment(\.nimbusScrollerKnobCornerRadius) private var overrideKnobCornerRadius
@@ -111,6 +112,7 @@ public struct NimbusScroller: NSViewRepresentable {
         nsView.scrollerKnobWidth = overrideScrollerKnobWidth ?? theme.scrollerKnobWidth
         nsView.scrollerKnobPadding = overrideScrollerKnobPadding ?? theme.scrollerKnobPadding
         nsView.scrollerSlotCornerRadius = overrideSlotCornerRadius ?? theme.scrollerSlotCornerRadius
+        nsView.showScrollerSlot = overrideShowScrollerSlot ?? theme.scrollerShowSlot
         
         // Update legacy configuration
         nsView.knobCornerRadius = overrideKnobCornerRadius ?? theme.scrollerKnobCornerRadius
@@ -203,6 +205,11 @@ public extension NimbusScroller {
         environment(\.nimbusScrollerFadeOpacity, opacity)
             .environment(\.nimbusScrollerFadeDelay, delay)
             .environment(\.nimbusScrollerAnimationDuration, duration)
+    }
+
+    /// Sets the scroller slot visibility
+    func showScrollerSlot(_ show: Bool) -> some View {
+        environment(\.nimbusScrollerShowScrollerSlot, show)
     }
 }
 

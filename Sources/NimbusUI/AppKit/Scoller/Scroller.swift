@@ -49,6 +49,11 @@ public class Scroller: NSScroller {
     public var scrollerKnobCornerRadius: CGFloat {
         (scrollerKnobWidth - scrollerKnobPadding) / 2
     }
+
+    /// Should show scroller slot
+    public var showScrollerSlot: Bool = true {
+        didSet { needsDisplay = true }
+    }
     
     // MARK: - Legacy Properties (for backward compatibility)
     
@@ -137,6 +142,8 @@ public class Scroller: NSScroller {
     }
     
     public override func drawKnobSlot(in rect: NSRect, highlight: Bool) {
+        guard showScrollerSlot else { return }
+        
         // Use theme colors for slot background
         let slotColor = NSColor(theme.tertiaryBackgroundColor(for: colorScheme))
         slotColor.setFill()

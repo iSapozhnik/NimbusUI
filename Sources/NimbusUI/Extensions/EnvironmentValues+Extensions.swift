@@ -87,6 +87,7 @@ public extension EnvironmentValues {
     @Entry var nimbusScrollerKnobWidth: CGFloat? = nil
     @Entry var nimbusScrollerKnobPadding: CGFloat? = nil
     @Entry var nimbusScrollerSlotCornerRadius: CGFloat? = nil
+    @Entry var nimbusScrollerShowScrollerSlot: Bool? = nil
     
     // Legacy properties (keeping for backward compatibility)
     @Entry var nimbusScrollerKnobCornerRadius: CGFloat? = nil
