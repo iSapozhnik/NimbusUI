@@ -214,29 +214,29 @@ public class Scroller: NSScroller {
         
         if type == .vertical {
             // Vertical scroller
-            let paddedSlotHeight = slotFrame.height - (2 * scrollerKnobPadding)
-            let knobHeight = max(scrollerKnobWidth, paddedSlotHeight * CGFloat(knobProportion))
+            let availableHeight = slotFrame.height - (2 * scrollerKnobPadding)
+            let knobHeight = max(scrollerKnobWidth, availableHeight * CGFloat(knobProportion))
             
-            // Ensure knob maintains padding from both top and bottom edges
-            let maxKnobPosition = paddedSlotHeight - knobHeight
-            let scrollPosition = max(0, maxKnobPosition * CGFloat(floatValue))
+            // Calculate the actual travel distance (accounting for knob size and padding)
+            let travelDistance = availableHeight - knobHeight
+            let scrollPosition = max(0, min(travelDistance, travelDistance * CGFloat(floatValue)))
             
             knobFrame.origin.x = slotFrame.origin.x + (slotFrame.width - scrollerKnobWidth) / 2
-            knobFrame.origin.y = slotFrame.origin.y + scrollerKnobPadding + scrollPosition
+            knobFrame.origin.y = slotFrame.origin.y + 2 * scrollerKnobPadding + scrollPosition
             knobFrame.size.width = scrollerKnobWidth
-            knobFrame.size.height = knobHeight
+            knobFrame.size.height = knobHeight - 2 * scrollerKnobPadding
         } else {
             // Horizontal scroller
-            let paddedSlotWidth = slotFrame.width - (2 * scrollerKnobPadding)
-            let knobWidth = max(scrollerKnobWidth, paddedSlotWidth * CGFloat(knobProportion))
+            let availableWidth = slotFrame.width - (2 * scrollerKnobPadding)
+            let knobWidth = max(scrollerKnobWidth, availableWidth * CGFloat(knobProportion))
             
-            // Ensure knob maintains padding from both left and right edges
-            let maxKnobPosition = paddedSlotWidth - knobWidth
-            let scrollPosition = max(0, maxKnobPosition * CGFloat(floatValue))
+            // Calculate the actual travel distance (accounting for knob size and padding)
+            let travelDistance = availableWidth - knobWidth
+            let scrollPosition = max(0, min(travelDistance, travelDistance * CGFloat(floatValue)))
             
-            knobFrame.origin.x = slotFrame.origin.x + scrollerKnobPadding + scrollPosition
+            knobFrame.origin.x = slotFrame.origin.x + 2 * scrollerKnobPadding + scrollPosition
             knobFrame.origin.y = slotFrame.origin.y + (slotFrame.height - scrollerKnobWidth) / 2
-            knobFrame.size.width = knobWidth
+            knobFrame.size.width = knobWidth - 2 * scrollerKnobPadding
             knobFrame.size.height = scrollerKnobWidth
         }
         
