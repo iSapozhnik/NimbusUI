@@ -167,6 +167,29 @@ public struct NimbusTheme: NimbusTheming, Sendable {
     public let listItemCornerRadii = RectangleCornerRadii(2)
     public let listItemHeight: CGFloat = 44
     public let labelContentSpacing: CGFloat = 6
+    
+    // MARK: - Scroller Design Tokens
+    
+    // Core scroller dimensions
+    public let scrollerWidth: CGFloat = 16
+    public let scrollerKnobWidth: CGFloat = 6
+    public let scrollerKnobPadding: CGFloat = 2
+    public let scrollerSlotCornerRadius: CGFloat = 4
+    public let scrollerShowSlot: Bool = true
+    
+    // Auto-calculated knob corner radius (based on knob width and padding)
+    public var scrollerKnobCornerRadius: CGFloat {
+        (scrollerKnobWidth - scrollerKnobPadding) / 2
+    }
+    
+    // Legacy properties (keeping for backward compatibility)
+    public let scrollerKnobInsetVertical: CGFloat = 6
+    public let scrollerKnobInsetHorizontal: CGFloat = 3
+    public let scrollerSlotInset: CGFloat = 3
+    public let scrollerInitialOpacity: CGFloat = 0.3
+    public let scrollerFadeOpacity: CGFloat = 0.3
+    public let scrollerFadeDelay: TimeInterval = 1.0
+    public let scrollerAnimationDuration: TimeInterval = 0.1
 }
 
 extension NimbusTheme {

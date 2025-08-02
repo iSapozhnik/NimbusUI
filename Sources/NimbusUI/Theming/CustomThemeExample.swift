@@ -179,6 +179,29 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
     public let listItemCornerRadii = RectangleCornerRadii(2)
     public let listItemHeight: CGFloat = 44
     public let labelContentSpacing: CGFloat = 6
+    
+    // MARK: - Scroller Design Tokens
+    
+    // Core scroller dimensions
+    public let scrollerWidth: CGFloat = 18
+    public let scrollerKnobWidth: CGFloat = 8
+    public let scrollerKnobPadding: CGFloat = 2.5
+    public let scrollerSlotCornerRadius: CGFloat = 6
+    public let scrollerShowSlot: Bool = true
+    
+    // Auto-calculated knob corner radius (based on knob width and padding)
+    public var scrollerKnobCornerRadius: CGFloat {
+        (scrollerKnobWidth - scrollerKnobPadding) / 2
+    }
+    
+    // Legacy properties (keeping for backward compatibility)
+    public let scrollerKnobInsetVertical: CGFloat = 4
+    public let scrollerKnobInsetHorizontal: CGFloat = 2
+    public let scrollerSlotInset: CGFloat = 2
+    public let scrollerInitialOpacity: CGFloat = 0.4
+    public let scrollerFadeOpacity: CGFloat = 0.4
+    public let scrollerFadeDelay: TimeInterval = 0.8
+    public let scrollerAnimationDuration: TimeInterval = 0.15
 }
 
 // MARK: - Usage Example

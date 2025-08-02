@@ -78,3 +78,24 @@ public extension EnvironmentValues {
     @Entry var nimbusListRoundedBottomCornerBehavior: ListRoundedCornerBehavior = .never
 
 }
+
+// MARK: Scroller
+
+public extension EnvironmentValues {
+    // Core scroller dimensions
+    @Entry var nimbusScrollerWidth: CGFloat? = nil
+    @Entry var nimbusScrollerKnobWidth: CGFloat? = nil
+    @Entry var nimbusScrollerKnobPadding: CGFloat? = nil
+    @Entry var nimbusScrollerSlotCornerRadius: CGFloat? = nil
+    @Entry var nimbusScrollerShowScrollerSlot: Bool? = nil
+    
+    // Legacy properties (keeping for backward compatibility)
+    @Entry var nimbusScrollerKnobCornerRadius: CGFloat? = nil
+    @Entry var nimbusScrollerKnobInsetVertical: CGFloat? = nil
+    @Entry var nimbusScrollerKnobInsetHorizontal: CGFloat? = nil
+    @Entry var nimbusScrollerSlotInset: CGFloat? = nil
+    @Entry var nimbusScrollerInitialOpacity: CGFloat? = nil
+    @Entry var nimbusScrollerFadeOpacity: CGFloat? = nil
+    @Entry var nimbusScrollerFadeDelay: TimeInterval? = nil
+    @Entry var nimbusScrollerAnimationDuration: TimeInterval? = nil
+}
