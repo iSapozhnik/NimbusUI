@@ -313,6 +313,9 @@ internal struct CustomThemeContentView: View {
                 
                 // Scroller Components Section
                 ScrollerComponentsSection()
+                
+                // Notification Components Section
+                NotificationComponentsSection()
             }
             .padding(40)
         }
@@ -988,6 +991,298 @@ private struct ScrollerComponentsSection: View {
         .overlay(
             RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
                 .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+    }
+}
+
+/// Notification components showcase section
+internal struct NotificationComponentsSection: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var showInfo = false
+    @State private var showSuccess = false
+    @State private var showWarning = false
+    @State private var showError = false
+    @State private var showTemporary = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Section Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Notification System")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Enhanced NimbusNotificationView system with icon alignment, improved text wrapping, and enhanced color contrast")
+                    .font(.subheadline)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+            }
+            
+            // Button Styles Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("New Button Styles")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 20) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Link Button Style")
+                            .font(.caption)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        HStack(spacing: 12) {
+                            Button("Try again", action: {})
+                                .buttonStyle(LinkButtonStyle())
+                            Button("Check details", action: {})
+                                .buttonStyle(LinkButtonStyle())
+                            Button("Edit Profile", action: {})
+                                .buttonStyle(LinkButtonStyle())
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Close Button Style")
+                            .font(.caption)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        HStack(spacing: 12) {
+                            Button(action: {}) {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(CloseButtonStyle())
+                            
+                            Button(action: {}) {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(CloseButtonStyle())
+                            .disabled(true)
+                        }
+                    }
+                }
+                .padding(16)
+                .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+            }
+            
+            // Icon Alignment Examples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Icon Alignment Options")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Demonstrates the new icon alignment system for better layout control:")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 12) {
+                    // Center alignment (default)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Center Alignment (Default)")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        NimbusNotificationView(
+                            type: .info,
+                            message: "Center alignment where the icon is centered relative to the entire text content. This is the default behavior that works well for most use cases.",
+                            actionText: "Learn More",
+                            iconAlignment: .center
+                        )
+                    }
+                    
+                    // Baseline alignment
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Baseline Alignment")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        NimbusNotificationView(
+                            type: .success,
+                            message: "Baseline alignment positions the icon to align with the first line of text, creating a more structured appearance.",
+                            actionText: "Confirm",
+                            iconAlignment: .baseline
+                        )
+                    }
+                    
+                    // Top alignment
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Top Alignment")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        NimbusNotificationView(
+                            type: .warning,
+                            message: "Top alignment positions the icon at the very top of the text content. This is particularly useful for notifications with very long messages that wrap to multiple lines.",
+                            actionText: "Fix",
+                            iconAlignment: .top
+                        )
+                    }
+                }
+            }
+            
+            // Enhanced Text Wrapping Examples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Enhanced Text Wrapping")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Improved text wrapping without truncation for long messages:")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 12) {
+                    NimbusNotificationView(
+                        type: .warning,
+                        message: "This is a very long notification message that demonstrates the improved text wrapping functionality. The message should properly wrap to multiple lines without any truncation, allowing users to read the complete content while maintaining proper layout with action buttons and icons.",
+                        actionText: "Fix Now"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .error,
+                        message: "Extremely long error message to test edge cases where users might provide exceptionally detailed notification content that spans multiple lines. The enhanced implementation ensures proper vertical expansion and readability regardless of message length.",
+                        actionText: "Retry"
+                    )
+                }
+            }
+            
+            // Static Notification Examples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Enhanced Color System (22% Background Opacity)")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 12) {
+                    NimbusNotificationView(
+                        type: .info,
+                        message: "New feature coming soon! Prepare yourself for the release next month.",
+                        actionText: "Try again"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .success,
+                        message: "Congratulations! Your payment is completed successfully.",
+                        actionText: "Check details"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .warning,
+                        message: "Action needed! Update payment information in your profile.",
+                        actionText: "Edit Profile"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .error,
+                        message: "Something went wrong! We failed to complete your payment.",
+                        actionText: "Try again"
+                    )
+                }
+            }
+            
+            // Interactive Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Interactive Demo")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Click buttons to test the notification presentation system:")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 12) {
+                    Button("Info") { showInfo = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Success") { showSuccess = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Warning") { showWarning = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Error") { showError = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Auto-dismiss (3s)") { showTemporary = true }
+                        .buttonStyle(.secondaryBordered)
+                }
+                .padding(16)
+                .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+            }
+            
+            // Usage Notes
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Notification Theme Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    BulletPoint("Enhanced color system with 22% background opacity for better readability")
+                    BulletPoint("Semantic colors with darker variants (0.15x icon, 0.2x text, 0.1x action) for improved contrast")
+                    BulletPoint("Icon alignment options: center (default), baseline, and top positioning")
+                    BulletPoint("Improved text wrapping with fixedSize for proper multi-line support")
+                    BulletPoint("LinkButton and CloseButton styles with custom semantic color support")
+                    BulletPoint("Presentation system positions notifications at window top with proper spacing")
+                    BulletPoint("Auto-dismiss timers available for temporary notifications")
+                    BulletPoint("Full animation support with spring show and easeOut hide transitions")
+                }
+            }
+        }
+        .padding(16)
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+        .nimbusNotification(
+            isPresented: $showInfo,
+            type: .info,
+            message: "New feature coming soon! Prepare yourself for the release next month.",
+            actionText: "Try again",
+            dismissBehavior: .sticky,
+            onAction: { print("Info action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showSuccess,
+            type: .success,
+            message: "Congratulations! Your payment is completed successfully.",
+            actionText: "Check details",
+            dismissBehavior: .sticky,
+            onAction: { print("Success action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showWarning,
+            type: .warning,
+            message: "Action needed! Update payment information in your profile.",
+            actionText: "Edit Profile",
+            dismissBehavior: .sticky,
+            onAction: { print("Warning action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showError,
+            type: .error,
+            message: "Something went wrong! We failed to complete your payment.",
+            actionText: "Try again",
+            dismissBehavior: .sticky,
+            onAction: { print("Error action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showTemporary,
+            type: .success,
+            message: "This notification will auto-dismiss in 3 seconds!",
+            dismissBehavior: .temporary(3.0)
         )
     }
 }

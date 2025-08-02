@@ -108,6 +108,15 @@ public extension NimbusTheming {
     
     /// Label content spacing configuration
     var labelContentSpacing: CGFloat { 6 }
+    
+    /// Link button font weight configuration
+    var linkButtonFontWeight: Font.Weight { .medium }
+    
+    /// Close button size configuration (24x24 default)
+    var closeButtonSize: CGFloat { 24 }
+    
+    /// Close button icon size configuration (14pt default)
+    var closeButtonIconSize: CGFloat { 14 }
 }
 
 // MARK: - List Component Tokens (Optional with Defaults)
@@ -192,6 +201,25 @@ public extension NimbusTheming {
     
     /// Scroller animation duration
     var scrollerAnimationDuration: TimeInterval { 0.1 }
+}
+
+// MARK: - Notification Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// Notification positioning & layout
+    var notificationTopPadding: CGFloat { 16 }
+    var notificationHorizontalPadding: CGFloat { 16 }
+    var notificationCornerRadii: RectangleCornerRadii { cornerRadii }
+    
+    /// Notification styling
+    var notificationBackgroundOpacity: CGFloat { 0.9 }
+    var notificationMinHeight: CGFloat { 56 }
+    var notificationIconSize: CGFloat { 20 }
+    var notificationPadding: CGFloat { 16 }
+    
+    /// Animation timing
+    var notificationShowAnimation: Animation { .spring(response: 0.4, dampingFraction: 0.8) }
+    var notificationHideAnimation: Animation { .easeOut(duration: 0.25) }
 }
 
 // MARK: - Convenience Methods
