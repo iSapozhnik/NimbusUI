@@ -115,6 +115,14 @@ public struct MaritimeTheme: NimbusTheming, Sendable {
         )
     }
     
+    public func hoverBackgroundColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(hex: "#C8DCE0"), // Maritime hover - slightly darker honeydew
+            dark: Color(hex: "#2E4A54"),  // Darker maritime hover
+            scheme: scheme
+        )
+    }
+    
     // MARK: - Text Colors
     
     public func primaryTextColor(for scheme: ColorScheme) -> Color {

@@ -53,6 +53,9 @@ public protocol NimbusTheming: Sendable {
     /// Tertiary background color for subtle backgrounds and disabled states
     func tertiaryBackgroundColor(for scheme: ColorScheme) -> Color
     
+    /// Hover background color for interactive elements on hover
+    func hoverBackgroundColor(for scheme: ColorScheme) -> Color
+    
     // MARK: - Text Colors
     
     /// Primary text color for headings and main content

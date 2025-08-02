@@ -76,5 +76,11 @@ public extension EnvironmentValues {
     
     @Entry var nimbusListRoundedTopCornerBehavior: ListRoundedCornerBehavior = .never
     @Entry var nimbusListRoundedBottomCornerBehavior: ListRoundedCornerBehavior = .never
-
+    
+    // List Container Configuration
+    @Entry var nimbusListContentMarginsTop: CGFloat? = nil
+    @Entry var nimbusListContentMarginsLeading: CGFloat? = nil
+    @Entry var nimbusListContentMarginsBottom: CGFloat? = nil
+    @Entry var nimbusListContentMarginsTrailing: CGFloat? = nil
+    @Entry var nimbusListScrollDisabled: Bool = false
 }

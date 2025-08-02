@@ -52,6 +52,7 @@ public struct ListItem<Content, V>: View where Content: View, V: Hashable {
     @Environment(\.nimbusListItemHighlightOnHover) private var highlightOnHover
     @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
     @Environment(\.nimbusHasDividers) private var hasDividers
+    @Environment(\.colorScheme) private var colorScheme
 
 
     @Binding var items: [V]
@@ -123,7 +124,36 @@ public struct ListItem<Content, V>: View where Content: View, V: Hashable {
                     .padding(.leading, 1) // it's nuanced
                 }
             }
-        
+            .onChange(of: selection) { _ in
+                guard isEnabled else { return }
+                withAnimation(animationFast) {
+                    updateSelection()
+                }
+            }
+            .onAppear {
+                DispatchQueue.main.async {
+                    withAnimation(animationFast) {
+                        // Initialize selection
+                        updateSelection()
+
+                        // Reset hovering state
+                        isHovering = false
+                    }
+                }
+            }
+    }
+    
+    // MARK: - Functions
+    
+    private func updateSelection() {
+        guard !selection.isEmpty else {
+            tintOpacity = .zero
+            lineWidth = .zero
+            return
+        }
+
+        tintOpacity = selection.contains(item) ? maxTintOpacity : .zero
+        lineWidth = selection.contains(item) ? maxLineWidth : .zero
     }
 }
 
@@ -167,28 +197,27 @@ extension ListItem {
     
     @ViewBuilder
     fileprivate func itemBorder() -> some View {
-//        if isFirstInSelection, isLastInSelection {
-//            singleSelectionPart()
-//        } else if isFirstInSelection {
-//            firstItemPart()
-//        } else if isLastInSelection {
-//            lastItemPart()
-//        } else if isInSelection {
-//            doubleLinePart()
-//        }
-        EmptyView()
+        if isFirstInSelection, isLastInSelection {
+            singleSelectionPart()
+        } else if isFirstInSelection {
+            firstItemPart()
+        } else if isLastInSelection {
+            lastItemPart()
+        } else if isInSelection {
+            doubleLinePart()
+        }
     }
     
     @ViewBuilder
     fileprivate func itemBackground() -> some View {
         ZStack {
             Rectangle()
-                .foregroundStyle(.tint)
+                .foregroundStyle(theme.accentColor(for: colorScheme))
                 .opacity(tintOpacity)
 
             if highlightOnHover, isHovering {
                 Rectangle()
-                    .foregroundStyle(.quaternary.opacity(0.7))
+                    .foregroundStyle(theme.hoverBackgroundColor(for: colorScheme))
                     .opacity((maxTintOpacity - tintOpacity) * (1 / maxTintOpacity))
             }
         }
@@ -207,7 +236,117 @@ extension ListItem {
             topTrailingRadius: isFirst && roundedTop
                 ? cornerRadii.topTrailing - 1 : itemCornerRadii.topTrailing
         )
-        .strokeBorder(.tint, lineWidth: lineWidth)
+        .strokeBorder(theme.accentColor(for: colorScheme), lineWidth: lineWidth)
+    }
+    
+    @ViewBuilder
+    fileprivate func firstItemPart() -> some View {
+        VStack(spacing: 0) {
+            // Top half
+            ZStack {
+                UnevenRoundedRectangle(
+                    topLeadingRadius: isFirst && roundedTop
+                        ? cornerRadii.topLeading - 1
+                        : itemCornerRadii.topLeading,
+                    bottomLeadingRadius: 0,
+                    bottomTrailingRadius: 0,
+                    topTrailingRadius: isFirst && roundedTop
+                        ? cornerRadii.topTrailing - 1
+                        : itemCornerRadii.topTrailing
+                )
+                .strokeBorder(theme.accentColor(for: colorScheme), lineWidth: lineWidth)
+
+                VStack {
+                    Color.clear
+                    HStack {
+                        Spacer()
+                            .frame(width: lineWidth)
+
+                        Rectangle()
+                            .foregroundStyle(.white)
+                            .blendMode(.destinationOut)
+
+                        Spacer()
+                            .frame(width: lineWidth)
+                    }
+                }
+            }
+            .compositingGroup()
+
+            // Bottom half
+            HStack {
+                Rectangle()
+                    .frame(width: lineWidth)
+
+                Spacer()
+
+                Rectangle()
+                    .frame(width: lineWidth)
+            }
+            .foregroundStyle(theme.accentColor(for: colorScheme))
+        }
+    }
+    
+    @ViewBuilder
+    fileprivate func lastItemPart() -> some View {
+        VStack(spacing: 0) {
+            // Top half
+            HStack {
+                Rectangle()
+                    .frame(width: lineWidth)
+
+                Spacer()
+
+                Rectangle()
+                    .frame(width: lineWidth)
+            }
+            .foregroundStyle(theme.accentColor(for: colorScheme))
+
+            // Bottom half
+            ZStack {
+                UnevenRoundedRectangle(
+                    topLeadingRadius: 0,
+                    bottomLeadingRadius: isLast && roundedBottom
+                        ? cornerRadii.bottomLeading - 1
+                        : itemCornerRadii.bottomLeading,
+                    bottomTrailingRadius: isLast && roundedBottom
+                        ? cornerRadii.bottomTrailing - 1
+                        : itemCornerRadii.bottomTrailing,
+                    topTrailingRadius: 0
+                )
+                .strokeBorder(theme.accentColor(for: colorScheme), lineWidth: lineWidth)
+
+                VStack {
+                    HStack {
+                        Spacer()
+                            .frame(width: lineWidth)
+
+                        Rectangle()
+                            .foregroundStyle(.white)
+                            .blendMode(.destinationOut)
+
+                        Spacer()
+                            .frame(width: lineWidth)
+                    }
+                    Color.clear
+                }
+            }
+            .compositingGroup()
+        }
+    }
+    
+    @ViewBuilder
+    fileprivate func doubleLinePart() -> some View {
+        HStack {
+            Rectangle()
+                .frame(width: lineWidth)
+
+            Spacer()
+
+            Rectangle()
+                .frame(width: lineWidth)
+        }
+        .foregroundStyle(theme.accentColor(for: colorScheme))
     }
     
     private var itemBackgroundShape: UnevenRoundedRectangle {
@@ -235,13 +374,17 @@ extension ListItem {
 
 // MARK: - Preview
 
-private struct ListItemPreview<V>: View where V: Hashable & Comparable {
+private struct ListItemPreview: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.nimbusListRoundedTopCornerBehavior) private var topCorner
     @Environment(\.nimbusListRoundedBottomCornerBehavior) private var bottomCorner
     @Environment(\.nimbusListFixedHeightUntil) private var fixedHeight
     
-    @State var items: [V]
-    @State var selection: Set<V>
+    @State private var items = ["First Item", "Second Item", "Third Item", "Fourth Item"]
+    @State private var selection: Set<String> = ["Second Item"]
+    @State private var firstItem: String? = "Second Item"
+    @State private var lastItem: String? = "Second Item"
 
     private var hasFixedHeight: Bool {
         guard let fixedHeight else { return false }
@@ -249,34 +392,58 @@ private struct ListItemPreview<V>: View where V: Hashable & Comparable {
     }
     
     private var totalHeight: CGFloat {
-//        let margins = contentMarginsTop + contentMarginsBottom
-//        return CGFloat(max(1, items.count)) * itemHeight + margins
-        return 0
+        return CGFloat(items.count) * theme.listItemHeight
     }
     
     var body: some View {
-        let roundedTop = topCorner.isRounded(
-            hasFixedHeight: hasFixedHeight)
-        let roundedBottom = bottomCorner.isRounded(
-            hasFixedHeight: hasFixedHeight)
-        
-//        ListItem(
-//            items: $items,
-//            selection: $selection,
-//            item: $items.last!,
-//            firstItem: $items.first,
-//            lastItem: $items.last,
-//            roundedTop: roundedTop,
-//            roundedBottom: roundedBottom
-//        ) { value in
-//                Text("\(value.wrappedValue)")
-//            }
-//        )
-        EmptyView()
+        VStack(alignment: .leading, spacing: 16) {
+            Text("ListItem Showcase")
+                .font(.headline)
+                .foregroundColor(theme.primaryTextColor(for: colorScheme))
+            
+            VStack(spacing: 0) {
+                ForEach(Array(items.enumerated()), id: \.element) { index, item in
+                    let roundedTop = topCorner.isRounded(hasFixedHeight: hasFixedHeight)
+                    let roundedBottom = bottomCorner.isRounded(hasFixedHeight: hasFixedHeight)
+                    
+                    ListItem(
+                        items: $items,
+                        selection: $selection,
+                        item: .constant(item),
+                        firstItem: $firstItem,
+                        lastItem: $lastItem,
+                        roundedTop: roundedTop,
+                        roundedBottom: roundedBottom
+                    ) { itemBinding in
+                        HStack {
+                            Text(itemBinding.wrappedValue)
+                                .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                            Spacer()
+                            if selection.contains(itemBinding.wrappedValue) {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(theme.accentColor(for: colorScheme))
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                    }
+                }
+            }
+            .background(theme.backgroundColor(for: colorScheme))
+            .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+            
+            Text("Selection: \(selection.joined(separator: ", "))")
+                .font(.caption)
+                .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+        }
+        .padding()
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
     }
 }
 
 #Preview {
-    ListItemPreview(items: [1, 2, 3], selection: [2])
-        .padding()
+    ListItemPreview()
+        .environment(\.nimbusTheme, NimbusTheme.default)
+        .environment(\.nimbusListItemHighlightOnHover, true)
+        .environment(\.nimbusListRoundedTopCornerBehavior, .always)
+        .environment(\.nimbusListRoundedBottomCornerBehavior, .always)
 }

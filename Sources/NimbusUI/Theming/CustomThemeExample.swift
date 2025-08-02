@@ -118,6 +118,14 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
         )
     }
     
+    public func hoverBackgroundColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(hex: "#E8D4C0"), // Warm hover - slightly darker
+            dark: Color(hex: "#3A362F"),  // Darker warm hover
+            scheme: scheme
+        )
+    }
+    
     // MARK: - Text Colors
     
     public func primaryTextColor(for scheme: ColorScheme) -> Color {

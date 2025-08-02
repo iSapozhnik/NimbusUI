@@ -106,6 +106,14 @@ public struct NimbusTheme: NimbusTheming, Sendable {
         )
     }
     
+    public func hoverBackgroundColor(for scheme: ColorScheme) -> Color {
+        Color.adaptiveColor(
+            light: Color(red: 0.88, green: 0.88, blue: 0.88),
+            dark: Color(red: 0.3, green: 0.3, blue: 0.3),
+            scheme: scheme
+        )
+    }
+    
     // MARK: - Text Colors
     
     public func primaryTextColor(for scheme: ColorScheme) -> Color {
