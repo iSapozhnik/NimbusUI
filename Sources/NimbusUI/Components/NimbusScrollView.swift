@@ -30,24 +30,20 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
     @Environment(\.nimbusScrollerAnimationDuration) private var overrideAnimationDuration
     
     private let content: Content
-    private let showsVerticalScrollIndicator: Bool
-    private let showsHorizontalScrollIndicator: Bool
+    private var showsVerticalScrollIndicator: Bool
+    private var showsHorizontalScrollIndicator: Bool
     private let contentInsets: NSEdgeInsets
     
     /// Creates a NimbusScrollView with the specified content and configuration
     /// - Parameters:
-    ///   - showsVerticalScrollIndicator: Whether to show the vertical scroll indicator
-    ///   - showsHorizontalScrollIndicator: Whether to show the horizontal scroll indicator
     ///   - contentInsets: Insets applied to the content within the scroll view
     ///   - content: The scrollable content
     public init(
-        showsVerticalScrollIndicator: Bool = true,
-        showsHorizontalScrollIndicator: Bool = true,
         contentInsets: NSEdgeInsets = NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
         @ViewBuilder content: () -> Content
     ) {
-        self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
-        self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
+        self.showsVerticalScrollIndicator = true
+        self.showsHorizontalScrollIndicator = true
         self.contentInsets = contentInsets
         self.content = content()
     }
@@ -125,6 +121,44 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
         // Set initial opacity
         let initialOpacity = overrideInitialOpacity ?? theme.scrollerInitialOpacity
         scroller.layer?.opacity = Float(initialOpacity)
+    }
+    
+    // MARK: - Scroller Visibility Modifiers
+    
+    /// Controls the visibility of the vertical scroller
+    /// - Parameter shows: Whether to show the vertical scroller
+    /// - Returns: A new NimbusScrollView instance with updated vertical scroller visibility
+    public func showsVerticalScroller(_ shows: Bool) -> NimbusScrollView {
+        var newScrollView = self
+        newScrollView.showsVerticalScrollIndicator = shows
+        return newScrollView
+    }
+    
+    /// Controls the visibility of the horizontal scroller
+    /// - Parameter shows: Whether to show the horizontal scroller
+    /// - Returns: A new NimbusScrollView instance with updated horizontal scroller visibility
+    public func showsHorizontalScroller(_ shows: Bool) -> NimbusScrollView {
+        var newScrollView = self
+        newScrollView.showsHorizontalScrollIndicator = shows
+        return newScrollView
+    }
+    
+    /// Controls the visibility of both vertical and horizontal scrollers
+    /// - Parameters:
+    ///   - vertical: Whether to show the vertical scroller
+    ///   - horizontal: Whether to show the horizontal scroller
+    /// - Returns: A new NimbusScrollView instance with updated scroller visibility
+    public func showsScrollers(vertical: Bool, horizontal: Bool) -> NimbusScrollView {
+        var newScrollView = self
+        newScrollView.showsVerticalScrollIndicator = vertical
+        newScrollView.showsHorizontalScrollIndicator = horizontal
+        return newScrollView
+    }
+    
+    /// Hides both vertical and horizontal scrollers
+    /// - Returns: A new NimbusScrollView instance with both scrollers hidden
+    public func hideScrollers() -> NimbusScrollView {
+        return showsScrollers(vertical: false, horizontal: false)
     }
 }
 
@@ -241,10 +275,7 @@ private struct NimbusScrollViewPreview: View {
                     .font(.headline)
                     .foregroundColor(theme.secondaryTextColor(for: colorScheme))
                 
-                NimbusScrollView(
-                    showsVerticalScrollIndicator: false,
-                    showsHorizontalScrollIndicator: true
-                ) {
+                NimbusScrollView {
                     HStack(spacing: 16) {
                         ForEach(1...20, id: \.self) { index in
                             VStack(spacing: 8) {
@@ -264,6 +295,7 @@ private struct NimbusScrollViewPreview: View {
                     }
                     .padding(16)
                 }
+                .showsScrollers(vertical: false, horizontal: true)
                 .frame(height: 150)
                 .background(theme.backgroundColor(for: colorScheme))
                 .cornerRadius(12)
@@ -300,6 +332,77 @@ private struct NimbusScrollViewPreview: View {
                 Text("Custom styling applied: Scroller width: 20, Knob width: 8, Knob padding: 3, Slot corner radius: 8")
                     .font(.caption)
                     .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+            }
+            
+            // Scroller Visibility Examples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Scroller Visibility Modifiers")
+                    .font(.headline)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 16) {
+                    // No scrollers
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Hidden Scrollers")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                        
+                        NimbusScrollView {
+                            VStack(spacing: 8) {
+                                ForEach(1...20, id: \.self) { index in
+                                    Text("Item \(index)")
+                                        .font(.caption)
+                                        .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                                        .cornerRadius(4)
+                                }
+                            }
+                            .padding(12)
+                        }
+                        .hideScrollers()
+                        .frame(width: 150, height: 120)
+                        .background(theme.backgroundColor(for: colorScheme))
+                        .cornerRadius(8)
+                        
+                        Text("Using .hideScrollers()")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                    
+                    // Vertical only
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Vertical Only")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                        
+                        NimbusScrollView {
+                            VStack(spacing: 8) {
+                                ForEach(1...20, id: \.self) { index in
+                                    Text("Item \(index)")
+                                        .font(.caption)
+                                        .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                                        .cornerRadius(4)
+                                }
+                            }
+                            .padding(12)
+                        }
+                        .showsHorizontalScroller(false)
+                        .frame(width: 150, height: 120)
+                        .background(theme.backgroundColor(for: colorScheme))
+                        .cornerRadius(8)
+                        
+                        Text("Using .showsHorizontalScroller(false)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                }
             }
             
             Spacer()

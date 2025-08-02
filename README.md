@@ -6,6 +6,28 @@
 
 A modern SwiftUI component library for macOS applications with a comprehensive theming system and beautiful, interactive components.
 
+## 📚 Table of Contents
+
+- [✨ Features](#-features)
+- [📦 Installation](#-installation)
+- [🚀 Quick Start](#-quick-start)
+- [🧱 Components](#-components)
+  - [Button Styles](#button-styles)
+  - [List Components](#list-components)
+  - [Onboarding System](#onboarding-system)
+  - [NimbusScrollView](#nimbusscrollview)
+  - [NimbusScroller](#nimbusscroller)
+- [🎨 Theme System](#-theme-system)
+  - [Available Themes](#available-themes)
+  - [Design Tokens](#design-tokens)
+  - [Property Overrides](#property-overrides)
+  - [Creating Custom Themes](#creating-custom-themes)
+- [🏗️ Architecture](#️-architecture)
+- [🎭 Theme Gallery](#-theme-gallery)
+- [🛠️ Development](#️-development)
+- [📄 License](#-license)
+- [🙏 Dependencies](#-dependencies)
+
 ## ✨ Features
 
 - 🎨 **Advanced Theme System** - Protocol-based theming with design tokens and per-component overrides
@@ -54,36 +76,128 @@ struct ContentView: View {
 
 ### Button Styles
 
-NimbusUI provides a comprehensive button hierarchy:
+NimbusUI provides a comprehensive button hierarchy with built-in theming and state management:
+
+#### Primary Buttons
+
+For main actions and call-to-action buttons:
 
 ```swift
-// Primary buttons
-Button("Save") { }.buttonStyle(.primaryDefault)
-Button("Continue") { }.buttonStyle(.primaryProminent)
+// Default primary button
+Button("Save") { }
+    .buttonStyle(.primaryDefault)
 
-// Secondary buttons  
-Button("Cancel") { }.buttonStyle(.secondaryProminent)
-Button("More") { }.buttonStyle(.secondaryBordered)
+// Prominent primary button with enhanced styling
+Button("Continue") { }
+    .buttonStyle(.primaryProminent)
+```
+
+#### Secondary Buttons
+
+For secondary actions and alternative options:
+
+```swift
+// Prominent secondary button
+Button("Cancel") { }
+    .buttonStyle(.secondaryProminent)
+
+// Bordered secondary button
+Button("More Options") { }
+    .buttonStyle(.secondaryBordered)
+```
+
+#### Enhanced Button + Label API
+
+NimbusUI automatically detects Label usage and applies appropriate styling:
+
+```swift
+// Plain text button (no changes needed)
+Button("Delete") { }
+    .buttonStyle(.primaryProminent)
+
+// Label with divider (auto-applied)
+Button(action: {}) {
+    Label("Export", systemImage: "square.and.arrow.up")
+}
+.buttonStyle(.primaryProminent)
+.environment(\.nimbusButtonHasDivider, true)
+
+// Label with trailing icon
+Button(action: {}) {
+    Label("Next", systemImage: "arrow.right")
+}
+.buttonStyle(.primaryProminent)
+.environment(\.nimbusButtonIconAlignment, .trailing)
+```
+
+#### Button Customization
+
+Override specific properties while maintaining theme consistency:
+
+```swift
+Button("Custom Button") { }
+    .buttonStyle(.primaryDefault)
+    .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(16))
+    .environment(\.nimbusMinHeight, 50)
+    .environment(\.nimbusButtonMaterial, .thin)
 ```
 
 ### List Components
 
-Interactive list items with selection and hover states:
+Interactive list items with selection states, hover effects, and flexible content:
+
+#### Basic List Item
 
 ```swift
 @State private var items = ["Item 1", "Item 2", "Item 3"]
 @State private var selection = Set<String>()
 
 ListItem(items: $items, selection: $selection, item: .constant("Item 1")) { binding in
+    HStack {
+        Image(systemName: "doc.text")
+        Text(binding.wrappedValue)
+        Spacer()
+        Text("Details")
+            .foregroundColor(.secondary)
+    }
+    .padding()
+}
+```
+
+#### Interactive Features
+
+Enable hover effects and customize appearance:
+
+```swift
+ListItem(items: $items, selection: $selection, item: $item) { binding in
     Text(binding.wrappedValue)
         .padding()
 }
 .environment(\.nimbusListItemHighlightOnHover, true)
+.environment(\.nimbusListItemHeight, 60)
+.environment(\.nimbusListItemCornerRadii, RectangleCornerRadii(12))
+```
+
+#### Fixed Height Lists
+
+Control list behavior with fixed heights:
+
+```swift
+VStack(spacing: 0) {
+    ForEach(items.indices, id: \.self) { index in
+        ListItem(items: $items, selection: $selection, item: $items[index]) { binding in
+            // Item content
+        }
+    }
+}
+.environment(\.nimbusListFixedHeightUntil, 300)
 ```
 
 ### Onboarding System
 
-Beautiful onboarding flows with FluidGradient animations:
+Beautiful onboarding flows with FluidGradient animations, fixed dimensions (600x560), and smooth page navigation:
+
+#### Basic Setup
 
 ```swift
 OnboardingView(features: [
@@ -91,8 +205,159 @@ OnboardingView(features: [
         title: "Welcome",
         description: "Get started with our amazing app",
         icon: "star.fill"
+    ),
+    OnboardingView.Feature(
+        title: "Powerful Features",
+        description: "Discover all the capabilities of our platform",
+        icon: "bolt.fill"
+    ),
+    OnboardingView.Feature(
+        title: "Get Started",
+        description: "You're ready to begin your journey",
+        icon: "checkmark.circle.fill"
     )
 ])
+```
+
+#### Features
+
+- **FluidGradient Backgrounds**: Smooth, animated gradient backgrounds
+- **Fixed Dimensions**: Consistent 600x560 window size
+- **Page Navigation**: Built-in page controls and smooth transitions
+- **Icon Support**: SF Symbols integration for feature icons
+- **Theme Integration**: Automatically adapts to your chosen theme
+
+#### Customization
+
+The onboarding system automatically inherits your theme colors and styling:
+
+```swift
+OnboardingView(features: features)
+    .environment(\.nimbusTheme, MaritimeTheme())
+```
+
+### NimbusScrollView
+
+A SwiftUI wrapper around NSScrollView with custom themed scrollers, providing smooth scrolling with beautiful, themed scroll indicators.
+
+#### Basic Usage
+
+```swift
+NimbusScrollView {
+    VStack(spacing: 16) {
+        ForEach(1...50, id: \.self) { index in
+            Text("Item \(index)")
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(8)
+        }
+    }
+    .padding()
+}
+```
+
+#### Scroller Visibility Control
+
+Control which scrollers are visible using chainable modifiers:
+
+```swift
+// Hide both scrollers
+NimbusScrollView {
+    // Long content
+}
+.hideScrollers()
+
+// Show only horizontal scroller
+NimbusScrollView {
+    // Wide content
+}
+.showsScrollers(vertical: false, horizontal: true)
+
+// Individual control
+NimbusScrollView {
+    // Content
+}
+.showsVerticalScroller(false)
+.showsHorizontalScroller(true)
+```
+
+#### Custom Scroller Styling
+
+Apply custom styling to the scroll indicators:
+
+```swift
+NimbusScrollView {
+    // Content
+}
+.scrollerWidth(20)           // Thicker scroll track
+.knobWidth(8)               // Wider scroll knob
+.knobPadding(3)             // More padding around knob
+.slotCornerRadius(8)        // Rounded scroll track
+```
+
+#### Content Insets
+
+Add padding around the scrollable content:
+
+```swift
+NimbusScrollView(contentInsets: NSEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)) {
+    // Content will have 16pt padding on all sides
+    Text("Padded content")
+}
+```
+
+#### Theme Integration
+
+NimbusScrollView automatically adapts to your theme:
+
+```swift
+NimbusScrollView {
+    // Content
+}
+.environment(\.nimbusTheme, MaritimeTheme())
+.scrollerWidth(24)  // Override theme default
+```
+
+### NimbusScroller
+
+A standalone SwiftUI wrapper for custom AppKit scrollers, useful when you need precise control over scroll position and behavior.
+
+#### Basic Usage
+
+```swift
+@State private var scrollPosition: Float = 0.3
+@State private var knobProportion: Float = 0.2
+
+NimbusScroller(
+    type: .vertical,
+    value: $scrollPosition,
+    knobProportion: $knobProportion
+)
+.frame(width: 50, height: 200)
+```
+
+#### Horizontal Scroller
+
+```swift
+@State private var horizontalPosition: Float = 0.5
+@State private var horizontalKnob: Float = 0.3
+
+NimbusScroller(
+    type: .horizontal,
+    value: $horizontalPosition,
+    knobProportion: $horizontalKnob
+)
+.frame(width: 300, height: 50)
+```
+
+#### Custom Styling
+
+```swift
+NimbusScroller(value: $position, knobProportion: $proportion)
+    .scrollerWidth(18)
+    .knobWidth(6)
+    .knobPadding(2)
+    .slotCornerRadius(6)
 ```
 
 ## 🎨 Theme System
@@ -170,7 +435,7 @@ NimbusUI is built around several core systems:
 4. **Accessibility** - Built-in macOS accessibility support
 5. **Developer Experience** - Intuitive APIs and clear documentation
 
-## Themes
+## 🎭 Theme Gallery
 
 | Nimbus Theme (Default) | Maritime Theme | Warm Theme |
 |------------------------|----------------|------------|
