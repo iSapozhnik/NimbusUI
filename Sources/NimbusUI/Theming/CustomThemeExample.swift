@@ -175,41 +175,37 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
     public let backgroundMaterial: Material? = Material.thinMaterial
     public let cornerRadii = RectangleCornerRadii(12) // Slightly more rounded for friendly feel
     
-    // MARK: - Design Tokens
+    // MARK: - Core Design Tokens (Required)
     
     public let animation = Animation.smooth(duration: 0.2)
     public let animationFast = Animation.easeInOut(duration: 0.1)
     public let minHeight: CGFloat = 30
     public let horizontalPadding: CGFloat = 8
     public let elevation = Elevation.low
-    public let buttonCornerRadii = RectangleCornerRadii(12)
-    public let compactButtonCornerRadii = RectangleCornerRadii(8)
-    public let listItemCornerRadii = RectangleCornerRadii(2)
-    public let listItemHeight: CGFloat = 44
-    public let labelContentSpacing: CGFloat = 6
     
-    // MARK: - Scroller Design Tokens
+    // MARK: - Component Token Overrides (Optional)
+    // Warm theme emphasizes rounded, friendly design with larger touch targets
     
-    // Core scroller dimensions
-    public let scrollerWidth: CGFloat = 18
-    public let scrollerKnobWidth: CGFloat = 8
-    public let scrollerKnobPadding: CGFloat = 2.5
-    public let scrollerSlotCornerRadius: CGFloat = 6
-    public let scrollerShowSlot: Bool = true
+    // Button customization for friendly, rounded feel
+    public var buttonCornerRadii: RectangleCornerRadii { RectangleCornerRadii(12) }
+    public var compactButtonCornerRadii: RectangleCornerRadii { RectangleCornerRadii(8) }
     
-    // Auto-calculated knob corner radius (based on knob width and padding)
-    public var scrollerKnobCornerRadius: CGFloat {
-        (scrollerKnobWidth - scrollerKnobPadding) / 2
-    }
+    // Scroller customization for warm, accessible feel
+    public var scrollerWidth: CGFloat { 18 }
+    public var scrollerKnobWidth: CGFloat { 8 }
+    public var scrollerKnobPadding: CGFloat { 2.5 }
+    public var scrollerSlotCornerRadius: CGFloat { 6 }
     
-    // Legacy properties (keeping for backward compatibility)
-    public let scrollerKnobInsetVertical: CGFloat = 4
-    public let scrollerKnobInsetHorizontal: CGFloat = 2
-    public let scrollerSlotInset: CGFloat = 2
-    public let scrollerInitialOpacity: CGFloat = 0.4
-    public let scrollerFadeOpacity: CGFloat = 0.4
-    public let scrollerFadeDelay: TimeInterval = 0.8
-    public let scrollerAnimationDuration: TimeInterval = 0.15
+    // Warm scroller timing - more responsive
+    public var scrollerInitialOpacity: CGFloat { 0.4 }
+    public var scrollerFadeOpacity: CGFloat { 0.4 }
+    public var scrollerFadeDelay: TimeInterval { 0.8 }
+    public var scrollerAnimationDuration: TimeInterval { 0.15 }
+    
+    // Legacy overrides for warm theme
+    public var scrollerKnobInsetVertical: CGFloat { 4 }
+    public var scrollerKnobInsetHorizontal: CGFloat { 2 }
+    public var scrollerSlotInset: CGFloat { 2 }
 }
 
 // MARK: - Usage Example
@@ -319,6 +315,15 @@ internal struct CustomThemeContentView: View {
                 
                 // Button Styles Showcase Section
                 ButtonStylesSection()
+                
+                // Checkbox Components Section
+                CheckboxComponentsSection()
+                
+                // Scroller Components Section
+                ScrollerComponentsSection()
+                
+                // Notification Components Section
+                NotificationComponentsSection()
             }
             .padding(40)
         }
@@ -719,6 +724,573 @@ private struct ButtonStyleDemo: View {
         .overlay(
             RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
                 .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+    }
+}
+
+/// Checkbox components showcase section
+private struct CheckboxComponentsSection: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var standaloneCheckbox1: Bool = false
+    @State private var standaloneCheckbox2: Bool = true
+    @State private var itemCheckbox1: Bool = false
+    @State private var itemCheckbox2: Bool = true
+    @State private var itemCheckbox3: Bool = false
+    @State private var itemCheckbox4: Bool = true
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            // Section Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Checkbox Components")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("NimbusCheckbox and NimbusCheckboxItem components with warm theme customization")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            // Standalone Checkbox Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusCheckbox - Size Customization")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Default 16pt vs Custom 20pt checkbox sizes")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 24) {
+                    VStack(spacing: 8) {
+                        NimbusCheckbox(isOn: $standaloneCheckbox1)
+                        Text("Default (16pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                    
+                    VStack(spacing: 8) {
+                        NimbusCheckbox(isOn: $standaloneCheckbox2)
+                            .environment(\.nimbusCheckboxSize, 20)
+                        Text("Custom (20pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                }
+            }
+            
+            // Checkbox Item Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusCheckboxItem - Position Customization")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Leading vs trailing checkbox positions with title and subtitle support")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 16) {
+                    // Leading position examples
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Leading Position")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            NimbusCheckboxItem(
+                                "Enable warm theme features",
+                                isOn: $itemCheckbox1,
+                                checkboxPosition: .leading
+                            )
+                            
+                            NimbusCheckboxItem(
+                                "Advanced settings",
+                                subtitle: "Configure additional warm theme options",
+                                isOn: $itemCheckbox2,
+                                checkboxPosition: .leading
+                            )
+                        }
+                    }
+                    
+                    // Trailing position examples
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Trailing Position")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            NimbusCheckboxItem(
+                                "Friendly rounded corners",
+                                isOn: $itemCheckbox3,
+                                checkboxPosition: .trailing
+                            )
+                            
+                            NimbusCheckboxItem(
+                                "Enhanced accessibility",
+                                subtitle: "Improved touch targets and contrast",
+                                isOn: $itemCheckbox4,
+                                checkboxPosition: .trailing
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Usage Notes
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Checkbox Theme Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    BulletPoint("Uses theme.primaryColor (\(theme.primaryColor(for: colorScheme).hexString)) for checked state")
+                    BulletPoint("Inherits warm theme's 12pt corner radius for friendly appearance")
+                    BulletPoint("Supports environment overrides for size and positioning")
+                    BulletPoint("NimbusCheckboxItem provides flexible title/subtitle layouts")
+                }
+            }
+        }
+        .padding(16)
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+    }
+}
+
+/// Scroller components showcase section
+private struct ScrollerComponentsSection: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var scrollerValue1: Float = 0.3
+    @State private var scrollerKnobProportion1: Float = 0.2
+    @State private var scrollerValue2: Float = 0.6
+    @State private var scrollerKnobProportion2: Float = 0.3
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            // Section Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Scroller Components")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("NimbusScroller and NimbusScrollView with warm theme scroller customization")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            // Standalone Scroller Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusScroller - Width Customization")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Default 18pt vs Custom 24pt scroller width (warm theme uses wider 18pt vs default 16pt)")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 40) {
+                    VStack(spacing: 8) {
+                        NimbusScroller(
+                            type: .vertical,
+                            value: $scrollerValue1,
+                            knobProportion: $scrollerKnobProportion1
+                        )
+                        .frame(height: 120)
+                        
+                        Text("Default (18pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                    
+                    VStack(spacing: 8) {
+                        NimbusScroller(
+                            type: .vertical,
+                            value: $scrollerValue2,
+                            knobProportion: $scrollerKnobProportion2
+                        )
+                        .environment(\.nimbusScrollerWidth, 24)
+                        .environment(\.nimbusScrollerKnobWidth, 10)
+                        .frame(height: 120)
+                        
+                        Text("Custom (24pt)")
+                            .font(.caption2)
+                            .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    }
+                }
+            }
+            
+            // ScrollView Integration Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("NimbusScrollView Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Custom scrollers integrated with scrollable content")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                NimbusScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(0..<8, id: \.self) { index in
+                            HStack {
+                                Circle()
+                                    .fill(theme.primaryColor(for: colorScheme))
+                                    .frame(width: 12, height: 12)
+                                
+                                Text("Scrollable content item \(index + 1)")
+                                    .font(.subheadline)
+                                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                                
+                                Spacer()
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                        }
+                    }
+                    .padding(16)
+                }
+                .frame(height: 150)
+                .background(theme.backgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+                .overlay(
+                    RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                        .stroke(theme.borderColor(for: colorScheme), lineWidth: 1)
+                )
+            }
+            
+            // Usage Notes
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Scroller Theme Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    BulletPoint("Warm theme uses 18pt scroller width (vs 16pt default) for better accessibility")
+                    BulletPoint("Custom knob width of 8pt provides comfortable drag targets")
+                    BulletPoint("Enhanced opacity settings (0.4 vs 0.3) for better visibility")
+                    BulletPoint("Responsive animation duration (0.15s) matches warm theme feel")
+                }
+            }
+        }
+        .padding(16)
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+    }
+}
+
+/// Notification components showcase section
+internal struct NotificationComponentsSection: View {
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var showInfo = false
+    @State private var showSuccess = false
+    @State private var showWarning = false
+    @State private var showError = false
+    @State private var showTemporary = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Section Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Notification System")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Enhanced NimbusNotificationView system with icon alignment, improved text wrapping, and enhanced color contrast")
+                    .font(.subheadline)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+            }
+            
+            // Button Styles Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("New Button Styles")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 20) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Link Button Style")
+                            .font(.caption)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        HStack(spacing: 12) {
+                            Button("Try again", action: {})
+                                .buttonStyle(LinkButtonStyle())
+                            Button("Check details", action: {})
+                                .buttonStyle(LinkButtonStyle())
+                            Button("Edit Profile", action: {})
+                                .buttonStyle(LinkButtonStyle())
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Close Button Style")
+                            .font(.caption)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        HStack(spacing: 12) {
+                            Button(action: {}) {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(CloseButtonStyle())
+                            
+                            Button(action: {}) {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(CloseButtonStyle())
+                            .disabled(true)
+                        }
+                    }
+                }
+                .padding(16)
+                .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+            }
+            
+            // Icon Alignment Examples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Icon Alignment Options")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Demonstrates the new icon alignment system for better layout control:")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 12) {
+                    // Center alignment (default)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Center Alignment (Default)")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        NimbusNotificationView(
+                            type: .info,
+                            message: "Center alignment where the icon is centered relative to the entire text content. This is the default behavior that works well for most use cases.",
+                            actionText: "Learn More",
+                            iconAlignment: .center
+                        )
+                    }
+                    
+                    // Baseline alignment
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Baseline Alignment")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        NimbusNotificationView(
+                            type: .success,
+                            message: "Baseline alignment positions the icon to align with the first line of text, creating a more structured appearance.",
+                            actionText: "Confirm",
+                            iconAlignment: .baseline
+                        )
+                    }
+                    
+                    // Top alignment
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Top Alignment")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                        
+                        NimbusNotificationView(
+                            type: .warning,
+                            message: "Top alignment positions the icon at the very top of the text content. This is particularly useful for notifications with very long messages that wrap to multiple lines.",
+                            actionText: "Fix",
+                            iconAlignment: .top
+                        )
+                    }
+                }
+            }
+            
+            // Enhanced Text Wrapping Examples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Enhanced Text Wrapping")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Improved text wrapping without truncation for long messages:")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 12) {
+                    NimbusNotificationView(
+                        type: .warning,
+                        message: "This is a very long notification message that demonstrates the improved text wrapping functionality. The message should properly wrap to multiple lines without any truncation, allowing users to read the complete content while maintaining proper layout with action buttons and icons.",
+                        actionText: "Fix Now"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .error,
+                        message: "Extremely long error message to test edge cases where users might provide exceptionally detailed notification content that spans multiple lines. The enhanced implementation ensures proper vertical expansion and readability regardless of message length.",
+                        actionText: "Retry"
+                    )
+                }
+            }
+            
+            // Static Notification Examples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Enhanced Color System (22% Background Opacity)")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(spacing: 12) {
+                    NimbusNotificationView(
+                        type: .info,
+                        message: "New feature coming soon! Prepare yourself for the release next month.",
+                        actionText: "Try again"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .success,
+                        message: "Congratulations! Your payment is completed successfully.",
+                        actionText: "Check details"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .warning,
+                        message: "Action needed! Update payment information in your profile.",
+                        actionText: "Edit Profile"
+                    )
+                    
+                    NimbusNotificationView(
+                        type: .error,
+                        message: "Something went wrong! We failed to complete your payment.",
+                        actionText: "Try again"
+                    )
+                }
+            }
+            
+            // Interactive Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Interactive Demo")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Click buttons to test the notification presentation system:")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                HStack(spacing: 12) {
+                    Button("Info") { showInfo = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Success") { showSuccess = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Warning") { showWarning = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Error") { showError = true }
+                        .buttonStyle(.secondaryProminent)
+                    
+                    Button("Auto-dismiss (3s)") { showTemporary = true }
+                        .buttonStyle(.secondaryBordered)
+                }
+                .padding(16)
+                .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+            }
+            
+            // Usage Notes
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Notification Theme Integration")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    BulletPoint("Enhanced color system with 22% background opacity for better readability")
+                    BulletPoint("Semantic colors with darker variants (0.15x icon, 0.2x text, 0.1x action) for improved contrast")
+                    BulletPoint("Icon alignment options: center (default), baseline, and top positioning")
+                    BulletPoint("Improved text wrapping with fixedSize for proper multi-line support")
+                    BulletPoint("LinkButton and CloseButton styles with custom semantic color support")
+                    BulletPoint("Presentation system positions notifications at window top with proper spacing")
+                    BulletPoint("Auto-dismiss timers available for temporary notifications")
+                    BulletPoint("Full animation support with spring show and easeOut hide transitions")
+                }
+            }
+        }
+        .padding(16)
+        .background(theme.secondaryBackgroundColor(for: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
+                .stroke(theme.secondaryBorderColor(for: colorScheme), lineWidth: 1)
+        )
+        .nimbusNotification(
+            isPresented: $showInfo,
+            type: .info,
+            message: "New feature coming soon! Prepare yourself for the release next month.",
+            actionText: "Try again",
+            dismissBehavior: .sticky,
+            onAction: { print("Info action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showSuccess,
+            type: .success,
+            message: "Congratulations! Your payment is completed successfully.",
+            actionText: "Check details",
+            dismissBehavior: .sticky,
+            onAction: { print("Success action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showWarning,
+            type: .warning,
+            message: "Action needed! Update payment information in your profile.",
+            actionText: "Edit Profile",
+            dismissBehavior: .sticky,
+            onAction: { print("Warning action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showError,
+            type: .error,
+            message: "Something went wrong! We failed to complete your payment.",
+            actionText: "Try again",
+            dismissBehavior: .sticky,
+            onAction: { print("Error action tapped") }
+        )
+        .nimbusNotification(
+            isPresented: $showTemporary,
+            type: .success,
+            message: "This notification will auto-dismiss in 3 seconds!",
+            dismissBehavior: .temporary(3.0)
         )
     }
 }

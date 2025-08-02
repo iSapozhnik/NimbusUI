@@ -86,6 +86,7 @@ struct ShowcaseView: View {
         }
         .padding()
         .background(.black)
+        .frame(width: 1360)
     }
 }
 
