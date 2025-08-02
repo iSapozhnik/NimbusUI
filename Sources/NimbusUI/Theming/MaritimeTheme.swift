@@ -184,6 +184,29 @@ public struct MaritimeTheme: NimbusTheming, Sendable {
     public let listItemCornerRadii = RectangleCornerRadii(2)
     public let listItemHeight: CGFloat = 44
     public let labelContentSpacing: CGFloat = 6
+    
+    // MARK: - Scroller Design Tokens
+    
+    // Core scroller dimensions
+    public let scrollerWidth: CGFloat = 14
+    public let scrollerKnobWidth: CGFloat = 5
+    public let scrollerKnobPadding: CGFloat = 1.5
+    public let scrollerSlotCornerRadius: CGFloat = 3
+    public let scrollerShowSlot: Bool = true
+    
+    // Auto-calculated knob corner radius (based on knob width and padding)
+    public var scrollerKnobCornerRadius: CGFloat {
+        (scrollerKnobWidth - scrollerKnobPadding) / 2
+    }
+    
+    // Legacy properties (keeping for backward compatibility)
+    public let scrollerKnobInsetVertical: CGFloat = 5
+    public let scrollerKnobInsetHorizontal: CGFloat = 3
+    public let scrollerSlotInset: CGFloat = 2
+    public let scrollerInitialOpacity: CGFloat = 0.35
+    public let scrollerFadeOpacity: CGFloat = 0.35
+    public let scrollerFadeDelay: TimeInterval = 1.2
+    public let scrollerAnimationDuration: TimeInterval = 0.12
 }
 
 extension MaritimeTheme {
