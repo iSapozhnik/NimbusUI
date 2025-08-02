@@ -38,6 +38,7 @@
 - [🎭 Theme Gallery](#-theme-gallery)
 - [🛠️ Development](#️-development)
 - [📄 License](#-license)
+- [🎯 Inspiration & Credits](#-inspiration--credits)
 - [🙏 Dependencies](#-dependencies)
 
 </details>
