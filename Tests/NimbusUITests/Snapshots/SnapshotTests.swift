@@ -13,7 +13,7 @@ import XCTest
 import Foundation
 import AppKit
 
-private let recording = true
+private let recording = false
 
 @MainActor
 @Test func showcaseNimbusTheme() async throws {
