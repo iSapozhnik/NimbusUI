@@ -92,6 +92,5 @@ public struct NimbusNotificationView: View {
             .foregroundStyle(type.textColor(theme: theme, scheme: colorScheme))
             .multilineTextAlignment(.leading)
             .fixedSize(horizontal: false, vertical: true) // Allow proper text wrapping
-            .shadow(color: .black.opacity(0.3), radius: 0, x: 0, y: 1)
     }
 }
