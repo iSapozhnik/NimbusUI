@@ -155,48 +155,20 @@ public struct NimbusTheme: NimbusTheming, Sendable {
     public let backgroundMaterial: Material? = Material.thinMaterial
     public let cornerRadii = RectangleCornerRadii(8)
     
-    // MARK: - Design Tokens
+    // MARK: - Core Design Tokens (Required)
     
     public let animation = Animation.smooth(duration: 0.2)
     public let animationFast = Animation.easeInOut(duration: 0.1)
     public let minHeight: CGFloat = 30
     public let horizontalPadding: CGFloat = 8
     public let elevation = Elevation.low
-    public let buttonCornerRadii = RectangleCornerRadii(8)
-    public let compactButtonCornerRadii = RectangleCornerRadii(8)
-    public let listItemCornerRadii = RectangleCornerRadii(2)
-    public let listItemHeight: CGFloat = 44
-    public let labelContentSpacing: CGFloat = 6
-    public let checkboxSize: CGFloat = 16
-    public let checkboxCornerRadii = RectangleCornerRadii(4)
-    public let checkboxBorderWidth: CGFloat = 1
-    public let checkboxItemSpacing: CGFloat = 12
-    public let checkboxItemTextSpacing: CGFloat = 4
-    public let checkboxItemPadding: CGFloat = 16
-    public let checkboxItemMinHeight: CGFloat = 44
     
-    // MARK: - Scroller Design Tokens
+    // MARK: - Component Token Overrides (Optional)
+    // Note: All component tokens now have sensible defaults from protocol extensions.
+    // Only override the ones that need to be different from defaults.
     
-    // Core scroller dimensions
-    public let scrollerWidth: CGFloat = 16
-    public let scrollerKnobWidth: CGFloat = 6
-    public let scrollerKnobPadding: CGFloat = 2
-    public let scrollerSlotCornerRadius: CGFloat = 4
-    public let scrollerShowSlot: Bool = true
-    
-    // Auto-calculated knob corner radius (based on knob width and padding)
-    public var scrollerKnobCornerRadius: CGFloat {
-        (scrollerKnobWidth - scrollerKnobPadding) / 2
-    }
-    
-    // Legacy properties (keeping for backward compatibility)
-    public let scrollerKnobInsetVertical: CGFloat = 6
-    public let scrollerKnobInsetHorizontal: CGFloat = 3
-    public let scrollerSlotInset: CGFloat = 3
-    public let scrollerInitialOpacity: CGFloat = 0.3
-    public let scrollerFadeOpacity: CGFloat = 0.3
-    public let scrollerFadeDelay: TimeInterval = 1.0
-    public let scrollerAnimationDuration: TimeInterval = 0.1
+    // All default values are good for NimbusTheme, so no overrides needed.
+    // This demonstrates the power of the new system - themes can be much simpler!
 }
 
 extension NimbusTheme {

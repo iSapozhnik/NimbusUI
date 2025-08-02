@@ -27,7 +27,7 @@ swift package resolve
 
 ### Core Systems
 
-**Theme System**: Enhanced protocol-based theming using `NimbusTheming` protocol with environment injection via `@Environment(\.nimbusTheme)`. Themes provide default values for 11 design tokens (layout, animations, corner radii, elevation, spacing). Environment values serve as optional overrides using the pattern `override ?? theme.property`. Available themes: `NimbusTheme.default`, `MaritimeTheme()`, `CustomWarmTheme()`.
+**Theme System**: Enhanced protocol-based theming using `NimbusTheming` protocol with environment injection via `@Environment(\.nimbusTheme)`. The protocol is split into **required core tokens** (17 properties: colors + basic design) and **optional component tokens** (30+ properties with sensible defaults via protocol extensions). Developers only implement what they need - most themes need just the 17 core properties. Environment values serve as optional overrides using the pattern `override ?? theme.property`. Available themes: `NimbusTheme.default`, `MaritimeTheme()`, `CustomWarmTheme()`, `MinimalTheme.default`.
 
 **Environment Configuration**: SwiftUI `@Entry` environment values used for two purposes:
 - **Design Token Overrides**: Optional values (`nil` by default) that override theme defaults
@@ -54,9 +54,15 @@ swift package resolve
 
 ### Key Components
 
-**Onboarding System** (`Sources/NimbusUI/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
+**Button System** (`Sources/NimbusUI/Components/ButtonStyles/`): Four button styles (primaryDefault, primaryProminent, secondaryProminent, secondaryBordered) with Enhanced Button + Label API for automatic divider detection.
+
+**Checkbox System** (`Sources/NimbusUI/Components/Checkbox/`): `NimbusCheckbox` standalone component and `NimbusCheckboxItem` with title/subtitle support, flexible positioning (leading/trailing), and full theming integration.
 
 **List Components** (`Sources/NimbusUI/Components/List/`): `ListItem` with configurable hover states and theming.
+
+**Onboarding System** (`Sources/NimbusUI/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
+
+**Scroll System** (`Sources/NimbusUI/Components/ScrollView/` & `Sources/NimbusUI/Components/Scroller/`): `NimbusScrollView` (NSScrollView wrapper) and `NimbusScroller` (standalone scroller) with custom theming and visibility controls.
 
 ### Project Structure
 ```
@@ -186,12 +192,28 @@ Button(action: {}) {
 .environment(\.nimbusButtonIconAlignment, .trailing)
 ```
 
-### Design Tokens (Available from Theme)
-- **Layout**: `minHeight`, `horizontalPadding`, `listItemHeight`
-- **Animations**: `animation`, `animationFast`
-- **Corner Radii**: `cornerRadii`, `buttonCornerRadii`, `compactButtonCornerRadii`, `listItemCornerRadii`  
-- **Elevation**: `elevation`
-- **Spacing**: `labelContentSpacing`
+### Theme System Architecture
+
+**Core Design Tokens (Required - 17 properties):**
+- **Brand Colors** (4): `primaryColor`, `secondaryColor`, `tertiaryColor`, `accentColor`
+- **Semantic Colors** (4): `errorColor`, `successColor`, `warningColor`, `infoColor`
+- **Background Colors** (3): `backgroundColor`, `secondaryBackgroundColor`, `tertiaryBackgroundColor`
+- **Text Colors** (3): `primaryTextColor`, `secondaryTextColor`, `tertiaryTextColor`
+- **Border Colors** (2): `borderColor`, `secondaryBorderColor`
+- **Core Design** (1): `backgroundMaterial`, `cornerRadii`, `animation`, `animationFast`, `minHeight`, `horizontalPadding`, `elevation`
+
+**Component Design Tokens (Optional - 30+ properties):**
+- **Button Tokens**: `buttonCornerRadii`, `compactButtonCornerRadii`, `labelContentSpacing`
+- **List Tokens**: `listItemCornerRadii`, `listItemHeight`
+- **Checkbox Tokens**: `checkboxSize`, `checkboxCornerRadii`, `checkboxBorderWidth`, `checkboxItemSpacing`, etc.
+- **Scroller Tokens**: `scrollerWidth`, `scrollerKnobWidth`, `scrollerKnobPadding`, `scrollerSlotCornerRadius`, etc.
+
+**Benefits of Optional Token System:**
+- ✅ **Minimal Implementation**: Only 17 required properties vs 45+ previously
+- ✅ **Selective Customization**: Override only what you need
+- ✅ **Future-Proof**: New components add defaults, existing themes unaffected
+- ✅ **Sensible Defaults**: Protocol extensions provide beautiful defaults
+- ✅ **Better Developer Experience**: Focus on brand colors, not implementation details
 
 All styling should go through the theme system with environment overrides when needed.
 
@@ -236,6 +258,13 @@ Use the Task tool with specialized design system knowledge for:
 - **Preview Naming**: Use `ComponentName+Preview.swift` naming pattern
 - **No Mixed Content**: NEVER embed preview code in implementation files
 
+#### Theme Development Standards (IMPORTANT)
+- **Minimal Implementation**: ALWAYS implement only the 17 required core properties first
+- **Selective Overrides**: ONLY override component tokens when specifically needed for your design
+- **Protocol Extensions**: Understand that 30+ component properties have sensible defaults
+- **Testing**: Verify your theme works with ALL components even without overrides
+- **Documentation**: Document which component tokens you override and why
+
 #### Theme and API Integration
 - **Theme Integration**: Access theme via `@Environment(\.nimbusTheme)` for design token defaults
 - **Override Pattern**: Use `@Environment(\.nimbusProperty) private var overrideProperty` and apply as `overrideProperty ?? theme.property`
@@ -245,6 +274,35 @@ Use the Task tool with specialized design system knowledge for:
 - **Documentation**: Include examples showing both theme defaults and override usage
 - **Button API Pattern**: Use `AutoLabelDetectionModifier` to conditionally apply `NimbusDividerLabelStyle` only when environment values are set
 - **Backward Compatibility**: Ensure new APIs don't break existing plain text button usage
+
+#### Theme Examples by Complexity
+- **Minimal Theme**: Only 17 core properties - `MinimalTheme` (perfect starting point)
+- **Selective Override**: Core + few component tokens - `MaritimeTheme` (scroller customization)
+- **Full Customization**: Core + many component tokens - `CustomWarmTheme` (buttons + scroller)
+- **Legacy Approach**: All properties explicitly defined - `NimbusTheme` (backward compatibility)
+
+#### Theme File Locations & Examples
+- **`MinimalThemeExample.swift`**: Complete minimal theme (17 properties) with comprehensive showcase demonstrating all components work with defaults
+- **`MaritimeTheme.swift`**: Professional theme with selective scroller overrides
+- **`CustomThemeExample.swift`**: Extensive warm theme with button and scroller customization + full component showcase
+- **`NimbusTheme.swift`**: Clean default theme using protocol extension defaults
+
+#### Usage Patterns for Theme Development
+```swift
+// Start with minimal approach
+struct MyBrandTheme: NimbusTheming {
+    // Implement 17 required properties only
+    func primaryColor(for scheme: ColorScheme) -> Color { Color(hex: "#007AFF") }
+    // ... 16 more core properties
+    // All 30+ component tokens automatically use beautiful defaults!
+}
+
+// Add selective overrides as needed
+extension MyBrandTheme {
+    var checkboxSize: CGFloat { 20 } // Only if you need custom checkboxes
+    var scrollerWidth: CGFloat { 12 } // Only if you need custom scrollers
+}
+```
 
 #### Preview Standards
 - **Separation**: ALL previews MUST be in dedicated `Preview/` folder

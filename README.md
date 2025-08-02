@@ -17,6 +17,7 @@ A modern SwiftUI component library for macOS applications with a comprehensive t
   - [Onboarding System](#onboarding-system)
   - [NimbusScrollView](#nimbusscrollview)
   - [NimbusScroller](#nimbusscroller)
+  - [Checkbox Components](#checkbox-components)
 - [🎨 Theme System](#-theme-system)
   - [Available Themes](#available-themes)
   - [Design Tokens](#design-tokens)
@@ -360,32 +361,163 @@ NimbusScroller(value: $position, knobProportion: $proportion)
     .slotCornerRadius(6)
 ```
 
+### Checkbox Components
+
+Beautiful, themeable checkbox components with full accessibility support and smooth animations.
+
+#### Basic Checkbox
+
+A standalone checkbox that mimics SwiftUI's Toggle API:
+
+```swift
+@State private var isChecked = false
+
+NimbusCheckbox(isOn: $isChecked)
+```
+
+#### Checkbox Item
+
+A complete checkbox item with title, optional subtitle, and flexible positioning:
+
+```swift
+@State private var acceptTerms = false
+@State private var receiveUpdates = true
+
+// Basic checkbox item
+NimbusCheckboxItem(
+    title: "Accept Terms & Conditions",
+    isOn: $acceptTerms
+)
+
+// With subtitle
+NimbusCheckboxItem(
+    title: "Receive Email Updates",
+    subtitle: "Get notified about new features and releases",
+    isOn: $receiveUpdates
+)
+
+// Trailing checkbox position
+NimbusCheckboxItem(
+    title: "Enable Notifications",
+    isOn: $receiveUpdates,
+    checkboxPosition: .trailing
+)
+```
+
+#### Checkbox Customization
+
+Override specific properties while maintaining theme consistency:
+
+```swift
+NimbusCheckboxItem(title: "Custom Size", isOn: $isChecked)
+    .environment(\.nimbusCheckboxSize, 20)           // Larger checkbox
+    .environment(\.nimbusCheckboxCornerRadii, RectangleCornerRadii(6))  // More rounded
+    .environment(\.nimbusCheckboxItemSpacing, 16)    // More spacing
+```
+
+#### Features
+
+- **Automatic Theming**: Uses theme colors and design tokens
+- **Flexible Positioning**: Checkbox on leading or trailing side
+- **Subtitle Support**: Optional secondary text with proper spacing
+- **Hover States**: Interactive feedback with smooth animations
+- **Accessibility**: Full VoiceOver and keyboard navigation support
+- **Customizable**: Override size, spacing, corner radius via environment
+- **Vertical Alignment**: Center or baseline alignment options
+
 ## 🎨 Theme System
 
 NimbusUI features a sophisticated theme system that provides both consistency and flexibility.
 
 ### Available Themes
 
+NimbusUI now features an **optional component token system** that dramatically simplifies theme creation:
+
 ```swift
-// Default theme
+// Minimal theme - only 17 required properties (recommended starting point)
+.environment(\.nimbusTheme, MinimalTheme.default)
+
+// Default theme - uses sensible defaults for all component tokens
 .environment(\.nimbusTheme, NimbusTheme.default)
 
-// Professional maritime theme
+// Professional maritime theme - selective scroller customization
 .environment(\.nimbusTheme, MaritimeTheme())
 
-// Warm, friendly theme
+// Warm, friendly theme - custom buttons and scroller styling
 .environment(\.nimbusTheme, CustomWarmTheme())
 ```
 
+### Theme Complexity Levels
+
+Choose the approach that fits your needs:
+
+#### 1. **Minimal Theme** (Recommended) - 17 Properties Only
+Perfect for getting started or simple customization needs:
+
+```swift
+struct MyBrandTheme: NimbusTheming {
+    // Only implement colors + 7 core design tokens
+    func primaryColor(for scheme: ColorScheme) -> Color { 
+        Color(hex: "#007AFF") // Your brand blue
+    }
+    // ... 16 more required properties
+    
+    // All component tokens use beautiful defaults automatically!
+    // No need to implement 30+ component properties unless you want to customize them
+}
+```
+
+#### 2. **Selective Override Theme** - Core + Specific Components
+Start minimal, then override only what you need:
+
+```swift
+struct MyCustomTheme: NimbusTheming {
+    // ... 17 required core properties
+    
+    // Override only specific component tokens you want to customize:
+    var buttonCornerRadii: RectangleCornerRadii { RectangleCornerRadii(16) } // Rounded buttons
+    var scrollerWidth: CGFloat { 12 } // Thinner scrollers
+    var checkboxSize: CGFloat { 20 } // Larger checkboxes
+    
+    // Leave everything else as defaults!
+}
+```
+
+#### 3. **Full Customization Theme** - Extensive Component Overrides
+For complete design system control, override many component tokens like `CustomWarmTheme`.
+
+### Theme Examples & Showcase
+
+All theme examples include comprehensive showcases demonstrating every component:
+
+- **`MinimalTheme`**: Located in `MinimalThemeExample.swift` - demonstrates that 17 properties provide a complete, beautiful theme
+- **`MaritimeTheme`**: Located in `MaritimeTheme.swift` - shows professional styling with selective scroller customization  
+- **`CustomWarmTheme`**: Located in `CustomThemeExample.swift` - comprehensive showcase with button and scroller overrides
+- **`NimbusTheme`**: Located in `NimbusTheme.swift` - clean default implementation using all defaults
+
 ### Design Tokens
 
-Themes provide consistent defaults for all design properties:
+The theme system is organized into **required core tokens** and **optional component tokens**:
 
-- **Layout**: `minHeight`, `horizontalPadding`, `listItemHeight`
-- **Animations**: `animation`, `animationFast`
-- **Corner Radii**: `cornerRadii`, `buttonCornerRadii`, `compactButtonCornerRadii`, `listItemCornerRadii`
-- **Elevation**: `elevation`
-- **Spacing**: `labelContentSpacing`
+#### Core Design Tokens (Required - 17 properties)
+- **Brand Colors** (4): `primaryColor`, `secondaryColor`, `tertiaryColor`, `accentColor`
+- **Semantic Colors** (4): `errorColor`, `successColor`, `warningColor`, `infoColor`
+- **Background Colors** (3): `backgroundColor`, `secondaryBackgroundColor`, `tertiaryBackgroundColor`
+- **Text Colors** (3): `primaryTextColor`, `secondaryTextColor`, `tertiaryTextColor`
+- **Border Colors** (2): `borderColor`, `secondaryBorderColor`
+- **Core Design** (1): `backgroundMaterial`, `cornerRadii`, `animation`, `animationFast`, `minHeight`, `horizontalPadding`, `elevation`
+
+#### Component Design Tokens (Optional - 30+ properties with defaults)
+- **Button Tokens**: `buttonCornerRadii`, `compactButtonCornerRadii`, `labelContentSpacing`
+- **List Tokens**: `listItemCornerRadii`, `listItemHeight`
+- **Checkbox Tokens**: `checkboxSize`, `checkboxCornerRadii`, `checkboxBorderWidth`, `checkboxItemSpacing`, etc.
+- **Scroller Tokens**: `scrollerWidth`, `scrollerKnobWidth`, `scrollerKnobPadding`, `scrollerSlotCornerRadius`, etc.
+
+**Key Benefits:**
+- ✅ **62% fewer required properties** (17 vs 45+ previously)
+- ✅ **Selective customization** - override only what you need
+- ✅ **Future-proof** - new components add defaults, existing themes unaffected
+- ✅ **Beautiful defaults** - protocol extensions provide sensible values
 
 ### Property Overrides
 
@@ -423,9 +555,30 @@ struct MyCustomTheme: NimbusTheming {
 NimbusUI is built around several core systems:
 
 - **Theme System**: Protocol-based theming with environment injection
-- **Component Library**: Reusable, themeable UI components
+- **Component Library**: Reusable, themeable UI components  
 - **Modifier System**: Custom view modifiers for consistent styling
 - **Environment Configuration**: SwiftUI environment values for customization
+
+### Custom View Modifiers
+
+NimbusUI includes several custom view modifiers that provide consistent styling across components:
+
+#### Styling Modifiers
+- **`NimbusFilledModifier`**: Fill backgrounds with interaction states (hover, pressed)
+- **`NimbusShadowModifier`**: Elevation-based shadows using theme elevation tokens
+- **`NimbusInnerShadowModifier`**: Inner shadow effects for depth and dimension
+- **`NimbusGradientBorderModifier`**: Gradient borders for enhanced visual appeal
+- **`NimbusBorderedModifier`**: Standard borders using theme border colors
+
+#### Interaction Modifiers  
+- **`NimbusHoverableModifier`**: Hover interactions with smooth state transitions
+- **`LevitatingViewModifier`**: Floating effects for elevated components
+
+#### Layout Modifiers
+- **`NimbusAspectRatioModifier`**: Consistent aspect ratio handling
+- **`NimbusDividerLabelStyle`**: Enhanced label styling with optional dividers for buttons
+
+These modifiers are designed to work together and automatically respect your theme settings, ensuring consistent visual language across your application.
 
 ### Component Organization
 

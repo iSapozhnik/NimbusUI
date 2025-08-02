@@ -27,10 +27,8 @@ private struct ListItemPreview<V>: View where V: Hashable & Comparable {
     }
     
     var body: some View {
-        let roundedTop = topCorner.isRounded(
-            hasFixedHeight: hasFixedHeight)
-        let roundedBottom = bottomCorner.isRounded(
-            hasFixedHeight: hasFixedHeight)
+        let _ = topCorner.isRounded(hasFixedHeight: hasFixedHeight)
+        let _ = bottomCorner.isRounded(hasFixedHeight: hasFixedHeight)
         
         EmptyView()
     }

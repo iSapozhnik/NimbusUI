@@ -167,48 +167,37 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
     public let backgroundMaterial: Material? = Material.thinMaterial
     public let cornerRadii = RectangleCornerRadii(12) // Slightly more rounded for friendly feel
     
-    // MARK: - Design Tokens
+    // MARK: - Core Design Tokens (Required)
     
     public let animation = Animation.smooth(duration: 0.2)
     public let animationFast = Animation.easeInOut(duration: 0.1)
     public let minHeight: CGFloat = 30
     public let horizontalPadding: CGFloat = 8
     public let elevation = Elevation.low
-    public let buttonCornerRadii = RectangleCornerRadii(12)
-    public let compactButtonCornerRadii = RectangleCornerRadii(8)
-    public let listItemCornerRadii = RectangleCornerRadii(2)
-    public let listItemHeight: CGFloat = 44
-    public let labelContentSpacing: CGFloat = 6
-    public let checkboxSize: CGFloat = 16
-    public let checkboxCornerRadii = RectangleCornerRadii(4)
-    public let checkboxBorderWidth: CGFloat = 1
-    public let checkboxItemSpacing: CGFloat = 12
-    public let checkboxItemTextSpacing: CGFloat = 4
-    public let checkboxItemPadding: CGFloat = 16
-    public let checkboxItemMinHeight: CGFloat = 44
     
-    // MARK: - Scroller Design Tokens
+    // MARK: - Component Token Overrides (Optional)
+    // Warm theme emphasizes rounded, friendly design with larger touch targets
     
-    // Core scroller dimensions
-    public let scrollerWidth: CGFloat = 18
-    public let scrollerKnobWidth: CGFloat = 8
-    public let scrollerKnobPadding: CGFloat = 2.5
-    public let scrollerSlotCornerRadius: CGFloat = 6
-    public let scrollerShowSlot: Bool = true
+    // Button customization for friendly, rounded feel
+    public var buttonCornerRadii: RectangleCornerRadii { RectangleCornerRadii(12) }
+    public var compactButtonCornerRadii: RectangleCornerRadii { RectangleCornerRadii(8) }
     
-    // Auto-calculated knob corner radius (based on knob width and padding)
-    public var scrollerKnobCornerRadius: CGFloat {
-        (scrollerKnobWidth - scrollerKnobPadding) / 2
-    }
+    // Scroller customization for warm, accessible feel
+    public var scrollerWidth: CGFloat { 18 }
+    public var scrollerKnobWidth: CGFloat { 8 }
+    public var scrollerKnobPadding: CGFloat { 2.5 }
+    public var scrollerSlotCornerRadius: CGFloat { 6 }
     
-    // Legacy properties (keeping for backward compatibility)
-    public let scrollerKnobInsetVertical: CGFloat = 4
-    public let scrollerKnobInsetHorizontal: CGFloat = 2
-    public let scrollerSlotInset: CGFloat = 2
-    public let scrollerInitialOpacity: CGFloat = 0.4
-    public let scrollerFadeOpacity: CGFloat = 0.4
-    public let scrollerFadeDelay: TimeInterval = 0.8
-    public let scrollerAnimationDuration: TimeInterval = 0.15
+    // Warm scroller timing - more responsive
+    public var scrollerInitialOpacity: CGFloat { 0.4 }
+    public var scrollerFadeOpacity: CGFloat { 0.4 }
+    public var scrollerFadeDelay: TimeInterval { 0.8 }
+    public var scrollerAnimationDuration: TimeInterval { 0.15 }
+    
+    // Legacy overrides for warm theme
+    public var scrollerKnobInsetVertical: CGFloat { 4 }
+    public var scrollerKnobInsetHorizontal: CGFloat { 2 }
+    public var scrollerSlotInset: CGFloat { 2 }
 }
 
 // MARK: - Usage Example

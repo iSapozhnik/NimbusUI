@@ -164,48 +164,32 @@ public struct MaritimeTheme: NimbusTheming, Sendable {
     public let backgroundMaterial: Material? = Material.thinMaterial
     public let cornerRadii = RectangleCornerRadii(8) // Structured feel vs 12pt warm theme
     
-    // MARK: - Design Tokens
+    // MARK: - Core Design Tokens (Required)
     
     public let animation = Animation.smooth(duration: 0.2)
     public let animationFast = Animation.easeInOut(duration: 0.1)
     public let minHeight: CGFloat = 30
     public let horizontalPadding: CGFloat = 8
     public let elevation = Elevation.low
-    public let buttonCornerRadii = RectangleCornerRadii(8)
-    public let compactButtonCornerRadii = RectangleCornerRadii(8)
-    public let listItemCornerRadii = RectangleCornerRadii(2)
-    public let listItemHeight: CGFloat = 44
-    public let labelContentSpacing: CGFloat = 6
-    public let checkboxSize: CGFloat = 16
-    public let checkboxCornerRadii = RectangleCornerRadii(4)
-    public let checkboxBorderWidth: CGFloat = 1
-    public let checkboxItemSpacing: CGFloat = 12
-    public let checkboxItemTextSpacing: CGFloat = 4
-    public let checkboxItemPadding: CGFloat = 16
-    public let checkboxItemMinHeight: CGFloat = 44
     
-    // MARK: - Scroller Design Tokens
+    // MARK: - Component Token Overrides (Optional)
+    // Maritime theme customizes scroller for a more compact, professional feel
     
-    // Core scroller dimensions
-    public let scrollerWidth: CGFloat = 14
-    public let scrollerKnobWidth: CGFloat = 5
-    public let scrollerKnobPadding: CGFloat = 1.5
-    public let scrollerSlotCornerRadius: CGFloat = 3
-    public let scrollerShowSlot: Bool = true
+    // Scroller customization for maritime style
+    public var scrollerWidth: CGFloat { 14 }
+    public var scrollerKnobWidth: CGFloat { 5 }
+    public var scrollerKnobPadding: CGFloat { 1.5 }
+    public var scrollerSlotCornerRadius: CGFloat { 3 }
     
-    // Auto-calculated knob corner radius (based on knob width and padding)
-    public var scrollerKnobCornerRadius: CGFloat {
-        (scrollerKnobWidth - scrollerKnobPadding) / 2
-    }
+    // Custom scroller timing for maritime theme
+    public var scrollerInitialOpacity: CGFloat { 0.35 }
+    public var scrollerFadeOpacity: CGFloat { 0.35 }
+    public var scrollerFadeDelay: TimeInterval { 1.2 }
+    public var scrollerAnimationDuration: TimeInterval { 0.12 }
     
-    // Legacy properties (keeping for backward compatibility)
-    public let scrollerKnobInsetVertical: CGFloat = 5
-    public let scrollerKnobInsetHorizontal: CGFloat = 3
-    public let scrollerSlotInset: CGFloat = 2
-    public let scrollerInitialOpacity: CGFloat = 0.35
-    public let scrollerFadeOpacity: CGFloat = 0.35
-    public let scrollerFadeDelay: TimeInterval = 1.2
-    public let scrollerAnimationDuration: TimeInterval = 0.12
+    // Legacy overrides for maritime
+    public var scrollerKnobInsetVertical: CGFloat { 5 }
+    public var scrollerSlotInset: CGFloat { 2 }
 }
 
 extension MaritimeTheme {
