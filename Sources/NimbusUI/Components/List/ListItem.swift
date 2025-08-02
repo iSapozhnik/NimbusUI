@@ -105,7 +105,7 @@ public struct ListItem<Content, V>: View where Content: View, V: Hashable {
                         itemBackground()
                     }
                     .padding(.horizontal, 1)
-//                    .padding(.leading, 1) // it's nuanced
+                    .padding(.leading, 1) // it's nuanced
                 }
             }
             .onChange(of: selection) { _ in
@@ -220,7 +220,7 @@ extension ListItem {
                     .foregroundStyle(theme.hoverBackgroundColor(for: colorScheme))
 //                    .foregroundStyle(.quaternary.opacity(0.7))
                     .opacity((maxTintOpacity - tintOpacity) * (1 / maxTintOpacity))
-                    .padding(.vertical, 1)
+                    .padding(.bottom, 1)
             }
         }
         .clipShape(itemBackgroundShape)
@@ -384,9 +384,9 @@ private struct ListItemPreview: View {
     @Environment(\.nimbusListFixedHeightUntil) private var fixedHeight
     
     @State private var items = ["First Item", "Second Item", "Third Item", "Fourth Item"]
-    @State private var selection: Set<String> = ["Second Item"]
-    @State private var firstItem: String? = "Second Item"
-    @State private var lastItem: String? = "Second Item"
+    @State private var selection: Set<String> = ["First Item"]
+    @State private var firstItem: String? = "First Item"
+    @State private var lastItem: String? = "First Item"
 
     private var hasFixedHeight: Bool {
         guard let fixedHeight else { return false }

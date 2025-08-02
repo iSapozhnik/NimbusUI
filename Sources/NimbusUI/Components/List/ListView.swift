@@ -362,18 +362,19 @@ private struct ListViewPreview: View {
                                 .padding(.horizontal, 16)
                         },
                         emptyView: {
-                            VStack(spacing: 12) {
+                            VStack(spacing: 16) {
                                 Image(systemName: "tray")
                                     .font(.system(size: 32))
                                     .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                                VStack(spacing: 4) {
+                                    Text("No items available")
+                                        .font(.headline)
+                                        .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                                    Text("Add some items to see them here")
+                                        .font(.caption)
+                                        .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                                }
                                 
-                                Text("No items available")
-                                    .font(.headline)
-                                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
-                                
-                                Text("Add some items to see them here")
-                                    .font(.caption)
-                                    .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
                             }
                             .padding(40)
                         }
@@ -528,6 +529,7 @@ private struct FeatureBullet: View {
 
 #Preview("MaritimeTheme") {
     ListViewPreview()
+        .fixedSize()
         .environment(\.nimbusTheme, MaritimeTheme())
 }
 
