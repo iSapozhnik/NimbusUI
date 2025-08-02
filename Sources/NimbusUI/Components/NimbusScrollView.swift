@@ -321,10 +321,11 @@ private struct NimbusScrollViewPreview: View {
                     }
                     .padding(16)
                 }
+                .showsHorizontalScroller(false)
                 .scrollerWidth(20)
                 .knobWidth(8)
-                .knobPadding(3)
-                .slotCornerRadius(8)
+                .knobPadding(2)
+                .slotCornerRadius(0)
                 .frame(height: 250)
                 .background(theme.backgroundColor(for: colorScheme))
                 .cornerRadius(12)
