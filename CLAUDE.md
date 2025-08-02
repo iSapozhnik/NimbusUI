@@ -62,11 +62,71 @@ swift package resolve
 ```
 Sources/NimbusUI/
 ├── NimbusUI.swift          # Library entry point
-├── Components/             # UI components (ButtonStyles/, List/, Onboarding/)
+├── Components/             # UI components following standardized structure
+│   ├── ButtonStyles/       # Button style implementations
+│   │   ├── Appearance.swift
+│   │   ├── PrimaryDefaultButtonStyle.swift
+│   │   ├── PrimaryProminentButtonStyle.swift
+│   │   ├── SecondaryBorderedButtonStyle.swift
+│   │   ├── SecondaryProminentButtonStyle.swift
+│   │   └── Preview/        # Dedicated preview files
+│   │       ├── PrimaryDefaultButtonStyle+Preview.swift
+│   │       ├── PrimaryProminentButtonStyle+Preview.swift
+│   │       ├── SecondaryBorderedButtonStyle+Preview.swift
+│   │       └── SecondaryProminentButtonStyle+Preview.swift
+│   ├── Checkbox/           # Checkbox components
+│   │   ├── NimbusCheckbox.swift
+│   │   ├── NimbusCheckboxItem.swift
+│   │   └── Preview/
+│   │       ├── NimbusCheckbox+Preview.swift
+│   │       └── NimbusCheckboxItem+Preview.swift
+│   ├── List/               # List components
+│   │   ├── ListItem.swift
+│   │   └── Preview/
+│   │       └── ListItem+Preview.swift
+│   ├── Onboarding/         # Onboarding system
+│   │   ├── FeaturePageView.swift
+│   │   ├── OnboardingView.swift
+│   │   ├── PageControlView.swift
+│   │   └── Preview/
+│   │       └── OnboardingView+Preview.swift
+│   ├── ScrollView/         # Custom scroll view
+│   │   ├── NimbusScrollView.swift
+│   │   └── Preview/
+│   │       └── NimbusScrollView+Preview.swift
+│   └── Scroller/           # Custom scroller component
+│       ├── NimbusScroller.swift
+│       └── Preview/
+│           └── NimbusScroller+Preview.swift
 ├── Extensions/             # Swift extensions
 ├── Modifiers/              # Custom SwiftUI modifiers
 └── Theming/               # Theme system and protocols
 ```
+
+### Component Folder Structure Standards
+
+**IMPORTANT**: All components MUST follow this standardized folder structure:
+
+1. **Component Folder**: Named after the component (e.g., `ButtonStyles/`, `Checkbox/`)
+2. **Implementation Files**: Main component files in the root of the component folder
+3. **Preview Folder**: Dedicated `Preview/` subfolder for ALL SwiftUI previews
+4. **Preview Files**: Named with the pattern `ComponentName+Preview.swift`
+
+**Rules for Component Organization**:
+- ✅ **DO**: Keep implementation and preview code separate
+- ✅ **DO**: Use the `Preview/` subfolder for all preview code
+- ✅ **DO**: Name preview files with `+Preview.swift` suffix
+- ✅ **DO**: Follow the established pattern when creating new components
+- ❌ **DON'T**: Embed preview code in implementation files
+- ❌ **DON'T**: Create subfolders within component folders (except `Preview/`)
+- ❌ **DON'T**: Place component files loose in the `Components/` root
+
+**Benefits of This Structure**:
+- Clear separation between implementation and preview code
+- Easy navigation and maintenance
+- Better team development workflow
+- Consistent organization across all components
+- Preview changes don't clutter implementation files
 
 ## Technical Requirements
 
@@ -167,6 +227,16 @@ Use the Task tool with specialized design system knowledge for:
 5. **Composability**: Components should work well together and be easily combinable
 
 ### Component Development Standards
+
+#### File Organization (MANDATORY)
+- **Folder Structure**: ALWAYS follow the standardized component folder pattern
+- **Component Folder**: Create a dedicated folder for each component (e.g., `NewComponent/`)
+- **Implementation Files**: Place main component files in the component folder root
+- **Preview Separation**: ALWAYS create a `Preview/` subfolder for all SwiftUI previews
+- **Preview Naming**: Use `ComponentName+Preview.swift` naming pattern
+- **No Mixed Content**: NEVER embed preview code in implementation files
+
+#### Theme and API Integration
 - **Theme Integration**: Access theme via `@Environment(\.nimbusTheme)` for design token defaults
 - **Override Pattern**: Use `@Environment(\.nimbusProperty) private var overrideProperty` and apply as `overrideProperty ?? theme.property`
 - **Design Token Usage**: Prefer theme-provided values over hardcoded constants
@@ -175,7 +245,12 @@ Use the Task tool with specialized design system knowledge for:
 - **Documentation**: Include examples showing both theme defaults and override usage
 - **Button API Pattern**: Use `AutoLabelDetectionModifier` to conditionally apply `NimbusDividerLabelStyle` only when environment values are set
 - **Backward Compatibility**: Ensure new APIs don't break existing plain text button usage
-- **Preview Best Practices**: Avoid `traits: .sizeThatFitsLayout` for complex layouts; document SwiftUI limitations
+
+#### Preview Standards
+- **Separation**: ALL previews MUST be in dedicated `Preview/` folder
+- **Layout Issues**: Avoid `traits: .sizeThatFitsLayout` for complex layouts; document SwiftUI limitations
+- **Preview Content**: Include comprehensive examples covering all component states and configurations
+- **Theme Variations**: Show component behavior across different themes when applicable
 
 ### Code Quality Requirements
 - Follow Swift API Design Guidelines

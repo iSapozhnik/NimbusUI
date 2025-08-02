@@ -427,6 +427,64 @@ NimbusUI is built around several core systems:
 - **Modifier System**: Custom view modifiers for consistent styling
 - **Environment Configuration**: SwiftUI environment values for customization
 
+### Component Organization
+
+NimbusUI follows a standardized folder structure for consistent organization and easy navigation:
+
+```
+Sources/NimbusUI/Components/
+├── ButtonStyles/           # Button style implementations
+│   ├── Appearance.swift
+│   ├── PrimaryDefaultButtonStyle.swift
+│   ├── PrimaryProminentButtonStyle.swift
+│   ├── SecondaryBorderedButtonStyle.swift
+│   ├── SecondaryProminentButtonStyle.swift
+│   └── Preview/           # Dedicated preview files
+│       ├── PrimaryDefaultButtonStyle+Preview.swift
+│       ├── PrimaryProminentButtonStyle+Preview.swift
+│       ├── SecondaryBorderedButtonStyle+Preview.swift
+│       └── SecondaryProminentButtonStyle+Preview.swift
+├── Checkbox/              # Checkbox components
+│   ├── NimbusCheckbox.swift
+│   ├── NimbusCheckboxItem.swift
+│   └── Preview/
+│       ├── NimbusCheckbox+Preview.swift
+│       └── NimbusCheckboxItem+Preview.swift
+├── List/                  # List components
+│   ├── ListItem.swift
+│   └── Preview/
+│       └── ListItem+Preview.swift
+├── Onboarding/            # Onboarding system
+│   ├── FeaturePageView.swift
+│   ├── OnboardingView.swift
+│   ├── PageControlView.swift
+│   └── Preview/
+│       └── OnboardingView+Preview.swift
+├── ScrollView/            # Custom scroll view
+│   ├── NimbusScrollView.swift
+│   └── Preview/
+│       └── NimbusScrollView+Preview.swift
+└── Scroller/              # Custom scroller component
+    ├── NimbusScroller.swift
+    └── Preview/
+        └── NimbusScroller+Preview.swift
+```
+
+#### Folder Structure Guidelines
+
+Each component follows this consistent pattern:
+
+1. **Component Folder**: Named after the component (e.g., `ButtonStyles/`, `Checkbox/`)
+2. **Implementation Files**: Main component files in the root of the component folder
+3. **Preview Folder**: Dedicated `Preview/` subfolder for all SwiftUI previews
+4. **Preview Files**: Named with the pattern `ComponentName+Preview.swift`
+
+This organization provides:
+- **Clear Separation**: Implementation and preview code are kept separate
+- **Easy Navigation**: Consistent structure across all components
+- **Better Maintainability**: Preview changes don't clutter implementation files
+- **Team Development**: Multiple developers can work on different aspects without conflicts
+
 ### Design Principles
 
 1. **Consistency First** - Every component feels part of a cohesive system
