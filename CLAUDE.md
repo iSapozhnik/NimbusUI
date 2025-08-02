@@ -54,7 +54,7 @@ swift package resolve
 
 ### Key Components
 
-**Button System** (`Sources/NimbusUI/Components/ButtonStyles/`): Four button styles (primaryDefault, primaryProminent, secondaryProminent, secondaryBordered) with Enhanced Button + Label API for automatic divider detection.
+**Button System** (`Sources/NimbusUI/Components/ButtonStyles/`): Six button styles (primaryDefault, primaryProminent, secondaryProminent, secondaryBordered, LinkButtonStyle, CloseButtonStyle) with Enhanced Button + Label API for automatic divider detection. LinkButtonStyle provides text-only action buttons, CloseButtonStyle provides icon-only dismiss buttons.
 
 **Checkbox System** (`Sources/NimbusUI/Components/Checkbox/`): `NimbusCheckbox` standalone component and `NimbusCheckboxItem` with title/subtitle support, flexible positioning (leading/trailing), and full theming integration.
 
@@ -63,6 +63,8 @@ swift package resolve
 **Onboarding System** (`Sources/NimbusUI/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
 
 **Scroll System** (`Sources/NimbusUI/Components/ScrollView/` & `Sources/NimbusUI/Components/Scroller/`): `NimbusScrollView` (NSScrollView wrapper) and `NimbusScroller` (standalone scroller) with custom theming and visibility controls.
+
+**Notification System** (`Sources/NimbusUI/Components/Notification/`): Complete notification system with `NimbusNotificationView` component, view modifier presentation (`.nimbusNotification()`), 4 semantic types (info, success, warning, error), auto-dismiss timing, icon alignment options, and enhanced color hierarchy using theme semantic colors.
 
 ### Project Structure
 ```
@@ -75,11 +77,15 @@ Sources/NimbusUI/
 │   │   ├── PrimaryProminentButtonStyle.swift
 │   │   ├── SecondaryBorderedButtonStyle.swift
 │   │   ├── SecondaryProminentButtonStyle.swift
+│   │   ├── LinkButtonStyle.swift
+│   │   ├── CloseButtonStyle.swift
 │   │   └── Preview/        # Dedicated preview files
 │   │       ├── PrimaryDefaultButtonStyle+Preview.swift
 │   │       ├── PrimaryProminentButtonStyle+Preview.swift
 │   │       ├── SecondaryBorderedButtonStyle+Preview.swift
-│   │       └── SecondaryProminentButtonStyle+Preview.swift
+│   │       ├── SecondaryProminentButtonStyle+Preview.swift
+│   │       ├── LinkButtonStyle+Preview.swift
+│   │       └── CloseButtonStyle+Preview.swift
 │   ├── Checkbox/           # Checkbox components
 │   │   ├── NimbusCheckbox.swift
 │   │   ├── NimbusCheckboxItem.swift
@@ -90,6 +96,15 @@ Sources/NimbusUI/
 │   │   ├── ListItem.swift
 │   │   └── Preview/
 │   │       └── ListItem+Preview.swift
+│   ├── Notification/       # Notification system
+│   │   ├── NimbusNotificationView.swift
+│   │   ├── NimbusNotificationModifier.swift
+│   │   ├── View+NimbusNotification.swift
+│   │   ├── NotificationDismissBehavior.swift
+│   │   ├── NotificationType.swift
+│   │   ├── NotificationIconAlignment.swift
+│   │   └── Preview/
+│   │       └── NimbusNotificationView+Preview.swift
 │   ├── Onboarding/         # Onboarding system
 │   │   ├── FeaturePageView.swift
 │   │   ├── OnboardingView.swift
@@ -192,6 +207,46 @@ Button(action: {}) {
 .environment(\.nimbusButtonIconAlignment, .trailing)
 ```
 
+### Notification System Usage
+The notification system provides semantic notifications with flexible presentation:
+
+```swift
+import NimbusUI
+
+// Basic notification with auto-dismiss
+ContentView()
+    .nimbusNotification(
+        isPresented: $showSuccess,
+        type: .success,
+        message: "Payment completed successfully!",
+        actionText: "View Details",
+        dismissBehavior: .temporary(3.0)
+    )
+
+// Advanced notification with icon alignment and action handling
+ContentView()
+    .nimbusNotification(
+        isPresented: $showWarning,
+        type: .warning,
+        message: "Action needed! Update payment information in your profile.",
+        actionText: "Edit Profile",
+        iconAlignment: .baseline,
+        dismissBehavior: .sticky,
+        onAction: { navigateToProfile() },
+        onDismiss: { handleDismiss() }
+    )
+
+// Long message with proper text wrapping
+ContentView()
+    .nimbusNotification(
+        isPresented: $showInfo,
+        type: .info,
+        message: "This is a very long informational message that demonstrates proper text wrapping without truncation while maintaining excellent readability.",
+        iconAlignment: .top,
+        dismissBehavior: .temporary(5.0)
+    )
+```
+
 ### Theme System Architecture
 
 **Core Design Tokens (Required - 17 properties):**
@@ -202,10 +257,11 @@ Button(action: {}) {
 - **Border Colors** (2): `borderColor`, `secondaryBorderColor`
 - **Core Design** (1): `backgroundMaterial`, `cornerRadii`, `animation`, `animationFast`, `minHeight`, `horizontalPadding`, `elevation`
 
-**Component Design Tokens (Optional - 30+ properties):**
+**Component Design Tokens (Optional - 35+ properties):**
 - **Button Tokens**: `buttonCornerRadii`, `compactButtonCornerRadii`, `labelContentSpacing`
 - **List Tokens**: `listItemCornerRadii`, `listItemHeight`
 - **Checkbox Tokens**: `checkboxSize`, `checkboxCornerRadii`, `checkboxBorderWidth`, `checkboxItemSpacing`, etc.
+- **Notification Tokens**: `notificationTopPadding`, `notificationHorizontalPadding`, `notificationCornerRadii`, `notificationBackgroundOpacity`, `notificationMinHeight`, `notificationIconSize`, `notificationPadding`, etc.
 - **Scroller Tokens**: `scrollerWidth`, `scrollerKnobWidth`, `scrollerKnobPadding`, `scrollerSlotCornerRadius`, etc.
 
 **Benefits of Optional Token System:**

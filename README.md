@@ -28,6 +28,7 @@
   - [Checkbox Components](#checkbox-components)
   - [List Components](#list-components)
   - [Scroll Components](#scroll-components)
+  - [Notification System](#notification-system)
   - [Onboarding System](#onboarding-system)
 - [🎨 Theme System](#-theme-system)
   - [Available Themes](#available-themes)
@@ -62,6 +63,7 @@
 - Interactive checkboxes with positioning
 - Customizable list items with hover states
 - Custom scroll components with theming
+- Notification system with semantic types
 
 </td>
 <td width="50%">
@@ -398,6 +400,178 @@ NimbusScroller(
 )
 .frame(width: 300, height: 50)
 ```
+
+</details>
+
+---
+
+### Notification System
+
+Professional notification system with semantic styling, auto-dismiss timing, and flexible presentation.
+
+<details>
+<summary><strong>Basic Notification</strong></summary>
+
+Display notifications with semantic types and automatic positioning:
+
+```swift
+struct ContentView: View {
+    @State private var showSuccess = false
+    
+    var body: some View {
+        VStack {
+            Button("Show Success") { showSuccess = true }
+        }
+        .nimbusNotification(
+            isPresented: $showSuccess,
+            type: .success,
+            message: "Payment completed successfully!",
+            actionText: "View Details",
+            dismissBehavior: .temporary(3.0)
+        )
+    }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Notification Types</strong></summary>
+
+Four semantic notification types with automatic theming:
+
+```swift
+// Info notification
+.nimbusNotification(
+    isPresented: $showInfo,
+    type: .info,
+    message: "New feature coming soon! Prepare yourself for the release next month.",
+    actionText: "Learn More"
+)
+
+// Success notification  
+.nimbusNotification(
+    isPresented: $showSuccess,
+    type: .success,
+    message: "Congratulations! Your payment is completed successfully.",
+    actionText: "Check Details"
+)
+
+// Warning notification
+.nimbusNotification(
+    isPresented: $showWarning,
+    type: .warning,
+    message: "Action needed! Update payment information in your profile.",
+    actionText: "Edit Profile"
+)
+
+// Error notification
+.nimbusNotification(
+    isPresented: $showError,
+    type: .error,
+    message: "Something went wrong! We failed to complete your payment.",
+    actionText: "Try Again"
+)
+```
+
+</details>
+
+<details>
+<summary><strong>Dismiss Behaviors</strong></summary>
+
+Control how notifications are dismissed:
+
+```swift
+// Auto-dismiss after 5 seconds
+.nimbusNotification(
+    isPresented: $showTemporary,
+    type: .info,
+    message: "This notification will disappear automatically.",
+    dismissBehavior: .temporary(5.0)
+)
+
+// Manual dismiss only (sticky)
+.nimbusNotification(
+    isPresented: $showSticky,
+    type: .warning,
+    message: "This notification requires manual dismissal.",
+    dismissBehavior: .sticky
+)
+```
+
+</details>
+
+<details>
+<summary><strong>Icon Alignment Options</strong></summary>
+
+Control icon positioning relative to text content:
+
+```swift
+// Center alignment (default)
+.nimbusNotification(
+    isPresented: $showCentered,
+    type: .success,
+    message: "Icon centers with entire text content.",
+    iconAlignment: .center
+)
+
+// Baseline alignment
+.nimbusNotification(
+    isPresented: $showBaseline,
+    type: .warning,
+    message: "Icon aligns with first line text baseline for better visual hierarchy.",
+    iconAlignment: .baseline
+)
+
+// Top alignment
+.nimbusNotification(
+    isPresented: $showTop,
+    type: .error,
+    message: "Icon aligns with top of text content for consistent top positioning.",
+    iconAlignment: .top
+)
+```
+
+</details>
+
+<details>
+<summary><strong>Advanced Usage</strong></summary>
+
+Complete notification with all options:
+
+```swift
+.nimbusNotification(
+    isPresented: $showAdvanced,
+    type: .warning,
+    message: "This is a comprehensive notification with custom icon alignment and action handling.",
+    actionText: "Fix Now",
+    iconAlignment: .baseline,
+    dismissBehavior: .sticky,
+    onAction: { 
+        // Handle action tap
+        performAction()
+    },
+    onDismiss: {
+        // Handle dismissal
+        handleDismiss()
+    }
+)
+```
+
+</details>
+
+<details>
+<summary><strong>Features</strong></summary>
+
+- 🎨 **Semantic Types**: Info, Success, Warning, Error with automatic theming
+- ⏱️ **Dismiss Behaviors**: Auto-dismiss with custom timing or manual-only
+- 📐 **Icon Alignment**: Center, baseline, or top positioning options
+- 🎭 **Theme Integration**: Automatic semantic colors with enhanced contrast
+- 📱 **Perfect Positioning**: Top overlay with safe area and padding respect
+- 🔗 **Action Support**: Optional action buttons with semantic link styling
+- ✂️ **Text Wrapping**: Long messages wrap properly without truncation
+- 🎬 **Smooth Animations**: Spring show/hide transitions
+- 🔄 **State Management**: Automatic binding management and reset
 
 </details>
 
