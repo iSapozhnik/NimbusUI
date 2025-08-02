@@ -75,22 +75,6 @@ public struct ListItem<Content, V>: View where Content: View, V: Hashable {
     
     @ViewBuilder var content: (Binding<V>) -> Content
     
-    private var itemHeight: CGFloat {
-        overrideItemHeight ?? theme.listItemHeight
-    }
-    
-    private var animationFast: Animation {
-        overrideAnimationFast ?? theme.animationFast
-    }
-    
-    private var itemCornerRadii: RectangleCornerRadii {
-        overrideItemCornerRadii ?? theme.listItemCornerRadii
-    }
-    
-    private var cornerRadii: RectangleCornerRadii {
-        overrideCornerRadii ?? theme.cornerRadii
-    }
-    
     public var body: some View {
         Color.clear
             .frame(minHeight: itemHeight)
@@ -121,7 +105,7 @@ public struct ListItem<Content, V>: View where Content: View, V: Hashable {
                         itemBackground()
                     }
                     .padding(.horizontal, 1)
-                    .padding(.leading, 1) // it's nuanced
+//                    .padding(.leading, 1) // it's nuanced
                 }
             }
             .onChange(of: selection) { _ in
@@ -158,17 +142,33 @@ public struct ListItem<Content, V>: View where Content: View, V: Hashable {
 }
 
 extension ListItem {
-    fileprivate var isFirst: Bool {
+    private var itemHeight: CGFloat {
+        overrideItemHeight ?? theme.listItemHeight
+    }
+    
+    private var animationFast: Animation {
+        overrideAnimationFast ?? theme.animationFast
+    }
+    
+    private var itemCornerRadii: RectangleCornerRadii {
+        overrideItemCornerRadii ?? theme.listItemCornerRadii
+    }
+    
+    private var cornerRadii: RectangleCornerRadii {
+        overrideCornerRadii ?? theme.cornerRadii
+    }
+    
+    private var isFirst: Bool {
         guard !items.isEmpty else { return false }
         return item == items.first
     }
 
-    fileprivate var isLast: Bool {
+    private var isLast: Bool {
         guard !items.isEmpty else { return false }
         return item == items.last
     }
     
-    fileprivate var isFirstInSelection: Bool {
+    private var isFirstInSelection: Bool {
         guard !items.isEmpty else { return false }
         return if
             let firstIndex = items.firstIndex(of: item),
@@ -218,7 +218,9 @@ extension ListItem {
             if highlightOnHover, isHovering {
                 Rectangle()
                     .foregroundStyle(theme.hoverBackgroundColor(for: colorScheme))
+//                    .foregroundStyle(.quaternary.opacity(0.7))
                     .opacity((maxTintOpacity - tintOpacity) * (1 / maxTintOpacity))
+                    .padding(.vertical, 1)
             }
         }
         .clipShape(itemBackgroundShape)
@@ -442,7 +444,7 @@ private struct ListItemPreview: View {
 
 #Preview {
     ListItemPreview()
-        .environment(\.nimbusTheme, NimbusTheme.default)
+        .environment(\.nimbusTheme, MaritimeTheme())
         .environment(\.nimbusListItemHighlightOnHover, true)
         .environment(\.nimbusListRoundedTopCornerBehavior, .always)
         .environment(\.nimbusListRoundedBottomCornerBehavior, .always)
