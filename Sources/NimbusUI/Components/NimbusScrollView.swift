@@ -66,6 +66,14 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
         hostingView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.documentView = hostingView
         
+        // Set up width constraints to ensure content fills available space
+        let clipView = scrollView.contentView
+        NSLayoutConstraint.activate([
+            hostingView.leadingAnchor.constraint(equalTo: clipView.leadingAnchor),
+            hostingView.trailingAnchor.constraint(equalTo: clipView.trailingAnchor),
+            hostingView.widthAnchor.constraint(greaterThanOrEqualTo: clipView.widthAnchor)
+        ])
+        
         // Configure custom scrollers
         configureScrollers(for: scrollView)
         
@@ -81,6 +89,9 @@ public struct NimbusScrollView<Content: View>: NSViewRepresentable {
         // Update content
         if let hostingView = scrollView.documentView as? NSHostingView<Content> {
             hostingView.rootView = content
+            
+            // Ensure width constraints are maintained (constraints are set once in makeNSView)
+            // No need to re-add constraints as they persist across updates
         }
         
         // Update scroller configuration
@@ -323,6 +334,7 @@ private struct NimbusScrollViewPreview: View {
                 }
                 .showsScrollers(vertical: false, horizontal: true)
                 .frame(height: 150)
+                .frame(minWidth: 500)
                 .background(theme.backgroundColor(for: colorScheme))
                 .cornerRadius(12)
             }
@@ -437,7 +449,7 @@ private struct NimbusScrollViewPreview: View {
         }
         .padding(24)
         .background(theme.backgroundColor(for: colorScheme))
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: 600, maxHeight: .infinity)
     }
 }
 

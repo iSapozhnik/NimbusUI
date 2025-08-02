@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+// MARK: - Helper Extensions
+
+private extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
+}
+
 /// A stylized list container that manages item collections and selection states.
 public struct ListView<ContentA, ContentB, V, ID>: View
     where ContentA: View, ContentB: View, V: Hashable, ID: Hashable {
@@ -24,6 +37,7 @@ public struct ListView<ContentA, ContentB, V, ID>: View
     @Environment(\.nimbusListRoundedTopCornerBehavior) private var topCorner
     @Environment(\.nimbusListRoundedBottomCornerBehavior) private var bottomCorner
     @Environment(\.nimbusListScrollDisabled) private var scrollDisabled
+    @Environment(\.nimbusListUseCustomScrollers) private var useCustomScrollers
     @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
     
     // MARK: - Properties
@@ -74,6 +88,83 @@ public struct ListView<ContentA, ContentB, V, ID>: View
     private var hasFixedHeight: Bool {
         guard let fixedHeight else { return false }
         return totalHeight <= fixedHeight
+    }
+    
+    // MARK: - List Implementations
+    
+    private var standardList: some View {
+        List(selection: $selection) {
+            listContent
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .scrollDisabled(scrollDisabled || hasFixedHeight)
+        .background(theme.backgroundColor(for: colorScheme))
+    }
+    
+    private var customScrollerList: some View {
+        NimbusScrollView {
+            LazyVStack(spacing: 0) {
+                listContent
+            }
+            .frame(maxWidth: .infinity)
+            .background(theme.backgroundColor(for: colorScheme))
+        }
+        .showsScrollers(vertical: !(scrollDisabled || hasFixedHeight), horizontal: false)
+        .background(theme.backgroundColor(for: colorScheme))
+    }
+    
+    @ViewBuilder
+    private var listContent: some View {
+        if contentMarginsTop > 0 {
+            Spacer()
+                .frame(height: contentMarginsTop)
+        }
+
+        ForEach($items, id: keyPath) { item in
+            let roundedTop = topCorner.isRounded(hasFixedHeight: hasFixedHeight)
+            let roundedBottom = bottomCorner.isRounded(hasFixedHeight: hasFixedHeight)
+
+            ListItem(
+                items: $items,
+                selection: $selection,
+                item: item,
+                firstItem: $firstItem,
+                lastItem: $lastItem,
+                roundedTop: roundedTop,
+                roundedBottom: roundedBottom,
+                content: content
+            )
+            .if(useCustomScrollers) { view in
+                view.onTapGesture {
+                    handleItemSelection(item.wrappedValue)
+                }
+            }
+        }
+        .if(!useCustomScrollers) { view in
+            view.onMove { indices, newOffset in
+                withAnimation(animationFast) {
+                    items.move(
+                        fromOffsets: indices,
+                        toOffset: newOffset
+                    )
+                }
+            }
+        }
+        .if(!useCustomScrollers) { view in
+            view
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(.init())
+        }
+        .padding(.horizontal, useCustomScrollers ? 0 : -10)
+        .padding(.leading, contentMarginsLeading)
+        .padding(.trailing, contentMarginsTrailing)
+
+        if contentMarginsBottom > 0 {
+            Spacer()
+                .frame(height: contentMarginsBottom)
+        }
     }
     
     // MARK: - Initializers
@@ -130,52 +221,10 @@ public struct ListView<ContentA, ContentB, V, ID>: View
             if items.isEmpty {
                 emptyView()
                     .foregroundStyle(theme.secondaryTextColor(for: colorScheme))
+            } else if useCustomScrollers {
+                customScrollerList
             } else {
-                List(selection: $selection) {
-                    if contentMarginsTop > 0 {
-                        Spacer()
-                            .frame(height: contentMarginsTop)
-                    }
-
-                    ForEach($items, id: keyPath) { item in
-                        let roundedTop = topCorner.isRounded(hasFixedHeight: hasFixedHeight)
-                        let roundedBottom = bottomCorner.isRounded(hasFixedHeight: hasFixedHeight)
-
-                        ListItem(
-                            items: $items,
-                            selection: $selection,
-                            item: item,
-                            firstItem: $firstItem,
-                            lastItem: $lastItem,
-                            roundedTop: roundedTop,
-                            roundedBottom: roundedBottom,
-                            content: content
-                        )
-                    }
-                    .onMove { indices, newOffset in
-                        withAnimation(animationFast) {
-                            items.move(
-                                fromOffsets: indices,
-                                toOffset: newOffset
-                            )
-                        }
-                    }
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(.init())
-                    .padding(.horizontal, -10)
-                    .padding(.leading, contentMarginsLeading)
-                    .padding(.trailing, contentMarginsTrailing)
-
-                    if contentMarginsBottom > 0 {
-                        Spacer()
-                            .frame(height: contentMarginsBottom)
-                    }
-                }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .scrollDisabled(scrollDisabled || hasFixedHeight)
-                .background(theme.backgroundColor(for: colorScheme))
+                standardList
             }
         }
         .frame(height: hasFixedHeight ? totalHeight : nil)
@@ -221,6 +270,16 @@ public struct ListView<ContentA, ContentB, V, ID>: View
             lastItem = items.last { selection.contains($0) }
         }
     }
+    
+    private func handleItemSelection(_ item: V) {
+        withAnimation(animationFast) {
+            if selection.contains(item) {
+                selection.remove(item)
+            } else {
+                selection.insert(item)
+            }
+        }
+    }
 
     private func addEventMonitor() {
         // Note: This would require implementing EventMonitorManager
@@ -230,6 +289,17 @@ public struct ListView<ContentA, ContentB, V, ID>: View
     private func removeEventMonitor() {
         // Note: This would require implementing EventMonitorManager
         // For now, we'll use a simpler approach focusing on the core list functionality
+    }
+}
+
+// MARK: - Convenience Extensions
+
+public extension ListView {
+    /// Enables custom themed scrollers for the ListView
+    /// - Parameter enabled: Whether to use custom scrollers (default: true)
+    /// - Returns: A ListView configured to use custom scrollers
+    func useCustomScrollers(_ enabled: Bool = true) -> some View {
+        environment(\.nimbusListUseCustomScrollers, enabled)
     }
 }
 
@@ -305,6 +375,59 @@ private struct ListViewPreview: View {
                     Text("Selected: \(selection.sorted().joined(separator: ", "))")
                         .font(.caption)
                         .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                }
+                
+                // Custom Scroller ListView
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("ListView with Custom Scrollers")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                    
+                    Text("Same list using custom themed scrollers instead of SwiftUI's native List")
+                        .font(.caption)
+                        .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                    
+                    ListView(
+                        items: $items,
+                        selection: $selection,
+                        id: \.self
+                    ) { itemBinding in
+                        HStack {
+                            Image(systemName: iconForItem(itemBinding.wrappedValue))
+                                .foregroundColor(theme.accentColor(for: colorScheme))
+                                .frame(width: 20)
+                            
+                            Text(itemBinding.wrappedValue)
+                                .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                            
+                            Spacer()
+                            
+                            if selection.contains(itemBinding.wrappedValue) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(theme.successColor(for: colorScheme))
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                    }
+                    .useCustomScrollers()
+                    .frame(height: 300)
+                    .environment(\.nimbusListItemHighlightOnHover, true)
+                    .environment(\.nimbusListRoundedTopCornerBehavior, .always)
+                    .environment(\.nimbusListRoundedBottomCornerBehavior, .always)
+                    .scrollerWidth(18)
+                    .knobWidth(8)
+                    .knobPadding(3)
+                    .slotCornerRadius(6)
+                    
+                    Text("Features: Custom themed scrollers, manual selection handling, maintains visual consistency")
+                        .font(.caption)
+                        .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                    
+                    Text("Note: Drag-to-reorder is disabled in custom scroller mode")
+                        .font(.caption2)
+                        .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                        .italic()
                 }
                 
                 // Fixed Height ListView
@@ -472,7 +595,8 @@ private struct ListViewPreview: View {
                         FeatureBullet("Flexible corner radius behavior based on height")
                         FeatureBullet("Custom empty state views")
                         FeatureBullet("Fixed and variable height modes")
-                        FeatureBullet("Drag-to-reorder support (when enabled)")
+                        FeatureBullet("Drag-to-reorder support (native List mode only)")
+                        FeatureBullet("Custom themed scrollers (NimbusScrollView integration)")
                         FeatureBullet("Full theme integration with environment overrides")
                         FeatureBullet("Content margins and scroll control")
                     }
@@ -481,6 +605,7 @@ private struct ListViewPreview: View {
             .padding(32)
         }
         .background(theme.backgroundColor(for: colorScheme))
+        .fixedSize()
     }
     
     private func iconForItem(_ item: String) -> String {

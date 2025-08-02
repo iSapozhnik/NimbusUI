@@ -83,6 +83,7 @@ public extension EnvironmentValues {
     @Entry var nimbusListContentMarginsBottom: CGFloat? = nil
     @Entry var nimbusListContentMarginsTrailing: CGFloat? = nil
     @Entry var nimbusListScrollDisabled: Bool = false
+    @Entry var nimbusListUseCustomScrollers: Bool = false
 }
 
 // MARK: Scroller
