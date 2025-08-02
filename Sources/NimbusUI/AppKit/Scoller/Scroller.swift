@@ -8,62 +8,117 @@
 import Cocoa
 import Foundation
 import QuartzCore
+import SwiftUI
 
-enum ScrollerType {
+public enum ScrollerType {
     case horizontal
     case vertical
 }
 
-class Scroller: NSScroller {
-
-    // MARK: - Configuration
+public class Scroller: NSScroller {
+    
+    // MARK: - Theme Integration
+    
+    /// Theme reference for accessing design tokens and colors
+    public var theme: NimbusTheming = NimbusTheme.default
+    public var colorScheme: ColorScheme = .light
+    
+    // MARK: - Core Configuration Properties
+    
+    /// Total width/height of the scroller track
+    public var scrollerWidth: CGFloat = 16 {
+        didSet { needsDisplay = true }
+    }
+    
+    /// Width/height of the draggable knob
+    public var scrollerKnobWidth: CGFloat = 6 {
+        didSet { needsDisplay = true }
+    }
+    
+    /// Padding between knob and slot edges
+    public var scrollerKnobPadding: CGFloat = 2 {
+        didSet { needsDisplay = true }
+    }
+    
+    /// Corner radius of the slot background
+    public var scrollerSlotCornerRadius: CGFloat = 4 {
+        didSet { needsDisplay = true }
+    }
+    
+    /// Auto-calculated knob corner radius (based on knob width and padding)
+    public var scrollerKnobCornerRadius: CGFloat {
+        (scrollerKnobWidth - scrollerKnobPadding) / 2
+    }
+    
+    // MARK: - Legacy Properties (for backward compatibility)
+    
     var knobCornerRadius: CGFloat = 2
     var knobInsetVertical: CGFloat = 6
     var knobInsetHorizontal: CGFloat = 3
     var slotCornerRadius: CGFloat = 5
     var slotInset: CGFloat = 3
-
+    
+    // MARK: - Internal State
+    
     private var type: ScrollerType = .vertical
     private var trackingArea: NSTrackingArea!
     private var isInitialized = false
-
-    // MARK: - Init
-
-    init(withType scrollerType: ScrollerType) {
+    
+    // MARK: - Initialization
+    
+    public init(withType scrollerType: ScrollerType) {
         self.type = scrollerType
         super.init(frame: .zero)
         commonInit()
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         commonInit()
     }
-
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         commonInit()
     }
-
-    override func awakeFromNib() {
+    
+    public override func awakeFromNib() {
         super.awakeFromNib()
         commonInit()
     }
-
+    
     private func commonInit() {
         guard !isInitialized else { return }
         isInitialized = true
-
+        
+        // Configure scroller appearance and behavior
         wantsLayer = true
         layer?.opacity = 0.3
-
-        trackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .mouseMoved], owner: self, userInfo: nil)
+        
+        // Set scroller style for modern appearance
+        scrollerStyle = .overlay
+        knobStyle = .default
+        
+        setupTrackingArea()
+    }
+    
+    private func setupTrackingArea() {
+        if let existingTrackingArea = trackingArea {
+            removeTrackingArea(existingTrackingArea)
+        }
+        
+        trackingArea = NSTrackingArea(
+            rect: bounds,
+            options: [.mouseEnteredAndExited, .activeInActiveApp, .mouseMoved],
+            owner: self,
+            userInfo: nil
+        )
         addTrackingArea(trackingArea)
     }
-
+    
     // MARK: - Value Override
-
-    override var floatValue: Float {
+    
+    public override var floatValue: Float {
         get {
             super.floatValue
         }
@@ -73,76 +128,162 @@ class Scroller: NSScroller {
             rescheduleFadeOut()
         }
     }
-
-    // MARK: - Drawing
-
-    override func draw(_ dirtyRect: NSRect) {
+    
+    // MARK: - Drawing Implementation
+    
+    public override func draw(_ dirtyRect: NSRect) {
         drawKnobSlot(in: bounds, highlight: false)
         drawKnob()
     }
-
-    override func drawKnob() {
-        NSColor.systemGray.setFill()
-
-        let dx = (type == .horizontal) ? 0 : knobInsetVertical
-        let dy = (type == .horizontal) ? knobInsetHorizontal : 0
-
-        let knobFrame = rect(for: .knob).insetBy(dx: dx, dy: dy)
-        NSBezierPath(roundedRect: knobFrame, xRadius: knobCornerRadius, yRadius: knobCornerRadius).fill()
-    }
-
-//    override func drawKnobSlot(in rect: NSRect, highlight: Bool) {
-//        NSColor(white: 0.6, alpha: 0.1).setFill()
-//        let slotFrame = rect(for: .knobSlot).insetBy(dx: slotInset, dy: slotInset)
-//        NSBezierPath(roundedRect: slotFrame, xRadius: slotCornerRadius, yRadius: slotCornerRadius).fill()
-//    }
-
-    // MARK: - Mouse Tracking
-
-    override func updateTrackingAreas() {
-        if trackingAreas.contains(trackingArea) {
-            removeTrackingArea(trackingArea)
+    
+    public override func drawKnobSlot(in rect: NSRect, highlight: Bool) {
+        // Use theme colors for slot background
+        let slotColor = NSColor(theme.tertiaryBackgroundColor(for: colorScheme))
+        slotColor.setFill()
+        
+        // Calculate slot frame based on scroller width
+        var slotFrame = rect
+        if type == .vertical {
+            // Vertical scroller: center slot horizontally
+            let slotWidth = scrollerWidth
+            slotFrame.origin.x = (rect.width - slotWidth) / 2
+            slotFrame.size.width = slotWidth
+        } else {
+            // Horizontal scroller: center slot vertically
+            let slotHeight = scrollerWidth
+            slotFrame.origin.y = (rect.height - slotHeight) / 2
+            slotFrame.size.height = slotHeight
         }
-
-        trackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .mouseMoved], owner: self, userInfo: nil)
-        addTrackingArea(trackingArea)
+        
+        // Draw slot with corner radius
+        let slotPath = NSBezierPath(roundedRect: slotFrame, 
+                                   xRadius: scrollerSlotCornerRadius, 
+                                   yRadius: scrollerSlotCornerRadius)
+        slotPath.fill()
     }
-
-    override func mouseEntered(with event: NSEvent) {
+    
+    public override func drawKnob() {
+        // Use theme colors for knob
+        let knobColor = NSColor(theme.accentColor(for: colorScheme))
+        knobColor.setFill()
+        
+        // Get the knob frame with proper centering and padding
+        let knobFrame = calculateKnobFrame()
+        
+        // Draw knob with auto-calculated corner radius
+        let knobPath = NSBezierPath(roundedRect: knobFrame,
+                                   xRadius: scrollerKnobCornerRadius,
+                                   yRadius: scrollerKnobCornerRadius)
+        knobPath.fill()
+    }
+    
+    // MARK: - Rect Calculations
+    
+    public override func rect(for partCode: NSScroller.Part) -> NSRect {
+        switch partCode {
+        case .knob:
+            return calculateKnobFrame()
+        case .knobSlot:
+            return calculateSlotFrame()
+        default:
+            return super.rect(for: partCode)
+        }
+    }
+    
+    private func calculateSlotFrame() -> NSRect {
+        var slotFrame = bounds
+        
+        if type == .vertical {
+            // Vertical scroller: center slot horizontally
+            let slotWidth = scrollerWidth
+            slotFrame.origin.x = (bounds.width - slotWidth) / 2
+            slotFrame.size.width = slotWidth
+        } else {
+            // Horizontal scroller: center slot vertically
+            let slotHeight = scrollerWidth
+            slotFrame.origin.y = (bounds.height - slotHeight) / 2
+            slotFrame.size.height = slotHeight
+        }
+        
+        return slotFrame
+    }
+    
+    private func calculateKnobFrame() -> NSRect {
+        let slotFrame = calculateSlotFrame()
+        var knobFrame = NSRect.zero
+        
+        if type == .vertical {
+            // Vertical scroller
+            let paddedSlotHeight = slotFrame.height - (2 * scrollerKnobPadding)
+            let knobHeight = max(scrollerKnobWidth, paddedSlotHeight * CGFloat(knobProportion))
+            
+            // Ensure knob maintains padding from both top and bottom edges
+            let maxKnobPosition = paddedSlotHeight - knobHeight
+            let scrollPosition = max(0, maxKnobPosition * CGFloat(floatValue))
+            
+            knobFrame.origin.x = slotFrame.origin.x + (slotFrame.width - scrollerKnobWidth) / 2
+            knobFrame.origin.y = slotFrame.origin.y + scrollerKnobPadding + scrollPosition
+            knobFrame.size.width = scrollerKnobWidth
+            knobFrame.size.height = knobHeight
+        } else {
+            // Horizontal scroller
+            let paddedSlotWidth = slotFrame.width - (2 * scrollerKnobPadding)
+            let knobWidth = max(scrollerKnobWidth, paddedSlotWidth * CGFloat(knobProportion))
+            
+            // Ensure knob maintains padding from both left and right edges
+            let maxKnobPosition = paddedSlotWidth - knobWidth
+            let scrollPosition = max(0, maxKnobPosition * CGFloat(floatValue))
+            
+            knobFrame.origin.x = slotFrame.origin.x + scrollerKnobPadding + scrollPosition
+            knobFrame.origin.y = slotFrame.origin.y + (slotFrame.height - scrollerKnobWidth) / 2
+            knobFrame.size.width = knobWidth
+            knobFrame.size.height = scrollerKnobWidth
+        }
+        
+        return knobFrame
+    }
+    
+    // MARK: - Mouse Tracking
+    
+    public override func updateTrackingAreas() {
+        setupTrackingArea()
+    }
+    
+    public override func mouseEntered(with event: NSEvent) {
         super.mouseEntered(with: event)
         updateAlpha(1.0, animated: true)
         cancelPreviousFadeOut()
     }
-
-    override func mouseExited(with event: NSEvent) {
+    
+    public override func mouseExited(with event: NSEvent) {
         super.mouseExited(with: event)
         fadeOut()
     }
-
-    override func mouseMoved(with event: NSEvent) {
+    
+    public override func mouseMoved(with event: NSEvent) {
         super.mouseMoved(with: event)
         updateAlpha(1.0, animated: false)
     }
-
-    // MARK: - Alpha Handling
-
+    
+    // MARK: - Alpha/Fade Handling
+    
     @objc private func fadeOut() {
         updateAlpha(0.3, animated: true, animationDuration: 0.25)
     }
-
+    
     private func rescheduleFadeOut() {
         cancelPreviousFadeOut()
         perform(#selector(fadeOut), with: nil, afterDelay: 1.0)
     }
-
+    
     private func cancelPreviousFadeOut() {
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(fadeOut), object: nil)
     }
-
+    
     private func updateAlpha(_ newAlpha: CGFloat, animated: Bool, animationDuration duration: TimeInterval = 0.1) {
         wantsLayer = true
         guard let layer = self.layer else { return }
-
+        
         if animated {
             let fade = CABasicAnimation(keyPath: "opacity")
             fade.fromValue = layer.presentation()?.opacity ?? layer.opacity
@@ -151,7 +292,7 @@ class Scroller: NSScroller {
             fade.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
             layer.add(fade, forKey: "fadeOpacity")
         }
-
+        
         layer.opacity = Float(newAlpha)
     }
 }

@@ -111,6 +111,46 @@ public protocol NimbusTheming: Sendable {
     
     /// Label content spacing configuration
     var labelContentSpacing: CGFloat { get }
+    
+    // MARK: - Scroller Design Tokens
+    
+    /// Scroller track width (thickness of the entire scroller)
+    var scrollerWidth: CGFloat { get }
+    
+    /// Scroller knob width (thickness of the draggable knob)
+    var scrollerKnobWidth: CGFloat { get }
+    
+    /// Scroller knob padding (space between knob and slot edges)
+    var scrollerKnobPadding: CGFloat { get }
+    
+    /// Scroller slot corner radius
+    var scrollerSlotCornerRadius: CGFloat { get }
+    
+    // Legacy scroller design tokens (keeping for backward compatibility)
+    
+    /// Scroller knob corner radius (auto-calculated from slot corner radius)
+    var scrollerKnobCornerRadius: CGFloat { get }
+    
+    /// Scroller knob vertical inset
+    var scrollerKnobInsetVertical: CGFloat { get }
+    
+    /// Scroller knob horizontal inset
+    var scrollerKnobInsetHorizontal: CGFloat { get }
+    
+    /// Scroller slot inset
+    var scrollerSlotInset: CGFloat { get }
+    
+    /// Scroller initial opacity
+    var scrollerInitialOpacity: CGFloat { get }
+    
+    /// Scroller fade opacity
+    var scrollerFadeOpacity: CGFloat { get }
+    
+    /// Scroller fade delay
+    var scrollerFadeDelay: TimeInterval { get }
+    
+    /// Scroller animation duration
+    var scrollerAnimationDuration: TimeInterval { get }
 }
 
 // MARK: - Convenience Methods
