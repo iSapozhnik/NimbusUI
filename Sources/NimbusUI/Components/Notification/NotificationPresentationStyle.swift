@@ -2,7 +2,7 @@
 //  NotificationPresentationStyle.swift
 //  NimbusUI
 //
-//  Created by Claude Code on 03.08.25.
+//  Created by Ivan Sapozhnik on 03.08.25.
 //
 
 import SwiftUI

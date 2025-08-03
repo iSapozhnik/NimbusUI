@@ -2,7 +2,7 @@
 //  NotificationHandleView+Preview.swift
 //  NimbusUI
 //
-//  Created by Claude Code on 03.08.25.
+//  Created by Ivan Sapozhnik on 03.08.25.
 //
 
 import SwiftUI
@@ -116,7 +116,7 @@ struct HandleDemoView: View {
             Button(isVisible ? "Hide Handle" : "Show Handle") {
                 isVisible.toggle()
             }
-            .buttonStyle(.primaryDefault)
+            .buttonStyle(.primary)
         }
     }
 }
@@ -147,14 +147,14 @@ struct NotificationWithHandleDemo: View {
                     Spacer()
                     
                     Button("Action") { }
-                        .buttonStyle(LinkButtonStyle())
+                        .buttonStyle(.nimbusLink)
                     
                     Button {
                         // Dismiss action
                     } label: {
                         Image(systemName: "xmark")
                     }
-                    .buttonStyle(CloseButtonStyle())
+                    .buttonStyle(.close)
                 }
                 .padding(16)
             }

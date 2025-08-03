@@ -94,7 +94,7 @@ Add NimbusUI to your project using Swift Package Manager:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/NimbusUI.git", from: "1.0.0")
+    .package(url: "https://github.com/iSapozhnik/NimbusUI.git", from: "1.0.0")
 ]
 ```
 
@@ -118,10 +118,10 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 16) {
             Button("Primary Action") { }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
             
-            Button("Secondary Action") { }
-                .buttonStyle(.secondaryProminent)
+            Button("Accent Action") { }
+                .buttonStyle(.accent)
         }
         .environment(\.nimbusTheme, NimbusTheme.default)
         .padding()
@@ -135,38 +135,47 @@ struct ContentView: View {
 
 ### Button Styles
 
-NimbusUI provides a comprehensive button hierarchy with built-in theming and state management:
+NimbusUI provides a comprehensive button hierarchy with built-in theming and state management. All styles integrate with the `controlSize` environment value for adaptive sizing.
 
 <details>
-<summary><strong>Primary Buttons</strong></summary>
+<summary><strong>Primary & Accent Buttons</strong></summary>
 
-For main actions and call-to-action buttons:
+For the most important actions in your UI.
 
 ```swift
-// Default primary button
-Button("Save") { }
-    .buttonStyle(.primaryDefault)
+// Main action button, filled with the theme's primary color.
+Button("Save Changes") { }
+    .buttonStyle(.primary)
 
-// Prominent primary button with enhanced styling
+// Prominent action button, filled with the theme's accent color.
+// Ideal for call-to-actions like "Continue" or "Sign Up".
 Button("Continue") { }
-    .buttonStyle(.primaryProminent)
+    .buttonStyle(.accent)
+
+// The .accent style also respects the button's role for semantics.
+Button("Delete", role: .destructive) { }
+    .buttonStyle(.accent) // Will use the theme's errorColor
 ```
 
 </details>
 
 <details>
-<summary><strong>Secondary Buttons</strong></summary>
+<summary><strong>Secondary & Outline Buttons</strong></summary>
 
-For secondary actions and alternative options:
+For less prominent actions or alternative options.
 
 ```swift
-// Prominent secondary button
+// A subtle, filled button for secondary actions.
 Button("Cancel") { }
-    .buttonStyle(.secondaryProminent)
+    .buttonStyle(.secondary)
 
-// Bordered secondary button
+// An outlined button with a border matching the primary style.
+Button("Learn More") { }
+    .buttonStyle(.primaryOutline)
+
+// A subtle, outlined button for tertiary actions.
 Button("More Options") { }
-    .buttonStyle(.secondaryBordered)
+    .buttonStyle(.secondaryOutline)
 ```
 
 </details>
@@ -179,20 +188,20 @@ NimbusUI automatically detects Label usage and applies appropriate styling:
 ```swift
 // Plain text button (no changes needed)
 Button("Delete") { }
-    .buttonStyle(.primaryProminent)
+    .buttonStyle(.accent)
 
 // Label with divider (auto-applied)
 Button(action: {}) {
     Label("Export", systemImage: "square.and.arrow.up")
 }
-.buttonStyle(.primaryProminent)
+.buttonStyle(.accent)
 .environment(\.nimbusButtonHasDivider, true)
 
 // Label with trailing icon
 Button(action: {}) {
     Label("Next", systemImage: "arrow.right")
 }
-.buttonStyle(.primaryProminent)
+.buttonStyle(.accent)
 .environment(\.nimbusButtonIconAlignment, .trailing)
 ```
 
@@ -205,11 +214,89 @@ Override specific properties while maintaining theme consistency:
 
 ```swift
 Button("Custom Button") { }
-    .buttonStyle(.primaryDefault)
+    .buttonStyle(.primary)
+    .controlSize(.large)
     .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(16))
     .environment(\.nimbusMinHeight, 50)
     .environment(\.nimbusButtonMaterial, .thin)
 ```
+
+</details>
+
+<details>
+<summary><strong>ControlSize Support</strong></summary>
+
+All button styles support SwiftUI's native controlSize for consistent sizing:
+
+```swift
+// Different sizes for the same style
+VStack(spacing: 12) {
+    Button("Large") { }.buttonStyle(.primary).controlSize(.large)      // 52px height
+    Button("Regular") { }.buttonStyle(.primary).controlSize(.regular)  // 44px height
+    Button("Small") { }.buttonStyle(.primary).controlSize(.small)      // 36px height
+    Button("Mini") { }.buttonStyle(.primary).controlSize(.mini)        // 28px height
+}
+
+// Size affects padding, font size, and overall proportions
+Button("Adaptive Button") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)  // Larger text, more padding
+```
+
+**Supported Sizes:**
+- `.large` - 52px height, enhanced padding and font size
+- `.regular` - 44px height, standard appearance (default)
+- `.small` - 36px height, compact padding and font size
+- `.mini` - 28px height, minimal padding and font size
+
+**Button Hierarchy:**
+- `.primary` - Main actions, filled with primaryColor
+- `.accent` - Prominent actions, filled with accentColor, supports button roles
+- `.secondary` - Secondary actions, subtle filled styling
+- `.primaryOutline` - Primary actions, outlined with primaryColor border
+- `.secondaryOutline` - Secondary actions, outlined with subtle border
+
+</details>
+
+<details>
+<summary><strong>Aspect Ratio Configuration</strong></summary>
+
+Optional aspect ratio constraints for specialized button layouts:
+
+```swift
+// Square icon button (1:1 aspect ratio)
+Button { } label: { Image(systemName: "gear") }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 1.0)
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+
+// Wide banner button (3:1 aspect ratio)
+Button("Get Started Now") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)
+    .environment(\.nimbusAspectRatio, 3.0)
+    .environment(\.nimbusAspectRatioHasFixedHeight, true)
+
+// Proportional responsive button (2.5:1 ratio)
+Button("Continue") { }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 2.5)
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+    .environment(\.nimbusAspectRatioHasFixedHeight, false)
+```
+
+**Aspect Ratio Environment Values:**
+- `nimbusAspectRatio: CGFloat?` - Target aspect ratio (width/height)
+- `nimbusAspectRatioContentMode: ContentMode?` - How content should fit (`.fit` by default)
+- `nimbusAspectRatioHasFixedHeight: Bool` - Whether height should be fixed (`true` by default)
+
+**Use Cases:**
+- Square buttons for toolbar icons or action buttons
+- Wide buttons with fixed proportions for banners
+- Responsive buttons that maintain proportions across screen sizes
+- Icon-only buttons requiring consistent geometry
 
 </details>
 
@@ -830,10 +917,13 @@ struct MyCustomTheme: NimbusTheming {
 Sources/NimbusUI/Components/
 ├── ButtonStyles/           # Button style implementations
 │   ├── Appearance.swift
-│   ├── PrimaryDefaultButtonStyle.swift
-│   ├── PrimaryProminentButtonStyle.swift
-│   ├── SecondaryBorderedButtonStyle.swift
-│   ├── SecondaryProminentButtonStyle.swift
+│   ├── PrimaryButtonStyle.swift
+│   ├── AccentButtonStyle.swift
+│   ├── SecondaryButtonStyle.swift
+│   ├── PrimaryOutlineButtonStyle.swift
+│   ├── SecondaryOutlineButtonStyle.swift
+│   ├── LinkButtonStyle.swift
+│   ├── CloseButtonStyle.swift
 │   └── Preview/           # Dedicated preview files
 ├── Checkbox/              # Checkbox components
 │   ├── NimbusCheckbox.swift
@@ -1006,6 +1096,6 @@ We extend our deepest gratitude to:
 
 **Made with ❤️ for the macOS developer community**
 
-[⭐ Star us on GitHub](https://github.com/yourusername/NimbusUI) • [🐛 Report Issues](https://github.com/yourusername/NimbusUI/issues) • [💬 Discussions](https://github.com/yourusername/NimbusUI/discussions)
+[⭐ Star us on GitHub](https://github.com/iSapozhnik/NimbusUI) • [🐛 Report Issues](https://github.com/iSapozhnik/NimbusUI/issues) • [💬 Discussions](https://github.com/iSapozhnik/NimbusUI/discussions)
 
 </div>

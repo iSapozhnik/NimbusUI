@@ -1,27 +1,22 @@
 //
-//  SecondaryProminentButtonStyle.swift
+//  SecondaryButtonStyle.swift
 //  NimbusUI
 //
-//  Created by Ivan Sapozhnik on 23.07.25.
+//  Created by Ivan Sapozhnik on 03.08.25.
 //
 
 import SwiftUI
 
-public struct SecondaryProminentButtonStyle: ButtonStyle {
-    struct Appearance {
-        let fill: Color
-        let hover: Color
-        let press: Color
-    }
-    
+public struct SecondaryButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
     @Environment(\.nimbusButtonCornerRadii) private var overrideCornerRadii
     @Environment(\.nimbusMinHeight) private var overrideMinHeight
-    @Environment(\.nimbusElevation) private var overrideElevation
     @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.nimbusElevation) private var overrideElevation
+    @Environment(\.controlSize) private var controlSize
     
     // Button Label Configuration
     @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
@@ -45,9 +40,9 @@ public struct SecondaryProminentButtonStyle: ButtonStyle {
     
     public func makeBody(configuration: Configuration) -> some View {
         let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
-        let minHeight = overrideMinHeight ?? theme.minHeight
+        let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
+        let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
         let elevation = overrideElevation ?? theme.elevation
-        let horizontalPadding = overrideHorizontalPadding ?? theme.horizontalPadding
         
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
         let content = configuration.label
@@ -58,8 +53,9 @@ public struct SecondaryProminentButtonStyle: ButtonStyle {
                 theme: theme
             ))
         
-        content
-            .foregroundStyle(.white)
+        return content
+            .font(.system(size: fontSize, weight: .medium))
+            .foregroundStyle(theme.primaryTextColor(for: colorScheme))
             .padding(.horizontal, horizontalPadding)
             .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
@@ -69,37 +65,32 @@ public struct SecondaryProminentButtonStyle: ButtonStyle {
                     isPressed: configuration.isPressed,
                     fill: AnyShapeStyle(tint(configuration: configuration).fill),
                     hovering: AnyShapeStyle(tint(configuration: configuration).hover),
-                    pressed: AnyShapeStyle(tint(configuration: configuration).press),
+                    pressed: AnyShapeStyle(tint(configuration: configuration).press)
                 )
             )
             .clipShape(.rect(cornerRadii: cornerRadii))
             .modifier(NimbusShadowModifier(elevation: elevation))
             .modifier(NimbusInnerShadowModifier())
-            .modifier(
-                NimbusGradientBorderModifier(
-                    width: 1,
-                    direction: .vertical
-                )
-            )
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
     }
     
-    private func tint(configuration: Configuration) -> Appearance {
-        let color = theme.accentColor(for: colorScheme)
+    private func tint(configuration: Configuration) -> ButtonAppearance {
+        let baseColor = theme.secondaryBackgroundColor(for: colorScheme)
         let destructiveColor = theme.errorColor(for: colorScheme)
         
-        let defaultAppearance = Appearance(
-            fill: color,
-            hover: color.darker(by: 0.1),
-            press: color.darker(by: 0.25)
+        let defaultAppearance = ButtonAppearance(
+            fill: baseColor,
+            hover: baseColor.darker(by: 0.05),
+            press: baseColor.darker(by: 0.1)
         )
-        let destructiveAppearance = Appearance(
-            fill: destructiveColor,
-            hover: destructiveColor.darker(by: 0.1),
-            press: destructiveColor.darker(by: 0.25)
+        let destructiveAppearance = ButtonAppearance(
+            fill: destructiveColor.opacity(0.1),
+            hover: destructiveColor.opacity(0.15),
+            press: destructiveColor.opacity(0.2)
         )
+        
         if let role = configuration.role {
             switch role {
             case .cancel, .destructive:

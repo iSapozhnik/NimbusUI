@@ -1,5 +1,5 @@
 //
-//  PrimaryDefaultButtonStyle 2.swift
+//  AccentButtonStyle.swift
 //  NimbusUI
 //
 //  Created by Ivan Sapozhnik on 21.07.25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct PrimaryProminentButtonStyle: ButtonStyle {
+public struct AccentButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
@@ -16,6 +16,7 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     @Environment(\.nimbusElevation) private var overrideElevation
     @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.controlSize) private var controlSize
     
     // Button Label Configuration
     @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
@@ -39,9 +40,9 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     
     public func makeBody(configuration: Configuration) -> some View {
         let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
-        let minHeight = overrideMinHeight ?? theme.minHeight
+        let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
+        let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
         let elevation = overrideElevation ?? theme.elevation
-        let horizontalPadding = overrideHorizontalPadding ?? theme.horizontalPadding
         
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
         let content = configuration.label
@@ -54,9 +55,10 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
         
         content
             .bold()
+            .font(.system(size: fontSize, weight: .semibold))
             .foregroundStyle(.white)
             .padding(.horizontal, horizontalPadding)
-            .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
+            .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(

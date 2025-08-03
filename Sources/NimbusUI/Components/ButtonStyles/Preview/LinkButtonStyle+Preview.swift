@@ -2,7 +2,7 @@
 //  LinkButtonStyle+Preview.swift
 //  NimbusUI
 //
-//  Created by Claude Code on 02.08.25.
+//  Created by Ivan Sapozhnik on 02.08.25.
 //
 
 import SwiftUI
@@ -17,13 +17,13 @@ import SwiftUI
         HStack {
             Text("Normal:")
             Button("Try again") {}
-                .buttonStyle(LinkButtonStyle())
+                .buttonStyle(.nimbusLink)
         }
         
         HStack {
             Text("Disabled:")
             Button("Try again") {}
-                .buttonStyle(LinkButtonStyle())
+                .buttonStyle(.nimbusLink)
                 .disabled(true)
         }
         
@@ -31,11 +31,11 @@ import SwiftUI
             Text("Various texts:")
             VStack(alignment: .leading, spacing: 8) {
                 Button("Check details") {}
-                    .buttonStyle(LinkButtonStyle())
+                    .buttonStyle(.nimbusLink)
                 Button("Edit Profile") {}
-                    .buttonStyle(LinkButtonStyle())
+                    .buttonStyle(.nimbusLink)
                 Button("View Details") {}
-                    .buttonStyle(LinkButtonStyle())
+                    .buttonStyle(.nimbusLink)
             }
         }
     }

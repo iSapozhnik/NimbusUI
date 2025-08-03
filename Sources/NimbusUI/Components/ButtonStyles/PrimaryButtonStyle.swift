@@ -1,5 +1,5 @@
 //
-//  NimbusButtonStyle.swift
+//  PrimaryButtonStyle.swift
 //  NimbusUI
 //
 //  Created by Ivan Sapozhnik on 21.07.25.
@@ -7,14 +7,16 @@
 
 import SwiftUI
 
-public struct PrimaryDefaultButtonStyle: ButtonStyle {
+public struct PrimaryButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
     @Environment(\.nimbusButtonCornerRadii) private var overrideCornerRadii
     @Environment(\.nimbusMinHeight) private var overrideMinHeight
+    @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.nimbusElevation) private var overrideElevation
+    @Environment(\.controlSize) private var controlSize
     
     // Button Label Configuration
     @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
@@ -46,7 +48,8 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
         )
         
         let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
-        let minHeight = overrideMinHeight ?? theme.minHeight
+        let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
+        let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
         let elevation = overrideElevation ?? theme.elevation
         
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
@@ -60,7 +63,9 @@ public struct PrimaryDefaultButtonStyle: ButtonStyle {
         
         return content
             .bold()
-            .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
+            .font(.system(size: fontSize, weight: .semibold))
+            .padding(.horizontal, horizontalPadding)
+            .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(

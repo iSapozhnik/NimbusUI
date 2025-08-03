@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Ivan Sapozhnik (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
@@ -41,9 +41,14 @@ swift package resolve
 - `NimbusHoverableModifier` - Hover interactions
 - `LevitatingViewModifier` - Floating effects
 
-**Button Hierarchy**: Structured button styles with appearance definitions:
-- `.primaryDefault` / `.primaryProminent` - Primary buttons
-- `.secondaryProminent` / `.secondaryBordered` - Secondary buttons
+**Button Hierarchy**: Comprehensive button system with controlSize support:
+- `.primary` - Filled primary buttons with brand color background
+- `.accent` - Prominent accent buttons for key actions
+- `.secondary` - Subtle filled buttons with secondary appearance
+- `.primaryOutline` - Outline buttons with primary color border
+- `.secondaryOutline` - Outline buttons with subtle border styling
+
+**ControlSize Support**: All button styles support SwiftUI's native controlSize (.large, .regular, .small, .mini) with automatic height, padding, and font size adjustments. Theme-aware sizing through ControlSizeUtility integration.
 
 **Enhanced Button + Label API**: Auto-detection system that applies `NimbusDividerLabelStyle` when Label environment values are set:
 - `nimbusButtonHasDivider: Bool?` - Controls divider visibility (nil = no styling, true/false = apply with/without divider)
@@ -54,7 +59,7 @@ swift package resolve
 
 ### Key Components
 
-**Button System** (`Sources/NimbusUI/Components/ButtonStyles/`): Six button styles (primaryDefault, primaryProminent, secondaryProminent, secondaryBordered, LinkButtonStyle, CloseButtonStyle) with Enhanced Button + Label API for automatic divider detection. LinkButtonStyle provides text-only action buttons, CloseButtonStyle provides icon-only dismiss buttons.
+**Button System** (`Sources/NimbusUI/Components/ButtonStyles/`): Comprehensive button system with five main styles (primary, accent, secondary, primaryOutline, secondaryOutline) plus specialized styles (LinkButtonStyle, CloseButtonStyle). All styles feature Enhanced Button + Label API for automatic divider detection and full controlSize support (.large, .regular, .small, .mini). LinkButtonStyle provides text-only action buttons, CloseButtonStyle provides icon-only dismiss buttons.
 
 **Checkbox System** (`Sources/NimbusUI/Components/Checkbox/`): `NimbusCheckbox` standalone component and `NimbusCheckboxItem` with title/subtitle support, flexible positioning (leading/trailing), and full theming integration.
 
@@ -73,17 +78,19 @@ Sources/NimbusUI/
 ├── Components/             # UI components following standardized structure
 │   ├── ButtonStyles/       # Button style implementations
 │   │   ├── Appearance.swift
-│   │   ├── PrimaryDefaultButtonStyle.swift
-│   │   ├── PrimaryProminentButtonStyle.swift
-│   │   ├── SecondaryBorderedButtonStyle.swift
-│   │   ├── SecondaryProminentButtonStyle.swift
+│   │   ├── PrimaryButtonStyle.swift
+│   │   ├── AccentButtonStyle.swift
+│   │   ├── SecondaryButtonStyle.swift
+│   │   ├── PrimaryOutlineButtonStyle.swift
+│   │   ├── SecondaryOutlineButtonStyle.swift
 │   │   ├── LinkButtonStyle.swift
 │   │   ├── CloseButtonStyle.swift
 │   │   └── Preview/        # Dedicated preview files
-│   │       ├── PrimaryDefaultButtonStyle+Preview.swift
-│   │       ├── PrimaryProminentButtonStyle+Preview.swift
-│   │       ├── SecondaryBorderedButtonStyle+Preview.swift
-│   │       ├── SecondaryProminentButtonStyle+Preview.swift
+│   │       ├── PrimaryButtonStyle+Preview.swift
+│   │       ├── AccentButtonStyle+Preview.swift
+│   │       ├── SecondaryButtonStyle+Preview.swift
+│   │       ├── PrimaryOutlineButtonStyle+Preview.swift
+│   │       ├── SecondaryOutlineButtonStyle+Preview.swift
 │   │       ├── LinkButtonStyle+Preview.swift
 │   │       └── CloseButtonStyle+Preview.swift
 │   ├── Checkbox/           # Checkbox components
@@ -121,6 +128,8 @@ Sources/NimbusUI/
 │           └── NimbusScroller+Preview.swift
 ├── Extensions/             # Swift extensions
 ├── Modifiers/              # Custom SwiftUI modifiers
+├── Utilities/              # Utility classes and helpers
+│   └── ControlSizeUtility.swift # ControlSize mapping utility
 └── Theming/               # Theme system and protocols
 ```
 
@@ -166,12 +175,13 @@ import NimbusUI
 
 // Basic theme application
 Button("Action") { }
-    .buttonStyle(.primaryDefault)
+    .buttonStyle(.primary)
     .environment(\.nimbusTheme, NimbusTheme.default)
 
-// Theme with property overrides
+// Theme with property overrides and controlSize
 Button("Custom") { }
-    .buttonStyle(.primaryDefault) 
+    .buttonStyle(.primary) 
+    .controlSize(.large)
     .environment(\.nimbusTheme, MaritimeTheme())
     .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(16))
     .environment(\.nimbusMinHeight, 50)
@@ -183,28 +193,51 @@ The enhanced API provides flexible button configurations:
 ```swift
 // Plain text button (no changes needed)
 Button("Save") { }
-    .buttonStyle(.primaryProminent)
+    .buttonStyle(.accent)
+    .controlSize(.regular)
 
 // Label with default divider (auto-applied)
 Button(action: {}) {
     Label("Delete", systemImage: "trash")
 }
-.buttonStyle(.primaryProminent)
+.buttonStyle(.accent)
+.controlSize(.regular)
 .environment(\.nimbusButtonHasDivider, true)
 
 // Label without divider
 Button(action: {}) {
     Label("Export", systemImage: "square.and.arrow.up")
 }
-.buttonStyle(.primaryProminent)
+.buttonStyle(.accent)
+.controlSize(.small)
 .environment(\.nimbusButtonHasDivider, false)
 
-// Label with trailing icon
+// Label with trailing icon and custom size
 Button(action: {}) {
     Label("Next", systemImage: "arrow.right")
 }
-.buttonStyle(.primaryProminent)
+.buttonStyle(.accent)
+.controlSize(.large)
 .environment(\.nimbusButtonIconAlignment, .trailing)
+
+// ControlSize variations across button styles
+VStack {
+    Button("Primary Large") { }
+        .buttonStyle(.primary)
+        .controlSize(.large)
+    
+    Button("Secondary Regular") { }
+        .buttonStyle(.secondary)
+        .controlSize(.regular)
+    
+    Button("Outline Small") { }
+        .buttonStyle(.primaryOutline)
+        .controlSize(.small)
+    
+    Button("Mini Secondary Outline") { }
+        .buttonStyle(.secondaryOutline)
+        .controlSize(.mini)
+}
 ```
 
 ### Notification System Usage
@@ -272,6 +305,159 @@ ContentView()
 - ✅ **Better Developer Experience**: Focus on brand colors, not implementation details
 
 All styling should go through the theme system with environment overrides when needed.
+
+## ControlSize System
+
+### Overview
+NimbusUI features comprehensive controlSize support across all button styles, automatically adapting heights, padding, and font sizes based on SwiftUI's native ControlSize environment values.
+
+### Supported Sizes
+- `.large`: 52px height, 24px padding, 17pt font
+- `.regular`: 44px height, 20px padding, 15pt font (default)
+- `.small`: 36px height, 16px padding, 13pt font
+- `.mini`: 28px height, 12px padding, 11pt font
+
+### ControlSizeUtility
+The `ControlSizeUtility` provides centralized controlSize management:
+
+```swift
+// Get metrics for any control size
+let metrics = ControlSizeUtility.metrics(for: .large)
+let height = ControlSizeUtility.height(for: .small)
+
+// Theme-aware sizing with override support
+let themeHeight = ControlSizeUtility.height(
+    for: controlSize, 
+    theme: theme, 
+    override: overrideMinHeight
+)
+```
+
+### Theme Integration
+ControlSize values can be customized per theme through optional theme tokens:
+
+```swift
+extension CustomTheme {
+    var buttonHeightLarge: CGFloat? { 60 }     // Custom large size
+    var buttonPaddingSmall: CGFloat? { 14 }    // Custom small padding
+    var buttonFontSizeRegular: CGFloat? { 16 } // Custom regular font
+}
+```
+
+### Usage Patterns
+```swift
+// Standard controlSize usage
+Button("Action") { }
+    .buttonStyle(.primary)
+    .controlSize(.large)
+
+// Mixed sizes in layouts
+HStack {
+    Button("Cancel") { }
+        .buttonStyle(.secondaryOutline)
+        .controlSize(.small)
+    
+    Button("Confirm") { }
+        .buttonStyle(.accent)
+        .controlSize(.regular)
+}
+
+// All button styles support all controlSize values
+VStack {
+    Button("Large Primary") { }.buttonStyle(.primary).controlSize(.large)
+    Button("Regular Accent") { }.buttonStyle(.accent).controlSize(.regular)
+    Button("Small Secondary") { }.buttonStyle(.secondary).controlSize(.small)
+    Button("Mini Outline") { }.buttonStyle(.primaryOutline).controlSize(.mini)
+}
+```
+
+## Aspect Ratio System
+
+### Overview
+NimbusUI includes sophisticated aspect ratio support for buttons through the enhanced `NimbusAspectRatioModifier`, providing precise control over button geometry while maintaining full controlSize integration.
+
+### Core Functionality
+The `NimbusAspectRatioModifier` provides:
+- **ControlSize Integration**: Automatically respects controlSize when calculating dimensions
+- **Optional Enhancement**: Only applies aspect ratio constraints when environment values are configured
+- **Backward Compatibility**: Existing buttons work unchanged without aspect ratio configuration
+- **Theme Awareness**: Uses theme-based heights with controlSize and override support
+
+### Environment Values
+```swift
+// Aspect ratio configuration (all optional)
+@Entry var nimbusAspectRatio: CGFloat? = nil              // Target ratio (width/height)
+@Entry var nimbusAspectRatioContentMode: ContentMode? = .fit // How content fits
+@Entry var nimbusAspectRatioHasFixedHeight: Bool = true   // Whether height is fixed
+```
+
+### Usage Patterns
+
+#### Default Behavior (No Changes)
+```swift
+// Standard button - no aspect ratio constraints applied
+Button("Save") { }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+// Behaves exactly as before - maxWidth: .infinity, controlSize-based minHeight
+```
+
+#### Square Icon Buttons
+```swift
+// Perfect for toolbar icons and action buttons
+Button { } label: { Image(systemName: "gear") }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 1.0)              // 1:1 square
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+```
+
+#### Wide Banner Buttons
+```swift
+// Great for call-to-action buttons and banners
+Button("Get Started Now") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)
+    .environment(\.nimbusAspectRatio, 3.0)              // 3:1 wide
+    .environment(\.nimbusAspectRatioHasFixedHeight, true)
+```
+
+#### Responsive Proportional Buttons
+```swift
+// Maintains proportions while allowing flexibility
+Button("Continue") { }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 2.5)              // 2.5:1 ratio
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+    .environment(\.nimbusAspectRatioHasFixedHeight, false) // Allows vertical flexibility
+```
+
+### Implementation Details
+
+#### NimbusAspectRatioModifier Logic
+```swift
+// When no aspect ratio is configured (default)
+content.frame(maxWidth: .infinity, minHeight: controlSizeHeight, maxHeight: .infinity)
+
+// When aspect ratio is configured
+content
+    .frame(minWidth: calculatedMinWidth, maxWidth: .infinity, minHeight: controlSizeHeight, maxHeight: maxHeight)
+    .aspectRatio(aspectRatio, contentMode: contentMode)
+    .fixedSize(horizontal: contentMode == .fit, vertical: hasFixedHeight)
+```
+
+#### ControlSize Integration
+The modifier automatically uses `ControlSizeUtility.height(for:theme:override:)` for height calculations, ensuring:
+- ✅ **Theme Consistency**: Respects theme-specific controlSize overrides
+- ✅ **Environment Overrides**: Honors `nimbusMinHeight` environment values
+- ✅ **Size Adaptation**: Aspect ratios scale appropriately with different controlSizes
+
+### Architecture Benefits
+- **Opt-In Enhancement**: Zero impact on existing code, only applies when configured
+- **ControlSize Aware**: Seamlessly integrates with the controlSize system
+- **Theme Compatible**: Works with all themes and theme overrides
+- **Performance Optimized**: Only adds constraints when aspect ratio is specified
 
 ## Known Issues & Workarounds
 
