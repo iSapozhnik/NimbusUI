@@ -24,17 +24,16 @@ public enum NotificationType: CaseIterable, Sendable {
     }
     
     func backgroundColor(theme: NimbusTheming, scheme: ColorScheme) -> Color {
-        let opacity = theme.notificationBackgroundOpacity
         let color: Color
         switch self {
         case .info:
-            color = theme.infoColor(for: scheme).opacity(opacity)
+            color = theme.infoColor(for: scheme)
         case .success:
-            color = theme.successColor(for: scheme).opacity(opacity)
+            color = theme.successColor(for: scheme)
         case .warning:
-            color = theme.warningColor(for: scheme).opacity(opacity)
+            color = theme.warningColor(for: scheme)
         case .error:
-            color = theme.errorColor(for: scheme).opacity(opacity)
+            color = theme.errorColor(for: scheme)
         }
         return color.mix(with: .white, by: 0.5)
     }
@@ -52,9 +51,6 @@ public enum NotificationType: CaseIterable, Sendable {
             baseColor = theme.errorColor(for: scheme)
         }
         
-        // In light mode, use darker variant for better contrast
-        // In dark mode, use the base color for proper visibility
-//        return scheme == .light ? baseColor.darker(by: 0.5) : baseColor.darker(by: 0.25)
         return baseColor.darker(by: 0.5)
     }
     
@@ -71,8 +67,6 @@ public enum NotificationType: CaseIterable, Sendable {
             baseColor = theme.errorColor(for: scheme)
         }
         
-        // In light mode, use darker variant for better readability
-        // In dark mode, use the base color for proper visibility
         return baseColor.darker(by: 0.5)
     }
     
@@ -92,5 +86,11 @@ public enum NotificationType: CaseIterable, Sendable {
         // In light mode, use slightly darker variant for action links
         // In dark mode, use the base color for proper visibility
         return scheme == .light ? baseColor.darker(by: 0.1) : baseColor.darker(by: 0.25)
+    }
+    
+    func borderColor(theme: NimbusTheming, scheme: ColorScheme) -> Color {
+        let backgroundColor = self.backgroundColor(theme: theme, scheme: scheme)
+        // Return a border color that's darker than the background
+        return backgroundColor.darker(by: 0.2)
     }
 }

@@ -261,7 +261,7 @@ ContentView()
 - **Button Tokens**: `buttonCornerRadii`, `compactButtonCornerRadii`, `labelContentSpacing`
 - **List Tokens**: `listItemCornerRadii`, `listItemHeight`
 - **Checkbox Tokens**: `checkboxSize`, `checkboxCornerRadii`, `checkboxBorderWidth`, `checkboxItemSpacing`, etc.
-- **Notification Tokens**: `notificationTopPadding`, `notificationHorizontalPadding`, `notificationCornerRadii`, `notificationBackgroundOpacity`, `notificationMinHeight`, `notificationIconSize`, `notificationPadding`, etc.
+- **Notification Tokens**: `notificationTopPadding`, `notificationHorizontalPadding`, `notificationCornerRadii`, `notificationMinHeight`, `notificationIconSize`, `notificationPadding`, etc.
 - **Scroller Tokens**: `scrollerWidth`, `scrollerKnobWidth`, `scrollerKnobPadding`, `scrollerSlotCornerRadius`, etc.
 
 **Benefits of Optional Token System:**

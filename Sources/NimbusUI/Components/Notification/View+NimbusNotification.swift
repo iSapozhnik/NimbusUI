@@ -8,7 +8,7 @@
 import SwiftUI
 
 public extension View {
-    /// Presents a notification overlay at the top of the view
+    /// Presents a notification overlay with customizable animation and positioning
     ///
     /// - Parameters:
     ///   - isPresented: Binding that controls notification visibility
@@ -17,6 +17,7 @@ public extension View {
     ///   - actionText: Optional text for an action button
     ///   - iconAlignment: Vertical alignment of the icon relative to text content (.center, .baseline, .top)
     ///   - dismissBehavior: How the notification should be dismissed (.sticky or .temporary)
+    ///   - presentationStyle: Animation style for showing/hiding the notification (.slideFromTop by default)
     ///   - onAction: Optional closure called when action button is tapped
     ///   - onDismiss: Optional closure called when notification is dismissed
     /// - Returns: A view with the notification overlay
@@ -27,6 +28,7 @@ public extension View {
         actionText: String? = nil,
         iconAlignment: NotificationIconAlignment = .center,
         dismissBehavior: NotificationDismissBehavior = .sticky,
+        presentationStyle: NotificationPresentationStyle = .slideFromTop,
         onAction: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
@@ -38,6 +40,7 @@ public extension View {
                 actionText: actionText,
                 iconAlignment: iconAlignment,
                 dismissBehavior: dismissBehavior,
+                presentationStyle: presentationStyle,
                 onAction: onAction,
                 onDismiss: onDismiss
             )

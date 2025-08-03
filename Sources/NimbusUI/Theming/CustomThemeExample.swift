@@ -198,6 +198,14 @@ public struct CustomWarmTheme: NimbusTheming, Sendable {
     public var scrollerKnobInsetVertical: CGFloat { 4 }
     public var scrollerKnobInsetHorizontal: CGFloat { 2 }
     public var scrollerSlotInset: CGFloat { 2 }
+    
+    // Notification animation customization for warm, friendly feel
+    public var notificationBounceAnimation: Animation { 
+        .spring(response: 0.8, dampingFraction: 0.5, blendDuration: 0.0) 
+    }
+    public var notificationScaleAnimation: Animation { 
+        .spring(response: 0.6, dampingFraction: 0.6).delay(0.1) 
+    }
 }
 
 // MARK: - Usage Example
@@ -1006,6 +1014,15 @@ internal struct NotificationComponentsSection: View {
     @State private var showError = false
     @State private var showTemporary = false
     
+    // Animation style demos
+    @State private var showSlideFromTop = false
+    @State private var showFadeIn = false
+    @State private var showSlideFromBottom = false
+    @State private var showSlideFromLeading = false
+    @State private var showSlideFromTrailing = false
+    @State private var showBounce = false
+    @State private var showScale = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             // Section Header
@@ -1220,6 +1237,44 @@ internal struct NotificationComponentsSection: View {
                 .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
             }
             
+            // Animation Styles Demo
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Animation Styles Demo")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(theme.primaryTextColor(for: colorScheme))
+                
+                Text("Test all 7 presentation styles with different animations and positioning:")
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+                
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+                    Button("Slide from Top") { showSlideFromTop = true }
+                        .buttonStyle(.secondaryBordered)
+                    
+                    Button("Fade In") { showFadeIn = true }
+                        .buttonStyle(.secondaryBordered)
+                    
+                    Button("Slide from Bottom") { showSlideFromBottom = true }
+                        .buttonStyle(.secondaryBordered)
+                    
+                    Button("Slide from Leading") { showSlideFromLeading = true }
+                        .buttonStyle(.secondaryBordered)
+                    
+                    Button("Slide from Trailing") { showSlideFromTrailing = true }
+                        .buttonStyle(.secondaryBordered)
+                    
+                    Button("Bounce (Enhanced)") { showBounce = true }
+                        .buttonStyle(.secondaryBordered)
+                    
+                    Button("Scale (Custom)") { showScale = true }
+                        .buttonStyle(.secondaryBordered)
+                }
+                .padding(16)
+                .background(theme.tertiaryBackgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
+            }
+            
             // Usage Notes
             VStack(alignment: .leading, spacing: 8) {
                 Text("Notification Theme Integration")
@@ -1233,9 +1288,11 @@ internal struct NotificationComponentsSection: View {
                     BulletPoint("Icon alignment options: center (default), baseline, and top positioning")
                     BulletPoint("Improved text wrapping with fixedSize for proper multi-line support")
                     BulletPoint("LinkButton and CloseButton styles with custom semantic color support")
-                    BulletPoint("Presentation system positions notifications at window top with proper spacing")
+                    BulletPoint("7 presentation styles: slideFromTop (default), fadeIn, slideFromBottom, slideFromLeading, slideFromTrailing, bounce, scale")
+                    BulletPoint("Dynamic positioning: notifications appear from top/bottom/sides/center based on presentation style")
+                    BulletPoint("Custom animation tokens: notificationBounceAnimation and notificationScaleAnimation for enhanced styles")
                     BulletPoint("Auto-dismiss timers available for temporary notifications")
-                    BulletPoint("Full animation support with spring show and easeOut hide transitions")
+                    BulletPoint("Full backward compatibility: existing calls work unchanged with slideFromTop default")
                 }
             }
         }
@@ -1283,6 +1340,63 @@ internal struct NotificationComponentsSection: View {
             type: .success,
             message: "This notification will auto-dismiss in 3 seconds!",
             dismissBehavior: .temporary(3.0)
+        )
+        // Animation Styles Demos
+        .nimbusNotification(
+            isPresented: $showSlideFromTop,
+            type: .info,
+            message: "Slide from Top - The default animation style with smooth slide from top edge.",
+            actionText: "OK",
+            dismissBehavior: .temporary(4.0),
+            presentationStyle: .slideFromTop
+        )
+        .nimbusNotification(
+            isPresented: $showFadeIn,
+            type: .success,
+            message: "Fade In - Pure opacity transition appearing in center of screen.",
+            actionText: "Great",
+            dismissBehavior: .temporary(4.0),
+            presentationStyle: .fadeIn
+        )
+        .nimbusNotification(
+            isPresented: $showSlideFromBottom,
+            type: .warning,
+            message: "Slide from Bottom - Notification slides up from the bottom edge.",
+            actionText: "Got it",
+            dismissBehavior: .temporary(4.0),
+            presentationStyle: .slideFromBottom
+        )
+        .nimbusNotification(
+            isPresented: $showSlideFromLeading,
+            type: .error,
+            message: "Slide from Leading - Slides in from the left side of the screen.",
+            actionText: "Understood",
+            dismissBehavior: .temporary(4.0),
+            presentationStyle: .slideFromLeading
+        )
+        .nimbusNotification(
+            isPresented: $showSlideFromTrailing,
+            type: .info,
+            message: "Slide from Trailing - Slides in from the right side of the screen.",
+            actionText: "Nice",
+            dismissBehavior: .temporary(4.0),
+            presentationStyle: .slideFromTrailing
+        )
+        .nimbusNotification(
+            isPresented: $showBounce,
+            type: .success,
+            message: "Bounce Animation - Enhanced spring animation with custom warm theme bounce settings (response: 0.8, damping: 0.5).",
+            actionText: "Bouncy!",
+            dismissBehavior: .temporary(4.0),
+            presentationStyle: .bounce
+        )
+        .nimbusNotification(
+            isPresented: $showScale,
+            type: .warning,
+            message: "Scale Animation - Scales up from center with custom warm theme scale settings (response: 0.6, damping: 0.6, delay: 0.1s).",
+            actionText: "Cool",
+            dismissBehavior: .temporary(4.0),
+            presentationStyle: .scale
         )
     }
 }

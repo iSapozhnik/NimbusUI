@@ -64,6 +64,10 @@ public struct NimbusNotificationView: View {
         .background(type.backgroundColor(theme: theme, scheme: colorScheme))
         .clipShape(.rect(cornerRadii: theme.notificationCornerRadii))
         .modifier(NimbusShadowModifier(elevation: .medium))
+        .overlay(
+            RoundedRectangle(cornerRadius: theme.notificationCornerRadii.topLeading)
+                .strokeBorder(type.borderColor(theme: theme, scheme: colorScheme), lineWidth: 1)
+        )
 
     }
     

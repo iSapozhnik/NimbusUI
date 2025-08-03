@@ -212,7 +212,6 @@ public extension NimbusTheming {
     var notificationCornerRadii: RectangleCornerRadii { cornerRadii }
     
     /// Notification styling
-    var notificationBackgroundOpacity: CGFloat { 1 }
     var notificationMinHeight: CGFloat { 56 }
     var notificationIconSize: CGFloat { 20 }
     var notificationPadding: CGFloat { 16 }
@@ -220,6 +219,10 @@ public extension NimbusTheming {
     /// Animation timing
     var notificationShowAnimation: Animation { .spring(response: 0.4, dampingFraction: 0.8) }
     var notificationHideAnimation: Animation { .easeOut(duration: 0.25) }
+    
+    /// Advanced animation styles for enhanced presentation modes
+    var notificationBounceAnimation: Animation { .spring(response: 0.6, dampingFraction: 0.6, blendDuration: 0.0) }
+    var notificationScaleAnimation: Animation { .spring(response: 0.5, dampingFraction: 0.7) }
 }
 
 // MARK: - Convenience Methods
