@@ -118,10 +118,10 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 16) {
             Button("Primary Action") { }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
             
-            Button("Secondary Action") { }
-                .buttonStyle(.secondaryProminent)
+            Button("Accent Action") { }
+                .buttonStyle(.accent)
         }
         .environment(\.nimbusTheme, NimbusTheme.default)
         .padding()
@@ -135,38 +135,47 @@ struct ContentView: View {
 
 ### Button Styles
 
-NimbusUI provides a comprehensive button hierarchy with built-in theming and state management:
+NimbusUI provides a comprehensive button hierarchy with built-in theming and state management. All styles integrate with the `controlSize` environment value for adaptive sizing.
 
 <details>
-<summary><strong>Primary Buttons</strong></summary>
+<summary><strong>Primary & Accent Buttons</strong></summary>
 
-For main actions and call-to-action buttons:
+For the most important actions in your UI.
 
 ```swift
-// Default primary button
-Button("Save") { }
-    .buttonStyle(.primaryDefault)
+// Main action button, filled with the theme's primary color.
+Button("Save Changes") { }
+    .buttonStyle(.primary)
 
-// Prominent primary button with enhanced styling
+// Prominent action button, filled with the theme's accent color.
+// Ideal for call-to-actions like "Continue" or "Sign Up".
 Button("Continue") { }
-    .buttonStyle(.primaryProminent)
+    .buttonStyle(.accent)
+
+// The .accent style also respects the button's role for semantics.
+Button("Delete", role: .destructive) { }
+    .buttonStyle(.accent) // Will use the theme's errorColor
 ```
 
 </details>
 
 <details>
-<summary><strong>Secondary Buttons</strong></summary>
+<summary><strong>Secondary & Outline Buttons</strong></summary>
 
-For secondary actions and alternative options:
+For less prominent actions or alternative options.
 
 ```swift
-// Prominent secondary button
+// A subtle, filled button for secondary actions.
 Button("Cancel") { }
-    .buttonStyle(.secondaryProminent)
+    .buttonStyle(.secondary)
 
-// Bordered secondary button
+// An outlined button with a border matching the primary style.
+Button("Learn More") { }
+    .buttonStyle(.primaryOutline)
+
+// A subtle, outlined button for tertiary actions.
 Button("More Options") { }
-    .buttonStyle(.secondaryBordered)
+    .buttonStyle(.secondaryOutline)
 ```
 
 </details>
@@ -185,14 +194,14 @@ Button("Delete") { }
 Button(action: {}) {
     Label("Export", systemImage: "square.and.arrow.up")
 }
-.buttonStyle(.primaryProminent)
+.buttonStyle(.accent)
 .environment(\.nimbusButtonHasDivider, true)
 
 // Label with trailing icon
 Button(action: {}) {
     Label("Next", systemImage: "arrow.right")
 }
-.buttonStyle(.primaryProminent)
+.buttonStyle(.accent)
 .environment(\.nimbusButtonIconAlignment, .trailing)
 ```
 
