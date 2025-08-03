@@ -10,7 +10,7 @@ import SwiftUI
 @testable import NimbusUI
 import SnapshotTesting
 
-private let recording = true
+private let recording = false
 
 @MainActor
 @Test func primaryButtons() async throws {
