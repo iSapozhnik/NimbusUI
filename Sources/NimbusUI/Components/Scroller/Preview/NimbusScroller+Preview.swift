@@ -2,7 +2,7 @@
 //  NimbusScroller+Preview.swift
 //  NimbusUI
 //
-//  Created by Claude on 02.08.25.
+//  Created by Ivan Sapozhnik on 02.08.25.
 //
 
 import SwiftUI

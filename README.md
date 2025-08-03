@@ -94,7 +94,7 @@ Add NimbusUI to your project using Swift Package Manager:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/NimbusUI.git", from: "1.0.0")
+    .package(url: "https://github.com/iSapozhnik/NimbusUI.git", from: "1.0.0")
 ]
 ```
 
@@ -1096,6 +1096,6 @@ We extend our deepest gratitude to:
 
 **Made with ❤️ for the macOS developer community**
 
-[⭐ Star us on GitHub](https://github.com/yourusername/NimbusUI) • [🐛 Report Issues](https://github.com/yourusername/NimbusUI/issues) • [💬 Discussions](https://github.com/yourusername/NimbusUI/discussions)
+[⭐ Star us on GitHub](https://github.com/iSapozhnik/NimbusUI) • [🐛 Report Issues](https://github.com/iSapozhnik/NimbusUI/issues) • [💬 Discussions](https://github.com/iSapozhnik/NimbusUI/discussions)
 
 </div>
