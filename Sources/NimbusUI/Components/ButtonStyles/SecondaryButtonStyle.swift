@@ -69,8 +69,9 @@ public struct SecondaryButtonStyle: ButtonStyle {
                 )
             )
             .clipShape(.rect(cornerRadii: cornerRadii))
-            .modifier(NimbusShadowModifier(elevation: elevation))
             .modifier(NimbusInnerShadowModifier())
+            .clipShape(.rect(cornerRadii: cornerRadii))
+            .modifier(NimbusShadowModifier(elevation: elevation))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
