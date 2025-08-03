@@ -230,27 +230,27 @@ struct NotificationDemoView: View {
                 Button("Show Info Notification") {
                     showInfo = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 
                 Button("Show Success Notification") {
                     showSuccess = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 
                 Button("Show Warning Notification") {
                     showWarning = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 
                 Button("Show Error Notification") {
                     showError = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 
                 Button("Show Temporary Notification (3s)") {
                     showTemporary = true
                 }
-                .buttonStyle(.secondaryProminent)
+                .buttonStyle(.secondary)
             }
             
             Spacer()
@@ -332,12 +332,12 @@ struct DragToDismissDemoView: View {
                 Button("Show Physics Demo") {
                     showPhysicsDemo = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 
                 Button("Show Handle Indicator Demo") {
                     showHandleDemo = true
                 }
-                .buttonStyle(.secondaryProminent)
+                .buttonStyle(.secondary)
             }
             
             VStack(spacing: 12) {
@@ -436,37 +436,37 @@ struct PresentationStyleDemoView: View {
                 Button("Slide from Top\n(swipe up ↑)") {
                     showSlideFromTop = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 .multilineTextAlignment(.center)
                 
                 Button("Slide from Bottom\n(swipe down ↓)") {
                     showSlideFromBottom = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 .multilineTextAlignment(.center)
                 
                 Button("Slide from Leading\n(swipe left ←)") {
                     showSlideFromLeading = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 .multilineTextAlignment(.center)
                 
                 Button("Slide from Trailing\n(swipe right →)") {
                     showSlideFromTrailing = true
                 }
-                .buttonStyle(.primaryDefault)
+                .buttonStyle(.primary)
                 .multilineTextAlignment(.center)
                 
                 Button("Fade In\n(swipe up/down ↕)") {
                     showFadeIn = true
                 }
-                .buttonStyle(.secondaryProminent)
+                .buttonStyle(.secondary)
                 .multilineTextAlignment(.center)
                 
                 Button("Bounce\n(swipe up ↑)") {
                     showBounce = true
                 }
-                .buttonStyle(.secondaryProminent)
+                .buttonStyle(.secondary)
                 .multilineTextAlignment(.center)
                 
                 Button("Scale\n(swipe up/down ↕)") {

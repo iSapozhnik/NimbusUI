@@ -314,20 +314,20 @@ private struct ButtonShowcaseSection: View {
             VStack(spacing: 12) {
                 HStack(spacing: 12) {
                     Button("Primary Default") {}
-                        .buttonStyle(.primaryDefault)
+                        .buttonStyle(.primary)
                     Button("Primary Prominent") {}
-                        .buttonStyle(.primaryProminent)
+                        .buttonStyle(.accent)
                     Button("Delete", role: .destructive) {}
-                        .buttonStyle(.primaryProminent)
+                        .buttonStyle(.accent)
                 }
                 
                 HStack(spacing: 12) {
                     Button("Secondary Prominent") {}
-                        .buttonStyle(.secondaryProminent)
+                        .buttonStyle(.secondary)
                     Button("Secondary Bordered") {}
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                     Button("With Icon", systemImage: "star.fill") {}
-                        .buttonStyle(.primaryProminent)
+                        .buttonStyle(.accent)
                 }
             }
             

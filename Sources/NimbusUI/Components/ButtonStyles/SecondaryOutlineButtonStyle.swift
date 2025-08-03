@@ -1,5 +1,5 @@
 //
-//  SecondaryBorderedButtonStyle.swift
+//  SecondaryOutlineButtonStyle.swift
 //  NimbusUI
 //
 //  Created by Ivan Sapozhnik on 21.07.25.
@@ -7,11 +7,13 @@
 
 import SwiftUI
 
-public struct SecondaryBorderedButtonStyle: ButtonStyle {
+public struct SecondaryOutlineButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var animationFast
-    @Environment(\.nimbusHorizontalPadding) private var horizontalPadding
+    @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
+    @Environment(\.nimbusMinHeight) private var overrideMinHeight
+    @Environment(\.controlSize) private var controlSize
     
     // Button Label Configuration
     @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
@@ -43,9 +45,14 @@ public struct SecondaryBorderedButtonStyle: ButtonStyle {
                 theme: theme
             ))
         
+        let minHeight = ControlSizeUtility.height(for: controlSize, theme: theme, override: overrideMinHeight)
+        let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
+        let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
+        
         content
+            .font(.system(size: fontSize, weight: .medium))
             .padding(.horizontal, horizontalPadding)
-            .modifier(NimbusAspectRatioModifier())
+            .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(

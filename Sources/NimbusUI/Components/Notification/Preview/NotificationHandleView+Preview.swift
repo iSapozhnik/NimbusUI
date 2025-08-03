@@ -116,7 +116,7 @@ struct HandleDemoView: View {
             Button(isVisible ? "Hide Handle" : "Show Handle") {
                 isVisible.toggle()
             }
-            .buttonStyle(.primaryDefault)
+            .buttonStyle(.primary)
         }
     }
 }

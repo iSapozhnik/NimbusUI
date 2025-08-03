@@ -532,7 +532,7 @@ private struct ButtonStylesSection: View {
             ButtonStyleDemo(
                 title: "Primary Default",
                 description: "Uses theme.primaryColor (\(theme.primaryColor(for: colorScheme).hexString)) with built-in hover states",
-                styleType: .primaryDefault,
+                styleType: .primary,
                 examples: [
                     .init(title: "Basic Text", button: AnyView(Button("Default Action") {})),
                     .init(title: "With Icon", button: AnyView(Button("Save", systemImage: "square.and.arrow.down") {})),
@@ -548,7 +548,7 @@ private struct ButtonStylesSection: View {
             ButtonStyleDemo(
                 title: "Primary Prominent",
                 description: "Uses theme.accentColor (\(theme.accentColor(for: colorScheme).hexString)) for normal, theme.errorColor (\(theme.errorColor(for: colorScheme).hexString)) for destructive",
-                styleType: .primaryProminent,
+                styleType: .accent,
                 examples: [
                     .init(title: "Normal Action", button: AnyView(Button("Continue") {})),
                     .init(title: "Destructive Role", button: AnyView(Button("Delete", role: .destructive) {})),
@@ -571,7 +571,7 @@ private struct ButtonStylesSection: View {
             ButtonStyleDemo(
                 title: "Secondary Prominent",
                 description: "Similar to Primary Prominent with different visual treatment and sizing",
-                styleType: .secondaryProminent,
+                styleType: .secondary,
                 examples: [
                     .init(title: "Normal Action", button: AnyView(Button("Apply") {})),
                     .init(title: "Destructive Role", button: AnyView(Button("Remove", role: .destructive) {})),
@@ -591,7 +591,7 @@ private struct ButtonStylesSection: View {
             ButtonStyleDemo(
                 title: "Secondary Bordered",
                 description: "Subtle bordered style using system colors (.quinary, .quaternary) - adapts to system theme",
-                styleType: .secondaryBordered,
+                styleType: .secondaryOutline,
                 examples: [
                     .init(title: "Basic Action", button: AnyView(Button("Options") {})),
                     .init(title: "With Icon", button: AnyView(Button("Settings", systemImage: "gearshape") {})),
@@ -617,19 +617,19 @@ private struct ButtonStylesSection: View {
                 
                 HStack(spacing: 12) {
                     Button("Primary Default") {}
-                        .buttonStyle(.primaryDefault)
+                        .buttonStyle(.primary)
                         .frame(height: 40)
                     
                     Button("Primary Prominent") {}
-                        .buttonStyle(.primaryProminent)
+                        .buttonStyle(.accent)
                         .frame(height: 40)
                     
                     Button("Secondary Prominent") {}
-                        .buttonStyle(.secondaryProminent)
+                        .buttonStyle(.secondary)
                         .frame(height: 40)
                     
                     Button("Secondary Bordered") {}
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                         .frame(height: 40)
                 }
             }
@@ -642,10 +642,10 @@ private struct ButtonStylesSection: View {
                     .foregroundColor(theme.primaryTextColor(for: colorScheme))
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    BulletPoint("Use .primaryDefault for main theme-colored actions")
-                    BulletPoint("Use .primaryProminent for primary CTAs with automatic destructive styling")
+                    BulletPoint("Use .primary for main theme-colored actions")
+                    BulletPoint("Use .accent for primary CTAs with automatic destructive styling")
                     BulletPoint("Use .secondaryProminent for secondary important actions")
-                    BulletPoint("Use .secondaryBordered for subtle, system-integrated actions")
+                    BulletPoint("Use .secondaryOutline for subtle, system-integrated actions")
                     BulletPoint("Apply .tint() modifier to override colors for specific semantic meanings")
                     BulletPoint("Button roles (.destructive, .cancel) automatically apply appropriate colors")
                     BulletPoint("All styles support Label views with system images")
@@ -661,7 +661,7 @@ private struct ButtonStyleDemo: View {
     @Environment(\.colorScheme) private var colorScheme
     
     enum StyleType {
-        case primaryDefault, primaryProminent, secondaryProminent, secondaryBordered
+        case primary, accent, secondary, secondaryOutline
     }
     
     struct ButtonExample {
@@ -698,14 +698,14 @@ private struct ButtonStyleDemo: View {
                         // Apply the button style based on type
                         Group {
                             switch styleType {
-                            case .primaryDefault:
-                                example.button.buttonStyle(.primaryDefault)
-                            case .primaryProminent:
-                                example.button.buttonStyle(.primaryProminent)
-                            case .secondaryProminent:
-                                example.button.buttonStyle(.secondaryProminent)
-                            case .secondaryBordered:
-                                example.button.buttonStyle(.secondaryBordered)
+                            case .primary:
+                                example.button.buttonStyle(.primary)
+                            case .accent:
+                                example.button.buttonStyle(.accent)
+                            case .secondary:
+                                example.button.buttonStyle(.secondary)
+                            case .secondaryOutline:
+                                example.button.buttonStyle(.secondaryOutline)
                             }
                         }
                         .frame(height: 36)
@@ -1218,19 +1218,19 @@ internal struct NotificationComponentsSection: View {
                 
                 HStack(spacing: 12) {
                     Button("Info") { showInfo = true }
-                        .buttonStyle(.secondaryProminent)
+                        .buttonStyle(.secondary)
                     
                     Button("Success") { showSuccess = true }
-                        .buttonStyle(.secondaryProminent)
+                        .buttonStyle(.secondary)
                     
                     Button("Warning") { showWarning = true }
-                        .buttonStyle(.secondaryProminent)
+                        .buttonStyle(.secondary)
                     
                     Button("Error") { showError = true }
-                        .buttonStyle(.secondaryProminent)
+                        .buttonStyle(.secondary)
                     
                     Button("Auto-dismiss (3s)") { showTemporary = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                 }
                 .padding(16)
                 .background(theme.tertiaryBackgroundColor(for: colorScheme))
@@ -1250,25 +1250,25 @@ internal struct NotificationComponentsSection: View {
                 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
                     Button("Slide from Top") { showSlideFromTop = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                     
                     Button("Fade In") { showFadeIn = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                     
                     Button("Slide from Bottom") { showSlideFromBottom = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                     
                     Button("Slide from Leading") { showSlideFromLeading = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                     
                     Button("Slide from Trailing") { showSlideFromTrailing = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                     
                     Button("Bounce (Enhanced)") { showBounce = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                     
                     Button("Scale (Custom)") { showScale = true }
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                 }
                 .padding(16)
                 .background(theme.tertiaryBackgroundColor(for: colorScheme))

@@ -1,21 +1,22 @@
 //
-//  PrimaryDefaultButtonStyle 2.swift
+//  PrimaryOutlineButtonStyle.swift
 //  NimbusUI
 //
-//  Created by Ivan Sapozhnik on 21.07.25.
+//  Created by Claude on 03.08.25.
 //
 
 import SwiftUI
 
-public struct PrimaryProminentButtonStyle: ButtonStyle {
+public struct PrimaryOutlineButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
     @Environment(\.nimbusButtonCornerRadii) private var overrideCornerRadii
     @Environment(\.nimbusMinHeight) private var overrideMinHeight
-    @Environment(\.nimbusElevation) private var overrideElevation
     @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.nimbusElevation) private var overrideElevation
+    @Environment(\.controlSize) private var controlSize
     
     // Button Label Configuration
     @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
@@ -38,10 +39,18 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
     #endif
     
     public func makeBody(configuration: Configuration) -> some View {
+        let color = theme.primaryColor(for: colorScheme)
+        let defaultAppearance = ButtonAppearance(
+            fill: .clear,
+            hover: color.opacity(0.1),
+            press: color.opacity(0.2)
+        )
+        
         let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
-        let minHeight = overrideMinHeight ?? theme.minHeight
+        let minHeight = ControlSizeUtility.height(for: controlSize, theme: theme, override: overrideMinHeight)
+        let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
+        let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
         let elevation = overrideElevation ?? theme.elevation
-        let horizontalPadding = overrideHorizontalPadding ?? theme.horizontalPadding
         
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
         let content = configuration.label
@@ -52,9 +61,9 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
                 theme: theme
             ))
         
-        content
-            .bold()
-            .foregroundStyle(.white)
+        return content
+            .font(.system(size: fontSize, weight: .medium))
+            .foregroundStyle(tint(configuration: configuration))
             .padding(.horizontal, horizontalPadding)
             .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
             .opacity(isEnabled ? 1 : 0.5)
@@ -62,47 +71,34 @@ public struct PrimaryProminentButtonStyle: ButtonStyle {
                 NimbusFilledModifier(
                     isHovering: isHovering,
                     isPressed: configuration.isPressed,
-                    fill: AnyShapeStyle(tint(configuration: configuration).fill),
-                    hovering: AnyShapeStyle(tint(configuration: configuration).hover),
-                    pressed: AnyShapeStyle(tint(configuration: configuration).press),
+                    fill: AnyShapeStyle(defaultAppearance.fill),
+                    hovering: AnyShapeStyle(defaultAppearance.hover),
+                    pressed: AnyShapeStyle(defaultAppearance.press)
                 )
             )
-            .clipShape(.rect(cornerRadii: cornerRadii))
-            .modifier(NimbusShadowModifier(elevation: elevation))
-            .modifier(NimbusInnerShadowModifier())
-            .modifier(NimbusGradientBorderModifier(width: 1, direction: .vertical))
             .overlay {
                 UnevenRoundedRectangle(cornerRadii: cornerRadii)
-                    .strokeBorder(AnyShapeStyle(tint(configuration: configuration).hover), lineWidth: 1)
+                    .strokeBorder(tint(configuration: configuration), lineWidth: 1)
             }
+            .clipShape(.rect(cornerRadii: cornerRadii))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
     }
     
-    private func tint(configuration: Configuration) -> ButtonAppearance {
-        let color = theme.accentColor(for: colorScheme)
+    private func tint(configuration: Configuration) -> Color {
+        let color = theme.primaryColor(for: colorScheme)
         let destructiveColor = theme.errorColor(for: colorScheme)
         
-        let defaultAppearance = ButtonAppearance(
-            fill: color,
-            hover: color.darker(by: 0.1),
-            press: color.darker(by: 0.25)
-        )
-        let destructiveAppearance = ButtonAppearance(
-            fill: destructiveColor,
-            hover: destructiveColor.darker(by: 0.1),
-            press: destructiveColor.darker(by: 0.25)
-        )
         if let role = configuration.role {
             switch role {
             case .cancel, .destructive:
-                return destructiveAppearance
+                return destructiveColor
             default:
-                return defaultAppearance
+                return color
             }
         } else {
-            return defaultAppearance
+            return color
         }
     }
 }

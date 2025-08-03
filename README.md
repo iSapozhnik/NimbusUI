@@ -179,7 +179,7 @@ NimbusUI automatically detects Label usage and applies appropriate styling:
 ```swift
 // Plain text button (no changes needed)
 Button("Delete") { }
-    .buttonStyle(.primaryProminent)
+    .buttonStyle(.accent)
 
 // Label with divider (auto-applied)
 Button(action: {}) {
@@ -205,11 +205,47 @@ Override specific properties while maintaining theme consistency:
 
 ```swift
 Button("Custom Button") { }
-    .buttonStyle(.primaryDefault)
+    .buttonStyle(.primary)
+    .controlSize(.large)
     .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(16))
     .environment(\.nimbusMinHeight, 50)
     .environment(\.nimbusButtonMaterial, .thin)
 ```
+
+</details>
+
+<details>
+<summary><strong>ControlSize Support</strong></summary>
+
+All button styles support SwiftUI's native controlSize for consistent sizing:
+
+```swift
+// Different sizes for the same style
+VStack(spacing: 12) {
+    Button("Large") { }.buttonStyle(.primary).controlSize(.large)      // 52px height
+    Button("Regular") { }.buttonStyle(.primary).controlSize(.regular)  // 44px height
+    Button("Small") { }.buttonStyle(.primary).controlSize(.small)      // 36px height
+    Button("Mini") { }.buttonStyle(.primary).controlSize(.mini)        // 28px height
+}
+
+// Size affects padding, font size, and overall proportions
+Button("Adaptive Button") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)  // Larger text, more padding
+```
+
+**Supported Sizes:**
+- `.large` - 52px height, enhanced padding and font size
+- `.regular` - 44px height, standard appearance (default)
+- `.small` - 36px height, compact padding and font size
+- `.mini` - 28px height, minimal padding and font size
+
+**Button Hierarchy:**
+- `.primary` - Main actions, filled with primaryColor
+- `.accent` - Prominent actions, filled with accentColor, supports button roles
+- `.secondary` - Secondary actions, subtle filled styling
+- `.primaryOutline` - Primary actions, outlined with primaryColor border
+- `.secondaryOutline` - Secondary actions, outlined with subtle border
 
 </details>
 
@@ -830,10 +866,13 @@ struct MyCustomTheme: NimbusTheming {
 Sources/NimbusUI/Components/
 ├── ButtonStyles/           # Button style implementations
 │   ├── Appearance.swift
-│   ├── PrimaryDefaultButtonStyle.swift
-│   ├── PrimaryProminentButtonStyle.swift
-│   ├── SecondaryBorderedButtonStyle.swift
-│   ├── SecondaryProminentButtonStyle.swift
+│   ├── PrimaryButtonStyle.swift
+│   ├── AccentButtonStyle.swift
+│   ├── SecondaryButtonStyle.swift
+│   ├── PrimaryOutlineButtonStyle.swift
+│   ├── SecondaryOutlineButtonStyle.swift
+│   ├── LinkButtonStyle.swift
+│   ├── CloseButtonStyle.swift
 │   └── Preview/           # Dedicated preview files
 ├── Checkbox/              # Checkbox components
 │   ├── NimbusCheckbox.swift

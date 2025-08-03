@@ -229,7 +229,7 @@ private struct MaritimeButtonStylesSection: View {
             MaritimeButtonStyleDemo(
                 title: "Primary Default",
                 description: "Uses theme.primaryColor (\(theme.primaryColor(for: colorScheme).hexString)) - Cerulean maritime blue",
-                styleType: .primaryDefault,
+                styleType: .primary,
                 examples: [
                     .init(title: "Basic Text", button: AnyView(Button("Maritime Action") {})),
                     .init(title: "With Icon", button: AnyView(Button("Navigate", systemImage: "compass") {})),
@@ -245,7 +245,7 @@ private struct MaritimeButtonStylesSection: View {
             MaritimeButtonStyleDemo(
                 title: "Primary Prominent",
                 description: "Uses theme.accentColor (\(theme.accentColor(for: colorScheme).hexString)) for normal, theme.errorColor for destructive",
-                styleType: .primaryProminent,
+                styleType: .accent,
                 examples: [
                     .init(title: "Normal Action", button: AnyView(Button("Set Sail") {})),
                     .init(title: "Destructive Role", button: AnyView(Button("Abandon Ship", role: .destructive) {})),
@@ -264,7 +264,7 @@ private struct MaritimeButtonStylesSection: View {
             MaritimeButtonStyleDemo(
                 title: "Secondary Prominent",
                 description: "Maritime-themed secondary prominent actions with structured styling",
-                styleType: .secondaryProminent,
+                styleType: .secondary,
                 examples: [
                     .init(title: "Apply Course", button: AnyView(Button("Apply") {})),
                     .init(title: "Drop Anchor", button: AnyView(Button("Anchor", systemImage: "anchor") {})),
@@ -279,7 +279,7 @@ private struct MaritimeButtonStylesSection: View {
             MaritimeButtonStyleDemo(
                 title: "Secondary Bordered",
                 description: "Subtle maritime controls for navigation and settings",
-                styleType: .secondaryBordered,
+                styleType: .secondaryOutline,
                 examples: [
                     .init(title: "Navigation", button: AnyView(Button("Options") {})),
                     .init(title: "Ship Settings", button: AnyView(Button("Settings", systemImage: "gearshape") {})),
@@ -304,19 +304,19 @@ private struct MaritimeButtonStylesSection: View {
                 
                 HStack(spacing: 12) {
                     Button("Primary Default") {}
-                        .buttonStyle(.primaryDefault)
+                        .buttonStyle(.primary)
                         .frame(height: 40)
                     
                     Button("Primary Prominent") {}
-                        .buttonStyle(.primaryProminent)
+                        .buttonStyle(.accent)
                         .frame(height: 40)
                     
                     Button("Secondary Prominent") {}
-                        .buttonStyle(.secondaryProminent)
+                        .buttonStyle(.secondary)
                         .frame(height: 40)
                     
                     Button("Secondary Bordered") {}
-                        .buttonStyle(.secondaryBordered)
+                        .buttonStyle(.secondaryOutline)
                         .frame(height: 40)
                 }
             }
@@ -330,7 +330,7 @@ private struct MaritimeButtonStyleDemo: View {
     @Environment(\.colorScheme) private var colorScheme
     
     enum StyleType {
-        case primaryDefault, primaryProminent, secondaryProminent, secondaryBordered
+        case primary, accent, secondary, secondaryOutline
     }
     
     struct ButtonExample {
@@ -367,14 +367,14 @@ private struct MaritimeButtonStyleDemo: View {
                         // Apply the button style based on type
                         Group {
                             switch styleType {
-                            case .primaryDefault:
-                                example.button.buttonStyle(.primaryDefault)
-                            case .primaryProminent:
-                                example.button.buttonStyle(.primaryProminent)
-                            case .secondaryProminent:
-                                example.button.buttonStyle(.secondaryProminent)
-                            case .secondaryBordered:
-                                example.button.buttonStyle(.secondaryBordered)
+                            case .primary:
+                                example.button.buttonStyle(.primary)
+                            case .accent:
+                                example.button.buttonStyle(.accent)
+                            case .secondary:
+                                example.button.buttonStyle(.secondary)
+                            case .secondaryOutline:
+                                example.button.buttonStyle(.secondaryOutline)
                             }
                         }
                         .frame(height: 36)

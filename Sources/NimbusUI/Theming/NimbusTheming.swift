@@ -117,6 +117,53 @@ public extension NimbusTheming {
     
     /// Close button icon size configuration (14pt default)
     var closeButtonIconSize: CGFloat { 14 }
+    
+    // MARK: - ControlSize-Specific Button Metrics (Optional with Defaults)
+    
+    /// Button height for .extraLarge controlSize (60px default)
+    var buttonHeightExtraLarge: CGFloat? { nil }
+    
+    /// Button height for .large controlSize (52px default)
+    var buttonHeightLarge: CGFloat? { nil }
+    
+    /// Button height for .regular controlSize (44px default)
+    var buttonHeightRegular: CGFloat? { nil }
+    
+    /// Button height for .small controlSize (36px default)
+    var buttonHeightSmall: CGFloat? { nil }
+    
+    /// Button height for .mini controlSize (28px default)
+    var buttonHeightMini: CGFloat? { nil }
+    
+    /// Button horizontal padding for .extraLarge controlSize (28px default)
+    var buttonPaddingExtraLarge: CGFloat? { nil }
+    
+    /// Button horizontal padding for .large controlSize (24px default)
+    var buttonPaddingLarge: CGFloat? { nil }
+    
+    /// Button horizontal padding for .regular controlSize (20px default)
+    var buttonPaddingRegular: CGFloat? { nil }
+    
+    /// Button horizontal padding for .small controlSize (16px default)
+    var buttonPaddingSmall: CGFloat? { nil }
+    
+    /// Button horizontal padding for .mini controlSize (12px default)
+    var buttonPaddingMini: CGFloat? { nil }
+    
+    /// Button font size for .extraLarge controlSize (19pt default)
+    var buttonFontSizeExtraLarge: CGFloat? { nil }
+    
+    /// Button font size for .large controlSize (17pt default)
+    var buttonFontSizeLarge: CGFloat? { nil }
+    
+    /// Button font size for .regular controlSize (15pt default)
+    var buttonFontSizeRegular: CGFloat? { nil }
+    
+    /// Button font size for .small controlSize (13pt default)
+    var buttonFontSizeSmall: CGFloat? { nil }
+    
+    /// Button font size for .mini controlSize (11pt default)
+    var buttonFontSizeMini: CGFloat? { nil }
 }
 
 // MARK: - List Component Tokens (Optional with Defaults)
