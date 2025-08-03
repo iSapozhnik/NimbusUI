@@ -197,12 +197,12 @@ fileprivate struct SecondaryButtonVariants: View {
                         
                         // Hover state
                         Button("Hover") {}
-                            .buttonStyle(PrimaryButtonStyle(isHovering: true))
+                            .buttonStyle(SecondaryButtonStyle(isHovering: true))
                             .controlSize(.regular)
                         
                         // Pressed state
                         Button("Pressed") {}
-                            .buttonStyle(PrimaryButtonStyle(isPressed: true))
+                            .buttonStyle(SecondaryButtonStyle(isPressed: true))
                             .controlSize(.regular)
                     }
                     
@@ -218,14 +218,14 @@ fileprivate struct SecondaryButtonVariants: View {
                         Button(action: {}) {
                             Label("Hover", systemImage: "star.fill")
                         }
-                        .buttonStyle(PrimaryButtonStyle(isHovering: true))
+                        .buttonStyle(SecondaryButtonStyle(isHovering: true))
                         .controlSize(.regular)
                         .environment(\.nimbusButtonHasDivider, true)
                         
                         Button(action: {}) {
                             Label("Pressed", systemImage: "star.fill")
                         }
-                        .buttonStyle(PrimaryButtonStyle(isPressed: true))
+                        .buttonStyle(SecondaryButtonStyle(isPressed: true))
                         .controlSize(.regular)
                         .environment(\.nimbusButtonHasDivider, true)
                     }
