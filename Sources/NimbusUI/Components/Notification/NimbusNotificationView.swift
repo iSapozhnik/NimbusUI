@@ -63,6 +63,8 @@ public struct NimbusNotificationView: View {
         .frame(minHeight: theme.notificationMinHeight)
         .background(type.backgroundColor(theme: theme, scheme: colorScheme))
         .clipShape(.rect(cornerRadii: theme.notificationCornerRadii))
+        .modifier(NimbusShadowModifier(elevation: .medium))
+
     }
     
     /// Computes the HStack alignment based on icon alignment preference
@@ -91,6 +93,6 @@ public struct NimbusNotificationView: View {
             .font(.system(size: 14, weight: .regular))
             .foregroundStyle(type.textColor(theme: theme, scheme: colorScheme))
             .multilineTextAlignment(.leading)
-            .fixedSize(horizontal: false, vertical: true) // Allow proper text wrapping
+            .fixedSize(horizontal: false, vertical: true)
     }
 }

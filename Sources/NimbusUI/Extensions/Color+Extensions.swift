@@ -102,6 +102,31 @@ extension Color {
         
         return String(format: "#%02X%02X%02X", red, green, blue)
     }
+    
+    /// Mixes this color with another color by a specified percentage
+    /// - Parameters:
+    ///   - color: The color to mix with
+    ///   - percentage: The mix percentage (0.0 = all this color, 1.0 = all other color)
+    /// - Returns: A new color that is a blend of the two colors
+    func mix(with color: Color, by percentage: CGFloat) -> Color {
+        let clampedPercentage = max(0.0, min(1.0, percentage))
+        
+        let selfNSColor = NSColor(self)
+        let otherNSColor = NSColor(color)
+        
+        guard let selfRGB = selfNSColor.usingColorSpace(.genericRGB),
+              let otherRGB = otherNSColor.usingColorSpace(.genericRGB) else {
+            return self // Fallback to original color if conversion fails
+        }
+        
+        // Mix RGB components using linear interpolation
+        let red = selfRGB.redComponent * (1.0 - clampedPercentage) + otherRGB.redComponent * clampedPercentage
+        let green = selfRGB.greenComponent * (1.0 - clampedPercentage) + otherRGB.greenComponent * clampedPercentage
+        let blue = selfRGB.blueComponent * (1.0 - clampedPercentage) + otherRGB.blueComponent * clampedPercentage
+        let alpha = selfRGB.alphaComponent * (1.0 - clampedPercentage) + otherRGB.alphaComponent * clampedPercentage
+        
+        return Color(nsColor: NSColor(red: red, green: green, blue: blue, alpha: alpha))
+    }
 }
 
 extension NSColor {

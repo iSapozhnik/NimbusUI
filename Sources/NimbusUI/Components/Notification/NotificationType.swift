@@ -25,17 +25,18 @@ public enum NotificationType: CaseIterable, Sendable {
     
     func backgroundColor(theme: NimbusTheming, scheme: ColorScheme) -> Color {
         let opacity = theme.notificationBackgroundOpacity
-        
+        let color: Color
         switch self {
         case .info:
-            return theme.infoColor(for: scheme).opacity(opacity)
+            color = theme.infoColor(for: scheme).opacity(opacity)
         case .success:
-            return theme.successColor(for: scheme).opacity(opacity)
+            color = theme.successColor(for: scheme).opacity(opacity)
         case .warning:
-            return theme.warningColor(for: scheme).opacity(opacity)
+            color = theme.warningColor(for: scheme).opacity(opacity)
         case .error:
-            return theme.errorColor(for: scheme).opacity(opacity)
+            color = theme.errorColor(for: scheme).opacity(opacity)
         }
+        return color.mix(with: .white, by: 0.5)
     }
     
     func iconColor(theme: NimbusTheming, scheme: ColorScheme) -> Color {
@@ -53,7 +54,8 @@ public enum NotificationType: CaseIterable, Sendable {
         
         // In light mode, use darker variant for better contrast
         // In dark mode, use the base color for proper visibility
-        return scheme == .light ? baseColor.darker(by: 0.15) : baseColor.darker(by: 0.25)
+//        return scheme == .light ? baseColor.darker(by: 0.5) : baseColor.darker(by: 0.25)
+        return baseColor.darker(by: 0.5)
     }
     
     func textColor(theme: NimbusTheming, scheme: ColorScheme) -> Color {
@@ -71,7 +73,7 @@ public enum NotificationType: CaseIterable, Sendable {
         
         // In light mode, use darker variant for better readability
         // In dark mode, use the base color for proper visibility
-        return scheme == .light ? baseColor.darker(by: 0.5) : theme.primaryTextColor(for: .dark)
+        return baseColor.darker(by: 0.5)
     }
     
     func actionColor(theme: NimbusTheming, scheme: ColorScheme) -> Color {

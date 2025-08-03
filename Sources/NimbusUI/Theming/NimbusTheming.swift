@@ -212,7 +212,7 @@ public extension NimbusTheming {
     var notificationCornerRadii: RectangleCornerRadii { cornerRadii }
     
     /// Notification styling
-    var notificationBackgroundOpacity: CGFloat { 0.9 }
+    var notificationBackgroundOpacity: CGFloat { 1 }
     var notificationMinHeight: CGFloat { 56 }
     var notificationIconSize: CGFloat { 20 }
     var notificationPadding: CGFloat { 16 }

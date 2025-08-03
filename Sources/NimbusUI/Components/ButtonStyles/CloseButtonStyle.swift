@@ -31,7 +31,7 @@ public struct CloseButtonStyle: ButtonStyle {
         let animationFast = overrideAnimationFast ?? theme.animationFast
         let closeButtonSize = theme.closeButtonSize
         let closeButtonIconSize = theme.closeButtonIconSize
-        let textColor = theme.secondaryTextColor(for: colorScheme)
+        let textColor = theme.primaryTextColor(for: colorScheme)
         let hoverBackgroundColor = theme.tertiaryBackgroundColor(for: colorScheme)
         let pressedBackgroundColor = theme.borderColor(for: colorScheme)
         
