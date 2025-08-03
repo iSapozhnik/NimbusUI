@@ -95,13 +95,14 @@ public struct PrimaryButtonStyle: ButtonStyle {
                 )
             )
             .clipShape(.rect(cornerRadii: cornerRadii))
-            .modifier(NimbusShadowModifier(elevation: elevation))
             .modifier(NimbusInnerShadowModifier())
             .modifier(NimbusGradientBorderModifier(width: 1, direction: .vertical))
             .overlay {
                 UnevenRoundedRectangle(cornerRadii: cornerRadii)
                     .strokeBorder(AnyShapeStyle(defaultAppearance.hover), lineWidth: 1)
             }
+            .clipShape(.rect(cornerRadii: cornerRadii))
+            .modifier(NimbusShadowModifier(elevation: elevation))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
