@@ -19,8 +19,10 @@ private let recording = false
 @Test func showcaseNimbusTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
-            from: ShowcaseView()
-                .environment(\.nimbusTheme, NimbusTheme())
+            from: ShowcaseView {
+                CustomThemeContentView()
+            }
+            .environment(\.nimbusTheme, NimbusTheme())
         ),
         as: .image,
         record: recording
@@ -31,8 +33,10 @@ private let recording = false
 @Test func showcaseWarmTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
-            from: ShowcaseView()
-                .environment(\.nimbusTheme, CustomWarmTheme())
+            from: ShowcaseView {
+                CustomThemeContentView()
+            }
+            .environment(\.nimbusTheme, CustomWarmTheme())
         ),
         as: .image,
         record: recording
@@ -43,8 +47,10 @@ private let recording = false
 @Test func showcaseMaritimeTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
-            from: ShowcaseView()
-                .environment(\.nimbusTheme, MaritimeTheme())
+            from: ShowcaseView {
+                MaritimeThemeContentView()
+            }
+            .environment(\.nimbusTheme, MaritimeTheme())
         ),
         as: .image,
         record: recording
@@ -64,31 +70,6 @@ private let recording = false
     )
 }
 
-struct ShowcaseView: View {
-    var body: some View {
-        HStack {
-            VStack {
-                Text("Light Mode")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                CustomThemeContentView()
-                    .environment(\.colorScheme, .light)
-            }
-            VStack {
-                Text("Dark Mode")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                CustomThemeContentView()
-                    .environment(\.colorScheme, .dark)
-            }
-        }
-        .padding()
-        .background(.black)
-        .frame(width: 1360)
-    }
-}
 
 struct SecondaryOutlineButtonStylePreview: View {
     var body: some View {
@@ -189,29 +170,5 @@ struct MaritimeShowcaseView: View {
         }
         .padding()
         .background(.black)
-    }
-}
-
-fileprivate enum SnapshotUtility<Content> where Content: View {
-
-    static func view(from content: Content, colorScheme: ColorScheme) -> NSView {
-        let nsView = NSHostingView(
-            rootView: content
-                .environment(\.colorScheme, colorScheme)
-                .fixedSize()
-        )
-        nsView.layoutSubtreeIfNeeded()
-        nsView.frame = NSRect(origin: .zero, size: nsView.fittingSize)
-        return nsView
-    }
-    
-    static func view(from content: Content) -> NSView {
-        let nsView = NSHostingView(
-            rootView: content
-                .fixedSize()
-        )
-        nsView.layoutSubtreeIfNeeded()
-        nsView.frame = NSRect(origin: .zero, size: nsView.fittingSize)
-        return nsView
     }
 }

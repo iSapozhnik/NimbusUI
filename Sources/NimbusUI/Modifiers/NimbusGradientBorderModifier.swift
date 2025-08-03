@@ -53,7 +53,6 @@ public struct NimbusGradientBorderModifier: ViewModifier {
                     )
                     UnevenRoundedRectangle(cornerRadii: cornerRadii)
                         .strokeBorder(gradient, lineWidth: width)
-                        .offset(y: 0.5)
                         
                 }
             )

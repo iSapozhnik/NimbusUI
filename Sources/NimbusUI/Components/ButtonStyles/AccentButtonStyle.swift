@@ -70,13 +70,14 @@ public struct AccentButtonStyle: ButtonStyle {
                 )
             )
             .clipShape(.rect(cornerRadii: cornerRadii))
-            .modifier(NimbusShadowModifier(elevation: elevation))
             .modifier(NimbusInnerShadowModifier())
             .modifier(NimbusGradientBorderModifier(width: 1, direction: .vertical))
             .overlay {
                 UnevenRoundedRectangle(cornerRadii: cornerRadii)
                     .strokeBorder(AnyShapeStyle(tint(configuration: configuration).hover), lineWidth: 1)
             }
+            .clipShape(.rect(cornerRadii: cornerRadii))
+            .modifier(NimbusShadowModifier(elevation: elevation))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }

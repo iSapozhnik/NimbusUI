@@ -27,15 +27,27 @@ public struct PrimaryButtonStyle: ButtonStyle {
     
     @State private var isHovering: Bool
     
+    #if DEBUG
+    @State private var debugIsPressed: Bool
+    private let isDebugMode: Bool
+    #endif
+    
     public init() {
         self.isHovering = false
+        #if DEBUG
+        self.debugIsPressed = false
+        self.isDebugMode = false
+        #endif
     }
 
     #if DEBUG
         init(
-            isHovering: Bool = false
+            isHovering: Bool = false,
+            isPressed: Bool = false
         ) {
             self.isHovering = isHovering
+            self.debugIsPressed = isPressed
+            self.isDebugMode = true
         }
     #endif
     
@@ -61,6 +73,12 @@ public struct PrimaryButtonStyle: ButtonStyle {
                 theme: theme
             ))
         
+        #if DEBUG
+        let effectiveIsPressed = isDebugMode ? debugIsPressed : configuration.isPressed
+        #else
+        let effectiveIsPressed = configuration.isPressed
+        #endif
+        
         return content
             .bold()
             .font(.system(size: fontSize, weight: .semibold))
@@ -70,20 +88,21 @@ public struct PrimaryButtonStyle: ButtonStyle {
             .modifier(
                 NimbusFilledModifier(
                     isHovering: isHovering,
-                    isPressed: configuration.isPressed,
+                    isPressed: effectiveIsPressed,
                     fill: AnyShapeStyle(defaultAppearance.fill),
                     hovering: AnyShapeStyle(defaultAppearance.hover),
                     pressed: AnyShapeStyle(defaultAppearance.press)
                 )
             )
             .clipShape(.rect(cornerRadii: cornerRadii))
-            .modifier(NimbusShadowModifier(elevation: elevation))
             .modifier(NimbusInnerShadowModifier())
             .modifier(NimbusGradientBorderModifier(width: 1, direction: .vertical))
             .overlay {
                 UnevenRoundedRectangle(cornerRadii: cornerRadii)
                     .strokeBorder(AnyShapeStyle(defaultAppearance.hover), lineWidth: 1)
             }
+            .clipShape(.rect(cornerRadii: cornerRadii))
+            .modifier(NimbusShadowModifier(elevation: elevation))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
