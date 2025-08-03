@@ -117,8 +117,8 @@ struct NimbusNotificationModifier: ViewModifier {
                 onDismiss?()
             }
         )
-        .swipeUpToDismiss { 
-            // Handle swipe-up gesture
+        .directionalSwipeToDismiss(presentationStyle: presentationStyle) {
+            // Handle directional swipe gesture
             dismissNotification()
             onDismiss?()
         }

@@ -66,11 +66,11 @@ struct NotificationAnimationFactory {
         case .slideFromTop, .bounce:
             return .top
         case .slideFromBottom:
-            return .bottom
+            return .top  // Changed from .bottom - we'll use spacer layout for bottom positioning
         case .slideFromLeading:
-            return .leading
+            return .top  // Changed from .leading - we'll use spacer layout for leading positioning
         case .slideFromTrailing:
-            return .trailing
+            return .top  // Changed from .trailing - we'll use spacer layout for trailing positioning
         case .fadeIn, .scale:
             return .center
         }
@@ -145,17 +145,17 @@ struct NotificationAnimationFactory {
         case .slideFromLeading:
             return EdgeInsets(
                 top: theme.notificationTopPadding,
-                leading: theme.notificationTopPadding,
+                leading: theme.notificationHorizontalPadding,
                 bottom: 0,
-                trailing: 0
+                trailing: theme.notificationHorizontalPadding
             )
             
         case .slideFromTrailing:
             return EdgeInsets(
                 top: theme.notificationTopPadding,
-                leading: 0,
+                leading: theme.notificationHorizontalPadding,
                 bottom: 0,
-                trailing: theme.notificationTopPadding
+                trailing: theme.notificationHorizontalPadding
             )
             
         case .fadeIn, .scale:

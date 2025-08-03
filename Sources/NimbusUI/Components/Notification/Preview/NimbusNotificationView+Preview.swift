@@ -204,6 +204,12 @@ import SwiftUI
         .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
+@available(macOS 15.0, *)
+#Preview("Presentation Styles Demo") {
+    PresentationStyleDemoView()
+        .environment(\.nimbusTheme, NimbusTheme.default)
+}
+
 // MARK: - Demo View for Presentation System
 
 @available(macOS 15.0, *)
@@ -396,6 +402,139 @@ struct DragToDismissDemoView: View {
             dismissBehavior: .sticky,
             onAction: { showHandleDemo = false },
             onDismiss: { print("Handle demo dismissed via drag") }
+        )
+    }
+}
+
+// MARK: - Presentation Styles Demo View
+
+@available(macOS 15.0, *)
+struct PresentationStyleDemoView: View {
+    @State private var showSlideFromTop = false
+    @State private var showSlideFromBottom = false
+    @State private var showSlideFromLeading = false
+    @State private var showSlideFromTrailing = false
+    @State private var showFadeIn = false
+    @State private var showBounce = false
+    @State private var showScale = false
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Notification Presentation Styles")
+                .font(.title2)
+                .fontWeight(.semibold)
+            
+            Text("Each style has appropriate swipe direction for dismissal")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            
+            LazyVGrid(columns: [
+                GridItem(.flexible()),
+                GridItem(.flexible())
+            ], spacing: 12) {
+                
+                Button("Slide from Top\n(swipe up ↑)") {
+                    showSlideFromTop = true
+                }
+                .buttonStyle(.primaryDefault)
+                .multilineTextAlignment(.center)
+                
+                Button("Slide from Bottom\n(swipe down ↓)") {
+                    showSlideFromBottom = true
+                }
+                .buttonStyle(.primaryDefault)
+                .multilineTextAlignment(.center)
+                
+                Button("Slide from Leading\n(swipe left ←)") {
+                    showSlideFromLeading = true
+                }
+                .buttonStyle(.primaryDefault)
+                .multilineTextAlignment(.center)
+                
+                Button("Slide from Trailing\n(swipe right →)") {
+                    showSlideFromTrailing = true
+                }
+                .buttonStyle(.primaryDefault)
+                .multilineTextAlignment(.center)
+                
+                Button("Fade In\n(swipe up/down ↕)") {
+                    showFadeIn = true
+                }
+                .buttonStyle(.secondaryProminent)
+                .multilineTextAlignment(.center)
+                
+                Button("Bounce\n(swipe up ↑)") {
+                    showBounce = true
+                }
+                .buttonStyle(.secondaryProminent)
+                .multilineTextAlignment(.center)
+                
+                Button("Scale\n(swipe up/down ↕)") {
+                    showScale = true
+                }
+                .buttonStyle(.secondaryBordered)
+                .multilineTextAlignment(.center)
+            }
+            
+            Spacer()
+        }
+        .padding()
+        .frame(width: 500, height: 400)
+        .nimbusNotification(
+            isPresented: $showSlideFromTop,
+            type: .info,
+            message: "Slides from top! Swipe UP to dismiss.",
+            actionText: "Got it",
+            presentationStyle: .slideFromTop,
+            onAction: { showSlideFromTop = false }
+        )
+        .nimbusNotification(
+            isPresented: $showSlideFromBottom,
+            type: .success,
+            message: "Slides from bottom! Swipe DOWN to dismiss.",
+            actionText: "Nice",
+            presentationStyle: .slideFromBottom,
+            onAction: { showSlideFromBottom = false }
+        )
+        .nimbusNotification(
+            isPresented: $showSlideFromLeading,
+            type: .warning,
+            message: "Slides from leading edge! Swipe LEFT to dismiss.",
+            actionText: "Cool",
+            presentationStyle: .slideFromLeading,
+            onAction: { showSlideFromLeading = false }
+        )
+        .nimbusNotification(
+            isPresented: $showSlideFromTrailing,
+            type: .error,
+            message: "Slides from trailing edge! Swipe RIGHT to dismiss.",
+            actionText: "Awesome",
+            presentationStyle: .slideFromTrailing,
+            onAction: { showSlideFromTrailing = false }
+        )
+        .nimbusNotification(
+            isPresented: $showFadeIn,
+            type: .info,
+            message: "Fades in smoothly! Swipe UP or DOWN to dismiss.",
+            actionText: "Perfect",
+            presentationStyle: .fadeIn,
+            onAction: { showFadeIn = false }
+        )
+        .nimbusNotification(
+            isPresented: $showBounce,
+            type: .success,
+            message: "Bounces in with spring animation! Swipe UP to dismiss.",
+            actionText: "Bouncy!",
+            presentationStyle: .bounce,
+            onAction: { showBounce = false }
+        )
+        .nimbusNotification(
+            isPresented: $showScale,
+            type: .warning,
+            message: "Scales up from center! Swipe UP or DOWN to dismiss.",
+            actionText: "Smooth",
+            presentationStyle: .scale,
+            onAction: { showScale = false }
         )
     }
 }
