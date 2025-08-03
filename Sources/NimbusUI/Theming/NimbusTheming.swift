@@ -223,6 +223,14 @@ public extension NimbusTheming {
     /// Advanced animation styles for enhanced presentation modes
     var notificationBounceAnimation: Animation { .spring(response: 0.6, dampingFraction: 0.6, blendDuration: 0.0) }
     var notificationScaleAnimation: Animation { .spring(response: 0.5, dampingFraction: 0.7) }
+    
+    /// Notification handle styling (drag indicator)
+    var notificationHandleWidth: CGFloat { 32 }
+    var notificationHandleHeight: CGFloat { 4 }
+    var notificationHandleCornerRadius: CGFloat { 2 }
+    var notificationHandleOpacityVisible: Double { 0.3 }
+    var notificationHandleOpacityHidden: Double { 0.0 }
+    var notificationHandleFadeAnimation: Animation { .easeInOut(duration: 0.2) }
 }
 
 // MARK: - Convenience Methods
@@ -246,5 +254,10 @@ public extension NimbusTheming {
     /// Gets the background color for the current environment's color scheme
     func backgroundColor(from environment: EnvironmentValues) -> Color {
         backgroundColor(for: environment.colorScheme)
+    }
+    
+    /// Gets the notification handle color for the current color scheme
+    func notificationHandleColor(for scheme: ColorScheme) -> Color {
+        primaryTextColor(for: scheme)
     }
 }

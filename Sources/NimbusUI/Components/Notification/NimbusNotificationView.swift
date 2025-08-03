@@ -19,6 +19,9 @@ public struct NimbusNotificationView: View {
     let onAction: (() -> Void)?
     let onDismiss: (() -> Void)?
     
+    // State for hover detection
+    @State private var isHovered: Bool = false
+    
     public init(
         type: NotificationType,
         message: String,
@@ -36,30 +39,33 @@ public struct NimbusNotificationView: View {
     }
     
     public var body: some View {
-        HStack(alignment: alignmentForIcon, spacing: 12) {
-            // Icon with simplified logic
-            iconView
-            
-            // Message with proper text wrapping
-            messageView
-            
-            Spacer()
-            
-            // Action Link Button (if provided)
-            if let actionText = actionText, let onAction = onAction {
-                Button(actionText, action: onAction)
-                    .buttonStyle(LinkButtonStyle(semanticColor: type.actionColor(theme: theme, scheme: colorScheme)))
+        VStack(spacing: 0) {
+            // Main notification content
+            HStack(alignment: alignmentForIcon, spacing: 12) {
+                // Icon with simplified logic
+                iconView
+                
+                // Message with proper text wrapping
+                messageView
+                
+                Spacer()
+                
+                // Action Link Button (if provided)
+                if let actionText = actionText, let onAction = onAction {
+                    Button(actionText, action: onAction)
+                        .buttonStyle(LinkButtonStyle(semanticColor: type.actionColor(theme: theme, scheme: colorScheme)))
+                }
+                
+                // Close Button
+                Button {
+                    onDismiss?()
+                } label: {
+                    Image(systemName: "xmark")
+                }
+                .buttonStyle(CloseButtonStyle())
             }
-            
-            // Close Button
-            Button {
-                onDismiss?()
-            } label: {
-                Image(systemName: "xmark")
-            }
-            .buttonStyle(CloseButtonStyle())
+            .padding(theme.notificationPadding)
         }
-        .padding(theme.notificationPadding)
         .frame(minHeight: theme.notificationMinHeight)
         .background(type.backgroundColor(theme: theme, scheme: colorScheme))
         .clipShape(.rect(cornerRadii: theme.notificationCornerRadii))
@@ -68,7 +74,15 @@ public struct NimbusNotificationView: View {
             RoundedRectangle(cornerRadius: theme.notificationCornerRadii.topLeading)
                 .strokeBorder(type.borderColor(theme: theme, scheme: colorScheme), lineWidth: 1)
         )
-
+        .overlay(alignment: .top) {
+            // Drag handle (appears on hover)
+            NotificationHandleView(isVisible: $isHovered)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+        }
+        .onHover { hovering in
+            isHovered = hovering
+        }
     }
     
     /// Computes the HStack alignment based on icon alignment preference

@@ -91,6 +91,17 @@ public extension EnvironmentValues {
     @Entry var nimbusCheckboxItemMinHeight: CGFloat? = nil
 }
 
+// MARK: Notification Handle
+
+public extension EnvironmentValues {
+    @Entry var nimbusNotificationHandleWidth: CGFloat? = nil
+    @Entry var nimbusNotificationHandleHeight: CGFloat? = nil
+    @Entry var nimbusNotificationHandleCornerRadius: CGFloat? = nil
+    @Entry var nimbusNotificationHandleOpacityVisible: Double? = nil
+    @Entry var nimbusNotificationHandleOpacityHidden: Double? = nil
+    @Entry var nimbusNotificationHandleFadeAnimation: Animation? = nil
+}
+
 // MARK: Scroller
 
 public extension EnvironmentValues {

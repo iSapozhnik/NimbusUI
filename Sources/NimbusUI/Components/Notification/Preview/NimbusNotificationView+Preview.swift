@@ -193,6 +193,12 @@ import SwiftUI
 }
 
 @available(macOS 15.0, *)
+#Preview("Drag to Dismiss Demo") {
+    DragToDismissDemoView()
+        .environment(\.nimbusTheme, NimbusTheme.default)
+}
+
+@available(macOS 15.0, *)
 #Preview("Presentation System Demo") {
     NotificationDemoView()
         .environment(\.nimbusTheme, NimbusTheme.default)
@@ -288,6 +294,108 @@ struct NotificationDemoView: View {
             message: "This notification will auto-dismiss in 3 seconds!",
             dismissBehavior: .temporary(3.0),
             onDismiss: { print("Temporary notification dismissed") }
+        )
+    }
+}
+
+// MARK: - Drag to Dismiss Demo View
+
+@available(macOS 15.0, *)
+struct DragToDismissDemoView: View {
+    @State private var showInteractiveDemo = false
+    @State private var showPhysicsDemo = false
+    @State private var showHandleDemo = false
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            Text("Interactive Drag-to-Dismiss Demo")
+                .font(.title2)
+                .fontWeight(.semibold)
+            
+            Text("Hover over notifications to see the drag handle, then drag in any direction to dismiss!")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            VStack(spacing: 16) {
+                Button("Show Interactive Notification") {
+                    showInteractiveDemo = true
+                }
+                .buttonStyle(.primaryProminent)
+                
+                Button("Show Physics Demo") {
+                    showPhysicsDemo = true
+                }
+                .buttonStyle(.primaryDefault)
+                
+                Button("Show Handle Indicator Demo") {
+                    showHandleDemo = true
+                }
+                .buttonStyle(.secondaryProminent)
+            }
+            
+            VStack(spacing: 12) {
+                Text("Interaction Instructions:")
+                    .font(.headline)
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Image(systemName: "hand.point.up.left")
+                        Text("Hover over notification to reveal drag handle")
+                    }
+                    
+                    HStack {
+                        Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
+                        Text("Drag in any direction to dismiss")
+                    }
+                    
+                    HStack {
+                        Image(systemName: "tornado")
+                        Text("Fast throws trigger physics simulation")
+                    }
+                    
+                    HStack {
+                        Image(systemName: "arrow.2.circlepath")
+                        Text("Slow drags snap back to position")
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+            
+            Spacer()
+        }
+        .padding()
+        .frame(width: 500, height: 400)
+        .nimbusNotification(
+            isPresented: $showInteractiveDemo,
+            type: .info,
+            message: "Try dragging me in any direction! Fast throws will trigger physics simulation with gravity.",
+            actionText: "Got it",
+            iconAlignment: .center,
+            dismissBehavior: .sticky,
+            onAction: { showInteractiveDemo = false },
+            onDismiss: { print("Interactive demo dismissed via drag") }
+        )
+        .nimbusNotification(
+            isPresented: $showPhysicsDemo,
+            type: .warning,
+            message: "This notification demonstrates parabolic motion physics. Throw me horizontally to see gravity in action!",
+            actionText: "Cool",
+            iconAlignment: .baseline,
+            dismissBehavior: .sticky,
+            onAction: { showPhysicsDemo = false },
+            onDismiss: { print("Physics demo dismissed via drag") }
+        )
+        .nimbusNotification(
+            isPresented: $showHandleDemo,
+            type: .success,
+            message: "Hover over this notification to see the subtle drag handle indicator appear with a smooth fade-in animation.",
+            actionText: "Nice",
+            iconAlignment: .top,
+            dismissBehavior: .sticky,
+            onAction: { showHandleDemo = false },
+            onDismiss: { print("Handle demo dismissed via drag") }
         )
     }
 }

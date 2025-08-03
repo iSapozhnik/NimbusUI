@@ -25,6 +25,7 @@ struct NimbusNotificationModifier: ViewModifier {
     @State private var isNotificationVisible = false
     @State private var dismissTimer: Timer?
     
+    
     func body(content: Content) -> some View {
         content
             .overlay(alignment: NotificationAnimationFactory.overlayAlignment(for: presentationStyle)) {
@@ -116,6 +117,11 @@ struct NimbusNotificationModifier: ViewModifier {
                 onDismiss?()
             }
         )
+        .swipeUpToDismiss { 
+            // Handle swipe-up gesture
+            dismissNotification()
+            onDismiss?()
+        }
     }
     
     private func showNotification() {
@@ -153,4 +159,5 @@ struct NimbusNotificationModifier: ViewModifier {
             isPresented = false
         }
     }
+    
 }
