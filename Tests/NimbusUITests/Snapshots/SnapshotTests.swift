@@ -99,19 +99,19 @@ struct SecondaryOutlineButtonStylePreview: View {
                 
                 VStack(spacing: 8) {
                     Button("Large Secondary Outline") {}
-                        .buttonStyle(SecondaryOutlineButtonStyle())
+                        .buttonStyle(.secondaryOutline)
                         .controlSize(.large)
                     
                     Button("Regular Secondary Outline") {}
-                        .buttonStyle(SecondaryOutlineButtonStyle())
+                        .buttonStyle(.secondaryOutline)
                         .controlSize(.regular)
                     
                     Button("Small Secondary Outline") {}
-                        .buttonStyle(SecondaryOutlineButtonStyle())
+                        .buttonStyle(.secondaryOutline)
                         .controlSize(.small)
                     
                     Button("Mini Secondary Outline") {}
-                        .buttonStyle(SecondaryOutlineButtonStyle())
+                        .buttonStyle(.secondaryOutline)
                         .controlSize(.mini)
                 }
             }
@@ -124,14 +124,14 @@ struct SecondaryOutlineButtonStylePreview: View {
                     Button(action: {}) {
                         Label("Settings", systemImage: "gear")
                     }
-                    .buttonStyle(SecondaryOutlineButtonStyle())
+                    .buttonStyle(.secondaryOutline)
                     .controlSize(.regular)
                     .environment(\.nimbusButtonHasDivider, true)
                     
                     Button(action: {}) {
                         Label("Export", systemImage: "square.and.arrow.up")
                     }
-                    .buttonStyle(SecondaryOutlineButtonStyle())
+                    .buttonStyle(.secondaryOutline)
                     .controlSize(.small)
                     .environment(\.nimbusButtonHasDivider, false)
                     .environment(\.nimbusButtonIconAlignment, .trailing)

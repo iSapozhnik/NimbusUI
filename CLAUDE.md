@@ -371,6 +371,94 @@ VStack {
 }
 ```
 
+## Aspect Ratio System
+
+### Overview
+NimbusUI includes sophisticated aspect ratio support for buttons through the enhanced `NimbusAspectRatioModifier`, providing precise control over button geometry while maintaining full controlSize integration.
+
+### Core Functionality
+The `NimbusAspectRatioModifier` provides:
+- **ControlSize Integration**: Automatically respects controlSize when calculating dimensions
+- **Optional Enhancement**: Only applies aspect ratio constraints when environment values are configured
+- **Backward Compatibility**: Existing buttons work unchanged without aspect ratio configuration
+- **Theme Awareness**: Uses theme-based heights with controlSize and override support
+
+### Environment Values
+```swift
+// Aspect ratio configuration (all optional)
+@Entry var nimbusAspectRatio: CGFloat? = nil              // Target ratio (width/height)
+@Entry var nimbusAspectRatioContentMode: ContentMode? = .fit // How content fits
+@Entry var nimbusAspectRatioHasFixedHeight: Bool = true   // Whether height is fixed
+```
+
+### Usage Patterns
+
+#### Default Behavior (No Changes)
+```swift
+// Standard button - no aspect ratio constraints applied
+Button("Save") { }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+// Behaves exactly as before - maxWidth: .infinity, controlSize-based minHeight
+```
+
+#### Square Icon Buttons
+```swift
+// Perfect for toolbar icons and action buttons
+Button { } label: { Image(systemName: "gear") }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 1.0)              // 1:1 square
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+```
+
+#### Wide Banner Buttons
+```swift
+// Great for call-to-action buttons and banners
+Button("Get Started Now") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)
+    .environment(\.nimbusAspectRatio, 3.0)              // 3:1 wide
+    .environment(\.nimbusAspectRatioHasFixedHeight, true)
+```
+
+#### Responsive Proportional Buttons
+```swift
+// Maintains proportions while allowing flexibility
+Button("Continue") { }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 2.5)              // 2.5:1 ratio
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+    .environment(\.nimbusAspectRatioHasFixedHeight, false) // Allows vertical flexibility
+```
+
+### Implementation Details
+
+#### NimbusAspectRatioModifier Logic
+```swift
+// When no aspect ratio is configured (default)
+content.frame(maxWidth: .infinity, minHeight: controlSizeHeight, maxHeight: .infinity)
+
+// When aspect ratio is configured
+content
+    .frame(minWidth: calculatedMinWidth, maxWidth: .infinity, minHeight: controlSizeHeight, maxHeight: maxHeight)
+    .aspectRatio(aspectRatio, contentMode: contentMode)
+    .fixedSize(horizontal: contentMode == .fit, vertical: hasFixedHeight)
+```
+
+#### ControlSize Integration
+The modifier automatically uses `ControlSizeUtility.height(for:theme:override:)` for height calculations, ensuring:
+- ✅ **Theme Consistency**: Respects theme-specific controlSize overrides
+- ✅ **Environment Overrides**: Honors `nimbusMinHeight` environment values
+- ✅ **Size Adaptation**: Aspect ratios scale appropriately with different controlSizes
+
+### Architecture Benefits
+- **Opt-In Enhancement**: Zero impact on existing code, only applies when configured
+- **ControlSize Aware**: Seamlessly integrates with the controlSize system
+- **Theme Compatible**: Works with all themes and theme overrides
+- **Performance Optimized**: Only adds constraints when aspect ratio is specified
+
 ## Known Issues & Workarounds
 
 ### SwiftUI Preview Layout Bug

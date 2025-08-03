@@ -29,6 +29,14 @@ public extension ButtonStyle where Self == PrimaryOutlineButtonStyle {
     static var primaryOutline: Self { .init() }
 }
 
+public extension ButtonStyle where Self == LinkButtonStyle {
+    static var nimbusLink: Self { .init() }
+}
+
+public extension ButtonStyle where Self == CloseButtonStyle {
+    static var close: Self { .init() }
+}
+
 // MARK: - Legacy Extensions (Deprecated)
 
 @available(*, deprecated, renamed: "primary", message: "Use `.primary` instead of `.primaryDefault`")

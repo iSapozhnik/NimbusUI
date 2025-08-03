@@ -1052,11 +1052,11 @@ internal struct NotificationComponentsSection: View {
                         
                         HStack(spacing: 12) {
                             Button("Try again", action: {})
-                                .buttonStyle(LinkButtonStyle())
+                                .buttonStyle(.nimbusLink)
                             Button("Check details", action: {})
-                                .buttonStyle(LinkButtonStyle())
+                                .buttonStyle(.nimbusLink)
                             Button("Edit Profile", action: {})
-                                .buttonStyle(LinkButtonStyle())
+                                .buttonStyle(.nimbusLink)
                         }
                     }
                     
@@ -1071,12 +1071,12 @@ internal struct NotificationComponentsSection: View {
                             Button(action: {}) {
                                 Image(systemName: "xmark")
                             }
-                            .buttonStyle(CloseButtonStyle())
+                            .buttonStyle(.close)
                             
                             Button(action: {}) {
                                 Image(systemName: "xmark")
                             }
-                            .buttonStyle(CloseButtonStyle())
+                            .buttonStyle(.close)
                             .disabled(true)
                         }
                     }

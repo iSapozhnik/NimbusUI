@@ -20,19 +20,19 @@ import SwiftUI
             
             VStack(spacing: 8) {
                 Button("Large Secondary") {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.large)
                 
                 Button("Regular Secondary") {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.regular)
                 
                 Button("Small Secondary") {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.small)
                 
                 Button("Mini Secondary") {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.mini)
             }
         }
@@ -45,14 +45,14 @@ import SwiftUI
                 Button(action: {}) {
                     Label("Edit", systemImage: "pencil")
                 }
-                .buttonStyle(SecondaryButtonStyle())
+                .buttonStyle(.secondary)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 
                 Button(action: {}) {
                     Label("Options", systemImage: "ellipsis")
                 }
-                .buttonStyle(SecondaryButtonStyle())
+                .buttonStyle(.secondary)
                 .controlSize(.small)
                 .environment(\.nimbusButtonHasDivider, false)
                 .environment(\.nimbusButtonIconAlignment, .trailing)
@@ -65,15 +65,15 @@ import SwiftUI
             
             HStack(spacing: 12) {
                 Button("Save") {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.regular)
                 
                 Button("Cancel", role: .cancel) {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.regular)
                 
                 Button("Remove", role: .destructive) {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.regular)
             }
         }
@@ -95,11 +95,11 @@ import SwiftUI
             
             HStack(spacing: 12) {
                 Button("Primary") {}
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(.primary)
                     .controlSize(.regular)
                 
                 Button("Primary Outline") {}
-                    .buttonStyle(PrimaryOutlineButtonStyle())
+                    .buttonStyle(.primaryOutline)
                     .controlSize(.regular)
             }
             
@@ -109,11 +109,11 @@ import SwiftUI
             
             HStack(spacing: 12) {
                 Button("Secondary") {}
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(.secondary)
                     .controlSize(.regular)
                 
                 Button("Secondary Outline") {}
-                    .buttonStyle(SecondaryOutlineButtonStyle())
+                    .buttonStyle(.secondaryOutline)
                     .controlSize(.regular)
             }
             
@@ -123,11 +123,11 @@ import SwiftUI
             
             HStack(spacing: 12) {
                 Button("Accent") {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.regular)
                 
                 Button("Accent Destructive", role: .destructive) {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.regular)
             }
         }

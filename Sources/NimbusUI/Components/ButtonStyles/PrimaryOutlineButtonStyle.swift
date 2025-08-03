@@ -47,10 +47,8 @@ public struct PrimaryOutlineButtonStyle: ButtonStyle {
         )
         
         let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
-        let minHeight = ControlSizeUtility.height(for: controlSize, theme: theme, override: overrideMinHeight)
         let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
         let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
-        let elevation = overrideElevation ?? theme.elevation
         
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
         let content = configuration.label
@@ -65,7 +63,7 @@ public struct PrimaryOutlineButtonStyle: ButtonStyle {
             .font(.system(size: fontSize, weight: .medium))
             .foregroundStyle(tint(configuration: configuration))
             .padding(.horizontal, horizontalPadding)
-            .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
+            .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(

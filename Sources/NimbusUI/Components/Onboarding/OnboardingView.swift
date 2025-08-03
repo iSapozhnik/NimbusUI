@@ -81,7 +81,7 @@ public struct OnboardingView: View {
                                     )
                                 )
                         }
-                        .buttonStyle(.primaryProminent)
+                        .buttonStyle(.accent)
                         .frame(height: 40)
                         .modifier(NimbusAspectRatioModifier())
                         Spacer()

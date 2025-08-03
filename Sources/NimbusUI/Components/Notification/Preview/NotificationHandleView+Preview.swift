@@ -147,14 +147,14 @@ struct NotificationWithHandleDemo: View {
                     Spacer()
                     
                     Button("Action") { }
-                        .buttonStyle(LinkButtonStyle())
+                        .buttonStyle(.nimbusLink)
                     
                     Button {
                         // Dismiss action
                     } label: {
                         Image(systemName: "xmark")
                     }
-                    .buttonStyle(CloseButtonStyle())
+                    .buttonStyle(.close)
                 }
                 .padding(16)
             }

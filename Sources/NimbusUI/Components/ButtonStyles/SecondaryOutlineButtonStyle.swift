@@ -45,14 +45,13 @@ public struct SecondaryOutlineButtonStyle: ButtonStyle {
                 theme: theme
             ))
         
-        let minHeight = ControlSizeUtility.height(for: controlSize, theme: theme, override: overrideMinHeight)
         let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
         let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
         
         content
             .font(.system(size: fontSize, weight: .medium))
             .padding(.horizontal, horizontalPadding)
-            .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
+            .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(

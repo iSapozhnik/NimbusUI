@@ -20,19 +20,19 @@ import SwiftUI
             
             VStack(spacing: 8) {
                 Button("Large Accent") {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.large)
                 
                 Button("Regular Accent") {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.regular)
                 
                 Button("Small Accent") {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.small)
                 
                 Button("Mini Accent") {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.mini)
             }
         }
@@ -45,14 +45,14 @@ import SwiftUI
                 Button(action: {}) {
                     Label("Download", systemImage: "arrow.down.circle")
                 }
-                .buttonStyle(AccentButtonStyle())
+                .buttonStyle(.accent)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 
                 Button(action: {}) {
                     Label("Upload", systemImage: "arrow.up.circle")
                 }
-                .buttonStyle(AccentButtonStyle())
+                .buttonStyle(.accent)
                 .controlSize(.small)
                 .environment(\.nimbusButtonHasDivider, false)
                 .environment(\.nimbusButtonIconAlignment, .trailing)
@@ -65,11 +65,11 @@ import SwiftUI
             
             HStack(spacing: 12) {
                 Button("Confirm", role: .none) {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.regular)
                 
                 Button("Delete", role: .destructive) {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.regular)
             }
         }
@@ -96,10 +96,10 @@ import SwiftUI
             
             HStack {
                 Button("Ok") {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.regular)
                 Button("Cancel", role: .destructive) {}
-                    .buttonStyle(AccentButtonStyle())
+                    .buttonStyle(.accent)
                     .controlSize(.regular)
             }
         }
@@ -113,14 +113,14 @@ import SwiftUI
                 Button(role: .destructive, action: {}) {
                     Label("Delete", systemImage: "trash")
                 }
-                .buttonStyle(AccentButtonStyle())
+                .buttonStyle(.accent)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 
                 Button(role: .none, action: {}) {
                     Label("Next", systemImage: "arrow.right")
                 }
-                .buttonStyle(AccentButtonStyle())
+                .buttonStyle(.accent)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, false)
                 .environment(\.nimbusButtonIconAlignment, .trailing)

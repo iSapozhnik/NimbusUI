@@ -21,7 +21,7 @@ import SwiftUI
             } label: {
                 Image(systemName: "xmark")
             }
-            .buttonStyle(CloseButtonStyle())
+            .buttonStyle(.close)
         }
         
         HStack {
@@ -31,7 +31,7 @@ import SwiftUI
             } label: {
                 Image(systemName: "xmark")
             }
-            .buttonStyle(CloseButtonStyle())
+            .buttonStyle(.close)
             .disabled(true)
         }
         
@@ -44,7 +44,7 @@ import SwiftUI
                 } label: {
                     Image(systemName: "xmark")
                 }
-                .buttonStyle(CloseButtonStyle())
+                .buttonStyle(.close)
             }
             .padding()
             .background(Color.gray.opacity(0.1))

@@ -249,6 +249,48 @@ Button("Adaptive Button") { }
 
 </details>
 
+<details>
+<summary><strong>Aspect Ratio Configuration</strong></summary>
+
+Optional aspect ratio constraints for specialized button layouts:
+
+```swift
+// Square icon button (1:1 aspect ratio)
+Button { } label: { Image(systemName: "gear") }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 1.0)
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+
+// Wide banner button (3:1 aspect ratio)
+Button("Get Started Now") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)
+    .environment(\.nimbusAspectRatio, 3.0)
+    .environment(\.nimbusAspectRatioHasFixedHeight, true)
+
+// Proportional responsive button (2.5:1 ratio)
+Button("Continue") { }
+    .buttonStyle(.primary)
+    .controlSize(.regular)
+    .environment(\.nimbusAspectRatio, 2.5)
+    .environment(\.nimbusAspectRatioContentMode, .fit)
+    .environment(\.nimbusAspectRatioHasFixedHeight, false)
+```
+
+**Aspect Ratio Environment Values:**
+- `nimbusAspectRatio: CGFloat?` - Target aspect ratio (width/height)
+- `nimbusAspectRatioContentMode: ContentMode?` - How content should fit (`.fit` by default)
+- `nimbusAspectRatioHasFixedHeight: Bool` - Whether height should be fixed (`true` by default)
+
+**Use Cases:**
+- Square buttons for toolbar icons or action buttons
+- Wide buttons with fixed proportions for banners
+- Responsive buttons that maintain proportions across screen sizes
+- Icon-only buttons requiring consistent geometry
+
+</details>
+
 ---
 
 ### Checkbox Components

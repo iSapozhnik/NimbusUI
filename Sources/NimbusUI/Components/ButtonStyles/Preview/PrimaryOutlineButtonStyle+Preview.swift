@@ -20,19 +20,19 @@ import SwiftUI
             
             VStack(spacing: 8) {
                 Button("Large Primary Outline") {}
-                    .buttonStyle(PrimaryOutlineButtonStyle())
+                    .buttonStyle(.primaryOutline)
                     .controlSize(.large)
                 
                 Button("Regular Primary Outline") {}
-                    .buttonStyle(PrimaryOutlineButtonStyle())
+                    .buttonStyle(.primaryOutline)
                     .controlSize(.regular)
                 
                 Button("Small Primary Outline") {}
-                    .buttonStyle(PrimaryOutlineButtonStyle())
+                    .buttonStyle(.primaryOutline)
                     .controlSize(.small)
                 
                 Button("Mini Primary Outline") {}
-                    .buttonStyle(PrimaryOutlineButtonStyle())
+                    .buttonStyle(.primaryOutline)
                     .controlSize(.mini)
             }
         }
@@ -45,14 +45,14 @@ import SwiftUI
                 Button(action: {}) {
                     Label("Open File", systemImage: "folder")
                 }
-                .buttonStyle(PrimaryOutlineButtonStyle())
+                .buttonStyle(.primaryOutline)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 
                 Button(action: {}) {
                     Label("Share", systemImage: "square.and.arrow.up")
                 }
-                .buttonStyle(PrimaryOutlineButtonStyle())
+                .buttonStyle(.primaryOutline)
                 .controlSize(.small)
                 .environment(\.nimbusButtonHasDivider, false)
                 .environment(\.nimbusButtonIconAlignment, .trailing)
@@ -65,11 +65,11 @@ import SwiftUI
             
             HStack(spacing: 12) {
                 Button("Confirm") {}
-                    .buttonStyle(PrimaryOutlineButtonStyle())
+                    .buttonStyle(.primaryOutline)
                     .controlSize(.regular)
                 
                 Button("Delete", role: .destructive) {}
-                    .buttonStyle(PrimaryOutlineButtonStyle())
+                    .buttonStyle(.primaryOutline)
                     .controlSize(.regular)
             }
         }
@@ -82,27 +82,27 @@ import SwiftUI
 #Preview("Maritime Theme") {
     VStack(spacing: 16) {
         Button("Large Maritime Outline") {}
-            .buttonStyle(PrimaryOutlineButtonStyle())
+            .buttonStyle(.primaryOutline)
             .controlSize(.large)
         
         Button("Regular Maritime Outline") {}
-            .buttonStyle(PrimaryOutlineButtonStyle())
+            .buttonStyle(.primaryOutline)
             .controlSize(.regular)
         
         Button(action: {}) {
             Label("Action", systemImage: "play.fill")
         }
-        .buttonStyle(PrimaryOutlineButtonStyle())
+        .buttonStyle(.primaryOutline)
         .controlSize(.small)
         .environment(\.nimbusButtonHasDivider, true)
         
         HStack {
             Button("Normal") {}
-                .buttonStyle(PrimaryOutlineButtonStyle())
+                .buttonStyle(.primaryOutline)
                 .controlSize(.mini)
             
             Button("Destructive", role: .destructive) {}
-                .buttonStyle(PrimaryOutlineButtonStyle())
+                .buttonStyle(.primaryOutline)
                 .controlSize(.mini)
         }
     }

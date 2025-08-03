@@ -40,7 +40,6 @@ public struct SecondaryButtonStyle: ButtonStyle {
     
     public func makeBody(configuration: Configuration) -> some View {
         let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
-        let minHeight = ControlSizeUtility.height(for: controlSize, theme: theme, override: overrideMinHeight)
         let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
         let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
         let elevation = overrideElevation ?? theme.elevation
@@ -58,7 +57,7 @@ public struct SecondaryButtonStyle: ButtonStyle {
             .font(.system(size: fontSize, weight: .medium))
             .foregroundStyle(theme.primaryTextColor(for: colorScheme))
             .padding(.horizontal, horizontalPadding)
-            .frame(maxWidth: .infinity, minHeight: minHeight, maxHeight: .infinity)
+            .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
                 NimbusFilledModifier(

@@ -62,7 +62,7 @@ public struct NimbusNotificationView: View {
                 } label: {
                     Image(systemName: "xmark")
                 }
-                .buttonStyle(CloseButtonStyle())
+                .buttonStyle(.close)
             }
             .padding(theme.notificationPadding)
         }

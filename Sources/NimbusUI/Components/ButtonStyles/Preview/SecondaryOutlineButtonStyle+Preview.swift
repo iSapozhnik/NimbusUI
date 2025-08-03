@@ -20,19 +20,19 @@ import SwiftUI
             
             VStack(spacing: 8) {
                 Button("Large Secondary Outline") {}
-                    .buttonStyle(SecondaryOutlineButtonStyle())
+                    .buttonStyle(.secondaryOutline)
                     .controlSize(.large)
                 
                 Button("Regular Secondary Outline") {}
-                    .buttonStyle(SecondaryOutlineButtonStyle())
+                    .buttonStyle(.secondaryOutline)
                     .controlSize(.regular)
                 
                 Button("Small Secondary Outline") {}
-                    .buttonStyle(SecondaryOutlineButtonStyle())
+                    .buttonStyle(.secondaryOutline)
                     .controlSize(.small)
                 
                 Button("Mini Secondary Outline") {}
-                    .buttonStyle(SecondaryOutlineButtonStyle())
+                    .buttonStyle(.secondaryOutline)
                     .controlSize(.mini)
             }
         }
@@ -45,14 +45,14 @@ import SwiftUI
                 Button(action: {}) {
                     Label("Settings", systemImage: "gear")
                 }
-                .buttonStyle(SecondaryOutlineButtonStyle())
+                .buttonStyle(.secondaryOutline)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 
                 Button(action: {}) {
                     Label("Export", systemImage: "square.and.arrow.up")
                 }
-                .buttonStyle(SecondaryOutlineButtonStyle())
+                .buttonStyle(.secondaryOutline)
                 .controlSize(.small)
                 .environment(\.nimbusButtonHasDivider, false)
                 .environment(\.nimbusButtonIconAlignment, .trailing)
@@ -67,7 +67,7 @@ import SwiftUI
                 Button(action: {}) {
                     Label("Previous", systemImage: "arrow.left")
                 }
-                .buttonStyle(SecondaryOutlineButtonStyle())
+                .buttonStyle(.secondaryOutline)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 .environment(\.nimbusButtonIconAlignment, .leading)
@@ -75,7 +75,7 @@ import SwiftUI
                 Button(action: {}) {
                     Label("Next", systemImage: "arrow.right")
                 }
-                .buttonStyle(SecondaryOutlineButtonStyle())
+                .buttonStyle(.secondaryOutline)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 .environment(\.nimbusButtonIconAlignment, .trailing)
@@ -100,13 +100,13 @@ import SwiftUI
             .foregroundColor(.secondary)
         HStack {
             Button("Normal") {}
-                .buttonStyle(SecondaryOutlineButtonStyle())
+                .buttonStyle(.secondaryOutline)
                 .controlSize(.regular)
             Button("Save") {}
-                .buttonStyle(SecondaryOutlineButtonStyle())
+                .buttonStyle(.secondaryOutline)
                 .controlSize(.regular)
             Button("Cancel", role: .destructive) {}
-                .buttonStyle(SecondaryOutlineButtonStyle())
+                .buttonStyle(.secondaryOutline)
                 .controlSize(.regular)
         }
         
@@ -119,14 +119,14 @@ import SwiftUI
             Button(action: {}) {
                 Label("Delete", systemImage: "trash")
             }
-            .buttonStyle(SecondaryOutlineButtonStyle())
+            .buttonStyle(.secondaryOutline)
             .controlSize(.regular)
             .environment(\.nimbusButtonHasDivider, true)
             
             Button(action: {}) {
                 Label("Export", systemImage: "square.and.arrow.up")
             }
-            .buttonStyle(SecondaryOutlineButtonStyle())
+            .buttonStyle(.secondaryOutline)
             .controlSize(.regular)
             .environment(\.nimbusButtonContentPadding, contentPadding)
         }
@@ -135,14 +135,14 @@ import SwiftUI
             Button(action: {}) {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
-            .buttonStyle(SecondaryOutlineButtonStyle())
+            .buttonStyle(.secondaryOutline)
             .controlSize(.small)
             .environment(\.nimbusButtonIconAlignment, .trailing)
             
             Button(action: {}) {
                 Label("Custom Padding", systemImage: "textformat")
             }
-            .buttonStyle(SecondaryOutlineButtonStyle())
+            .buttonStyle(.secondaryOutline)
             .controlSize(.small)
             .environment(\.nimbusButtonContentPadding, 16)
         }

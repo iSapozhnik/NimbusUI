@@ -20,19 +20,19 @@ import SwiftUI
             
             VStack(spacing: 8) {
                 Button("Large Primary") {}
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(.primary)
                     .controlSize(.large)
                 
                 Button("Regular Primary") {}
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(.primary)
                     .controlSize(.regular)
                 
                 Button("Small Primary") {}
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(.primary)
                     .controlSize(.small)
                 
                 Button("Mini Primary") {}
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(.primary)
                     .controlSize(.mini)
             }
         }
@@ -45,14 +45,14 @@ import SwiftUI
                 Button(action: {}) {
                     Label("Save Document", systemImage: "doc.badge.plus")
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(.primary)
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
                 
                 Button(action: {}) {
                     Label("Export PDF", systemImage: "square.and.arrow.up")
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(.primary)
                 .controlSize(.small)
                 .environment(\.nimbusButtonHasDivider, false)
                 .environment(\.nimbusButtonIconAlignment, .trailing)
@@ -65,11 +65,11 @@ import SwiftUI
             
             HStack(spacing: 12) {
                 Button("Cancel", role: .cancel) {}
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(.primary)
                     .controlSize(.regular)
                 
                 Button("Delete", role: .destructive) {}
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(.primary)
                     .controlSize(.regular)
             }
         }
@@ -82,17 +82,17 @@ import SwiftUI
 #Preview("Maritime Theme") {
     VStack(spacing: 16) {
         Button("Large Maritime") {}
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(.primary)
             .controlSize(.large)
         
         Button("Regular Maritime") {}
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(.primary)
             .controlSize(.regular)
         
         Button(action: {}) {
             Label("Action", systemImage: "play.fill")
         }
-        .buttonStyle(PrimaryButtonStyle())
+        .buttonStyle(.primary)
         .controlSize(.small)
         .environment(\.nimbusButtonHasDivider, true)
     }
