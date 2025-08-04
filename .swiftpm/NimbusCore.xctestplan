@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "F618D5B1-E76A-4658-8AFC-8DF1117D0D7C",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "NimbusCoreTests",
+        "name" : "NimbusCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

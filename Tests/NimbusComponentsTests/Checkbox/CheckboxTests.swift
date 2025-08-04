@@ -1,0 +1,28 @@
+//
+//  CheckboxTests.swift
+//  NimbusUI
+//
+//  Created by Ivan Sapozhnik on 04.08.25.
+//
+
+import Testing
+import SwiftUI
+@testable import NimbusCore
+@testable import NimbusComponents
+import SnapshotTesting
+
+private let recording = false
+
+@MainActor
+@Test func checkboxItems() async throws {
+    assertSnapshot(
+        of: SnapshotUtility.view(
+            from: ShowcaseView {
+                CheckboxItemVariantsView() // TODO: implement proper variants
+            }
+            .environment(\.nimbusTheme, NimbusTheme())
+        ),
+        as: .image,
+        record: recording
+    )
+}

@@ -187,38 +187,63 @@ Button("Custom") { }
     .environment(\.nimbusMinHeight, 50)
 ```
 
-### Enhanced Button + Label API Usage
-The enhanced API provides flexible button configurations:
+### Button Customization with Convenience Methods
+NimbusUI provides SwiftUI-idiomatic convenience methods for button customization, following the same pattern as NimbusScroller:
 
 ```swift
-// Plain text button (no changes needed)
+// Basic button styles (no customization needed)
 Button("Save") { }
     .buttonStyle(.accent)
     .controlSize(.regular)
 
-// Label with default divider (auto-applied)
+// Button with custom corner radii and elevation
+Button("Custom") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(16))
+    .elevation(.medium)
+    .controlSize(.large)
+
+// Label button with convenience methods
 Button(action: {}) {
     Label("Delete", systemImage: "trash")
 }
 .buttonStyle(.accent)
 .controlSize(.regular)
-.environment(\.nimbusButtonHasDivider, true)
+.hasDivider(true)
+.iconAlignment(.leading)
 
-// Label without divider
-Button(action: {}) {
-    Label("Export", systemImage: "square.and.arrow.up")
-}
-.buttonStyle(.accent)
-.controlSize(.small)
-.environment(\.nimbusButtonHasDivider, false)
-
-// Label with trailing icon and custom size
+// Label without divider and trailing icon
 Button(action: {}) {
     Label("Next", systemImage: "arrow.right")
 }
 .buttonStyle(.accent)
-.controlSize(.large)
-.environment(\.nimbusButtonIconAlignment, .trailing)
+.controlSize(.small)
+.hasDivider(false)
+.iconAlignment(.trailing)
+
+// Advanced customization with multiple modifiers
+Button(action: {}) {
+    Label("Export", systemImage: "square.and.arrow.up")
+}
+.buttonStyle(.primary)
+.controlSize(.regular)
+.cornerRadii(RectangleCornerRadii(8))
+.elevation(.high)
+.labelConfiguration(hasDivider: true, iconAlignment: .leading, contentPadding: 8)
+
+// Icon-only square button
+Button(action: {}) {
+    Image(systemName: "gear")
+}
+.buttonStyle(.secondary)
+.controlSize(.regular)
+.iconOnly()
+
+// Wide banner button
+Button("Get Started Now") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)
+    .banner(aspectRatio: 3.0)
 
 // ControlSize variations across button styles
 VStack {
@@ -238,6 +263,48 @@ VStack {
         .buttonStyle(.secondaryOutline)
         .controlSize(.mini)
 }
+```
+
+### Available Button Convenience Methods
+
+**Core Customization:**
+- `.cornerRadii(RectangleCornerRadii)` - Sets button corner radii
+- `.minHeight(CGFloat)` - Sets minimum button height
+- `.horizontalPadding(CGFloat)` - Sets horizontal padding
+- `.elevation(Elevation)` - Sets shadow depth
+
+**Label Configuration:**
+- `.hasDivider(Bool)` - Controls divider between icon and text
+- `.iconAlignment(HorizontalAlignment)` - Sets icon position (leading/trailing)
+- `.contentPadding(CGFloat)` - Sets spacing between icon and text
+
+**Aspect Ratio & Layout:**
+- `.aspectRatio(CGFloat, contentMode: ContentMode)` - Sets button aspect ratio
+- `.fixedHeight(Bool)` - Controls height behavior with aspect ratio
+
+**Convenience Combinations:**
+- `.labelConfiguration(hasDivider:iconAlignment:contentPadding:)` - Configure label settings in one call
+- `.iconOnly(size:)` - Configure for square icon-only usage
+- `.banner(aspectRatio:)` - Configure for wide banner buttons
+
+**Migration from Legacy API:**
+```swift
+// Old complex initializer approach
+Button("Save") { }
+    .buttonStyle(.primary(
+        cornerRadii: RectangleCornerRadii(12),
+        elevation: .medium,
+        hasDivider: true,
+        iconAlignment: .trailing
+    ))
+
+// New convenience method approach
+Button("Save") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(12))
+    .elevation(.medium)
+    .hasDivider(true)
+    .iconAlignment(.trailing)
 ```
 
 ### Notification System Usage
@@ -516,6 +583,120 @@ Use the Task tool with specialized design system knowledge for:
 - **Documentation**: Include examples showing both theme defaults and override usage
 - **Button API Pattern**: Use `AutoLabelDetectionModifier` to conditionally apply `NimbusDividerLabelStyle` only when environment values are set
 - **Backward Compatibility**: Ensure new APIs don't break existing plain text button usage
+
+#### Convenience Methods Pattern (MANDATORY)
+**All components MUST provide SwiftUI-idiomatic convenience methods for customization following the Button pattern:**
+
+- **Environment Override Pattern**: Use `public extension ComponentType` with convenience methods that set environment values
+- **Method Categories**: 
+  - **Core Customization**: Size, colors, corner radii, borders
+  - **Behavioral Configuration**: States, interactions, animations  
+  - **Convenience Combinations**: Common multi-property configurations
+- **Implementation Structure**: Follow `Button+Extensions.swift` pattern with clear method grouping and comprehensive documentation
+- **Naming Convention**: Use descriptive method names that match the property they configure (e.g., `.strokeWidth()`, `.cornerRadii()`)
+
+**Example Implementation Pattern:**
+```swift
+// ComponentName+Extensions.swift
+public extension ComponentName {
+    // MARK: - Core Customization
+    
+    /// Sets the component size
+    func size(_ size: CGFloat) -> some View {
+        environment(\.nimbusComponentSize, size)
+    }
+    
+    /// Sets the component corner radii
+    func cornerRadii(_ radii: RectangleCornerRadii) -> some View {
+        environment(\.nimbusComponentCornerRadii, radii)
+    }
+    
+    // MARK: - Behavioral Configuration
+    
+    /// Controls component interaction behavior
+    func interactionEnabled(_ enabled: Bool) -> some View {
+        environment(\.nimbusComponentInteractionEnabled, enabled)
+    }
+    
+    // MARK: - Convenience Combinations
+    
+    /// Configures component with common settings
+    func customConfiguration(
+        size: CGFloat = 24,
+        cornerRadii: RectangleCornerRadii = RectangleCornerRadii(4)
+    ) -> some View {
+        self
+            .environment(\.nimbusComponentSize, size)
+            .environment(\.nimbusComponentCornerRadii, cornerRadii)
+    }
+}
+```
+
+**Benefits of This Pattern:**
+- ✅ **SwiftUI Idiomatic**: Matches native SwiftUI modifier patterns
+- ✅ **Developer Experience**: Chainable, discoverable, well-documented
+- ✅ **Consistency**: All components use the same customization approach
+- ✅ **Type Safety**: Compile-time validation of configuration values
+- ✅ **Future-Proof**: Easy to add new customization options
+
+#### Environment Variable Usage Rule (CRITICAL)
+**NEVER use environment variables directly in code - ALWAYS use convenience methods for ALL NimbusUI components:**
+
+❌ **WRONG - Direct Environment Usage (Multiple Components):**
+```swift
+// Checkbox - WRONG
+NimbusCheckbox(isOn: $isChecked)
+    .environment(\.nimbusCheckboxStrokeWidth, 2.5)
+    .environment(\.nimbusCheckboxLineCap, .round)
+    .environment(\.nimbusCheckboxSize, 28)
+
+// Button - WRONG  
+Button("Save") { }
+    .buttonStyle(.primary)
+    .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(12))
+    .environment(\.nimbusElevation, .medium)
+
+// Scroller - WRONG
+NimbusScroller(...)
+    .environment(\.nimbusScrollerWidth, 16)
+    .environment(\.nimbusScrollerKnobWidth, 12)
+```
+
+✅ **CORRECT - Convenience Methods (Multiple Components):**
+```swift
+// Checkbox - CORRECT
+NimbusCheckbox(isOn: $isChecked)
+    .strokeWidth(2.5)
+    .lineCap(.round)
+    .size(28)
+
+// Button - CORRECT
+Button("Save") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(12))
+    .elevation(.medium)
+
+// Scroller - CORRECT  
+NimbusScroller(...)
+    .scrollerWidth(16)
+    .knobWidth(12)
+```
+
+**Why This Universal Rule Exists:**
+- **Developer Experience**: Convenience methods are discoverable via Xcode autocomplete across ALL components
+- **Type Safety**: Methods provide compile-time validation of parameters for every component
+- **Documentation**: Methods include comprehensive inline documentation for every customization option
+- **Universal Consistency**: ALL components follow the same customization pattern (Checkbox, Button, Scroller, etc.)
+- **Future-Proof**: Internal environment keys can change without breaking user code across the entire design system
+- **Chainable API**: Methods create clean, readable SwiftUI modifier chains for every component
+- **Design System Cohesion**: Ensures a unified developer experience across the entire NimbusUI library
+
+**Universal Application:**
+- ✅ **ALL Current Components**: Buttons, Checkboxes, Scrollers, Notifications, etc.
+- ✅ **ALL Future Components**: This rule applies to every new component added to NimbusUI
+- ✅ **ALL Customization Properties**: Size, colors, corner radii, spacing, interactions, etc.
+
+**Exception:** Only use environment variables directly in component extensions when implementing the convenience methods themselves.
 
 #### Theme Examples by Complexity
 - **Minimal Theme**: Only 17 core properties - `MinimalTheme` (perfect starting point)

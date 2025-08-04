@@ -11,8 +11,21 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
+            name: "NimbusCore",
+            targets: ["NimbusCore"]),
+        .library(
+            name: "NimbusComponents", 
+            targets: ["NimbusComponents"]),
+        .library(
+            name: "NimbusNotifications",
+            targets: ["NimbusNotifications"]),
+        .library(
+            name: "NimbusOnboarding",
+            targets: ["NimbusOnboarding"]),
+        // Convenience umbrella library
+        .library(
             name: "NimbusUI",
-            targets: ["NimbusUI"]),
+            targets: ["NimbusCore", "NimbusComponents", "NimbusNotifications", "NimbusOnboarding"]),
     ],
     dependencies: [
         .package(url: "https://github.com/Cindori/FluidGradient.git", from: "1.0.0"),
@@ -23,20 +36,77 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
+        
+        // Core foundation - theme system, utilities, base modifiers
         .target(
-            name: "NimbusUI",
+            name: "NimbusCore",
+            dependencies: []
+        ),
+        
+        // Main components - buttons, checkbox, list, scroll
+        .target(
+            name: "NimbusComponents",
+            dependencies: ["NimbusCore"]
+        ),
+        
+        // Optional notification system
+        .target(
+            name: "NimbusNotifications", 
+            dependencies: ["NimbusCore", "NimbusComponents"]
+        ),
+        
+        // Optional onboarding system with external dependencies
+        .target(
+            name: "NimbusOnboarding",
             dependencies: [
+                "NimbusCore",
+                "NimbusComponents",
                 .product(name: "FluidGradient", package: "FluidGradient"),
                 .product(name: "SmoothGradient", package: "SmoothGradient")
-
             ]
+        ),
+        
+        // Test targets
+        .testTarget(
+            name: "NimbusCoreTests",
+            dependencies: [
+                "NimbusCore",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
+        ),
+        .testTarget(
+            name: "NimbusComponentsTests", 
+            dependencies: [
+                "NimbusCore",
+                "NimbusComponents",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
+        ),
+        .testTarget(
+            name: "NimbusNotificationsTests",
+            dependencies: [
+                "NimbusCore",
+                "NimbusNotifications", 
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
+        ),
+        .testTarget(
+            name: "NimbusOnboardingTests",
+            dependencies: [
+                "NimbusCore",
+                "NimbusOnboarding",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
         ),
         .testTarget(
             name: "NimbusUITests",
             dependencies: [
-                "NimbusUI",
+                "NimbusCore",
+                "NimbusComponents", 
+                "NimbusNotifications",
+                "NimbusOnboarding",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ]
+            ],
         ),
     ]
 )
