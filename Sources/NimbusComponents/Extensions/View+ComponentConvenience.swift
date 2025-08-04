@@ -70,6 +70,13 @@ public extension View {
     func buttonHighlightOnHover(_ highlight: Bool) -> some View {
         environment(\.nimbusButtonHighlightOnHover, highlight)
     }
+    
+    /// Sets the border width for outline button styles
+    /// - Parameter width: The border width to apply to outline buttons
+    /// - Returns: A view with the specified button border width applied
+    func buttonBorderWidth(_ width: CGFloat) -> some View {
+        environment(\.nimbusButtonBorderWidth, width)
+    }
 }
 
 // MARK: - Button Label Configuration

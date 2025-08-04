@@ -43,6 +43,9 @@ public extension EnvironmentValues {
     @Entry var nimbusButtonHasDivider: Bool? = nil
     @Entry var nimbusButtonIconAlignment: HorizontalAlignment? = nil
     @Entry var nimbusButtonContentPadding: CGFloat? = nil
+    
+    // Button Border Configuration
+    @Entry var nimbusButtonBorderWidth: CGFloat? = nil
 }
 
 // MARK: View

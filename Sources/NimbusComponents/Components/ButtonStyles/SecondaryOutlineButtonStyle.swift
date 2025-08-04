@@ -23,6 +23,7 @@ public struct SecondaryOutlineButtonStyle: ButtonStyle {
     @Environment(\.nimbusButtonIconAlignment) private var envIconAlignment
     @Environment(\.nimbusButtonContentPadding) private var envContentPadding
     @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var envLabelContentPadding
+    @Environment(\.nimbusButtonBorderWidth) private var envButtonBorderWidth
 
 
     @State private var isHovering: Bool

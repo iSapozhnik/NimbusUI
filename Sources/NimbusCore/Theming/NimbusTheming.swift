@@ -118,6 +118,9 @@ public extension NimbusTheming {
     /// Close button icon size configuration (14pt default)
     var closeButtonIconSize: CGFloat { 14 }
     
+    /// Button border width for outline button styles (1px default)
+    var buttonBorderWidth: CGFloat { 1 }
+    
     // MARK: - ControlSize-Specific Button Metrics (Optional with Defaults)
     
     /// Button height for .extraLarge controlSize (60px default)

@@ -14,6 +14,7 @@ public struct NimbusBorderedModifier: ViewModifier {
     @Environment(\.nimbusIsBordered) private var isBordered
     @Environment(\.nimbusHasBackground) private var hasBackground
     @Environment(\.nimbusCompactButtonCornerRadii) private var overrideCornerRadii
+    @Environment(\.nimbusButtonBorderWidth) private var envButtonBorderWidth
 
     private let isHovering: Bool
     private let fill: AnyShapeStyle, hovering: AnyShapeStyle
@@ -59,16 +60,17 @@ public struct NimbusBorderedModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         let cornerRadii = overrideCornerRadii ?? theme.compactButtonCornerRadii
+        let borderWidth = envButtonBorderWidth ?? theme.buttonBorderWidth
         
         content
             .clipShape(.rect(cornerRadii: cornerRadii))
             .background {
                 if isHovering, hasBackground {
                     UnevenRoundedRectangle(cornerRadii: cornerRadii)
-                        .strokeBorder(fill)
+                        .strokeBorder(fill, lineWidth: borderWidth)
                 } else if isBordered {
                     UnevenRoundedRectangle(cornerRadii: cornerRadii)
-                        .strokeBorder(hovering)
+                        .strokeBorder(hovering, lineWidth: borderWidth)
                 }
             }
     }
