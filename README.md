@@ -59,7 +59,7 @@
 - Per-component property overrides
 
 ### 🧱 **Rich Component Library**
-- Professional button hierarchy (4 styles)
+- Comprehensive button hierarchy (7 styles)
 - Interactive checkboxes with positioning
 - Customizable list items with hover states
 - Custom scroll components with theming
@@ -76,6 +76,7 @@
 
 ### ⚡ **Developer Experience**
 - Swift 5.9+ with modern concurrency
+- Modular library architecture for selective imports
 - Comprehensive SwiftUI environment integration
 - Extensive documentation and examples
 - Built for real-world macOS applications
@@ -141,6 +142,7 @@ import NimbusUI           // Includes all of the above
 | **macOS** | 14.0+ |
 | **Swift** | 5.9+ |
 | **Xcode** | 15.0+ |
+| **Architecture** | Modular libraries (selective imports supported) |
 
 ---
 
@@ -150,7 +152,9 @@ Apply a theme to any view hierarchy using the `.theme()` modifier. NimbusUI comp
 
 ```swift
 import SwiftUI
-import NimbusUI
+import NimbusCore        // For theming system
+import NimbusComponents  // For button styles
+// Or simply: import NimbusUI  // For all features
 
 struct ContentView: View {
     var body: some View {
@@ -173,7 +177,7 @@ struct ContentView: View {
 
 ### Button Styles
 
-NimbusUI provides a comprehensive button hierarchy with built-in theming and state management. All styles integrate with the `controlSize` environment value for adaptive sizing.
+NimbusUI provides a comprehensive button hierarchy with 7 distinct styles, built-in theming and state management. All styles integrate with the `controlSize` environment value for adaptive sizing.
 
 <details>
 <summary><strong>Primary & Accent Buttons</strong></summary>
@@ -323,6 +327,42 @@ Button("Adaptive Button") { }
 - `.secondary` - Secondary actions, subtle filled styling
 - `.primaryOutline` - Primary actions, outlined with primaryColor border
 - `.secondaryOutline` - Secondary actions, outlined with subtle border
+- `.link` - Text-only action buttons for minimal interactions
+- `.close` - Icon-only dismiss buttons for overlays and modals
+
+</details>
+
+<details>
+<summary><strong>Link & Close Button Styles</strong></summary>
+
+For specialized interaction patterns and minimal UI elements.
+
+```swift
+// Link buttons for text-only actions without backgrounds
+Button("Learn More") { }
+    .buttonStyle(.link)
+
+Button("View Documentation") { }
+    .buttonStyle(.link)
+    .controlSize(.small)
+
+// Close buttons for dismissing overlays, modals, or panels  
+Button(action: { dismiss() }) {
+    Image(systemName: "xmark")
+}
+.buttonStyle(.close)
+
+// Close button with custom sizing
+Button(action: { closePanel() }) {
+    Image(systemName: "xmark.circle.fill")  
+}
+.buttonStyle(.close)
+.controlSize(.large)
+```
+
+**Use Cases:**
+- **Link Style**: Navigation links, secondary actions, help text links
+- **Close Style**: Modal dismissal, panel close buttons, overlay removal
 
 </details>
 
@@ -416,6 +456,38 @@ NimbusCheckboxItem(
     checkboxPosition: .trailing
 )
 ```
+
+</details>
+
+<details>
+<summary><strong>Checkbox Customization</strong></summary>
+
+Use convenience methods for easy customization without environment variables:
+
+```swift
+@State private var isChecked = false
+
+// Basic checkbox with custom styling
+NimbusCheckbox(isOn: $isChecked)
+    .size(20)
+    .strokeWidth(2.5)
+    .cornerRadii(RectangleCornerRadii(6))
+
+// Checkbox item with custom appearance
+NimbusCheckboxItem("Enable notifications", isOn: $isChecked)
+    .size(18)
+    .lineCap(.round)
+    .itemSpacing(12)
+    .verticalAlignment(.top)
+```
+
+**Available Convenience Methods:**
+- `.size(CGFloat)` - Checkbox dimensions
+- `.strokeWidth(CGFloat)` - Border thickness
+- `.cornerRadii(RectangleCornerRadii)` - Corner styling
+- `.lineCap(CGLineCap)` - Check mark line endings
+- `.itemSpacing(CGFloat)` - Space between checkbox and text
+- `.verticalAlignment(VerticalAlignment)` - Text alignment relative to checkbox
 
 </details>
 
@@ -716,17 +788,51 @@ Complete notification with all options:
 </details>
 
 <details>
+<summary><strong>Advanced Notification Features</strong></summary>
+
+Additional capabilities for enhanced user interactions:
+
+```swift
+// Swipe-to-dismiss gesture support
+.nimbusNotification(
+    isPresented: $showSwipeable,
+    type: .info,
+    message: "Swipe up to dismiss this notification quickly.",
+    dismissBehavior: .temporary(4.0)
+    // Swipe gestures are automatically enabled for all notifications
+)
+
+// Custom animation timing and presentation styles
+.nimbusNotification(
+    isPresented: $showCustom,
+    type: .success, 
+    message: "Custom presentation with smooth spring animations.",
+    dismissBehavior: .temporary(3.0)
+    // Uses NotificationAnimationFactory for optimized performance
+)
+```
+
+**Advanced Components:**
+- **NotificationHandleView**: Visual drag indicator for swipe interactions
+- **SwipeUpGestureModifier**: Smooth swipe-to-dismiss gesture recognition
+- **NotificationAnimationFactory**: Optimized spring animations for show/hide
+- **NotificationPresentationStyle**: Customizable presentation behaviors
+
+</details>
+
+<details>
 <summary><strong>Features</strong></summary>
 
 - 🎨 **Semantic Types**: Info, Success, Warning, Error with automatic theming
 - ⏱️ **Dismiss Behaviors**: Auto-dismiss with custom timing or manual-only
 - 📐 **Icon Alignment**: Center, baseline, or top positioning options
-- 🎭 **Theme Integration**: Automatic semantic colors with enhanced contrast
+- 🎭 **Theme Integration**: Automatic semantic colors with enhanced contrast  
 - 📱 **Perfect Positioning**: Top overlay with safe area and padding respect
 - 🔗 **Action Support**: Optional action buttons with semantic link styling
 - ✂️ **Text Wrapping**: Long messages wrap properly without truncation
-- 🎬 **Smooth Animations**: Spring show/hide transitions
+- 🎬 **Smooth Animations**: Spring show/hide transitions with optimized factory
 - 🔄 **State Management**: Automatic binding management and reset
+- 👆 **Gesture Support**: Swipe-to-dismiss with visual feedback handle
 
 </details>
 
@@ -811,7 +917,7 @@ NimbusUI features a sophisticated theme system that provides both consistency an
 ```swift
 // Apply any theme using the .theme() modifier
 MyView()
-    .theme(MinimalTheme.default)
+    .theme(MinimalTheme())
 
 MyView()
     .theme(NimbusTheme.default)
@@ -992,22 +1098,28 @@ The NimbusUI package is divided into four main libraries, allowing you to import
 
 ```
 Sources/
-├── NimbusCore/          # Core theming, modifiers, and utilities
-│   ├── Theming/
-│   ├── Modifiers/
-│   └── Extensions/
-├── NimbusComponents/    # UI components like buttons, lists, etc.
+├── NimbusCore/              # Core theming, modifiers, and utilities
+│   ├── Theming/             # Theme system and protocols
+│   ├── Modifiers/           # SwiftUI view modifiers
+│   ├── Extensions/          # Swift extensions
+│   ├── Utilities/           # Helper utilities
+│   └── AppKit/              # AppKit integrations
+├── NimbusComponents/        # UI components like buttons, lists, etc.
 │   ├── Components/
-│   │   ├── ButtonStyles/
-│   │   ├── Checkbox/
-│   │   └── ...
-│   └── Extensions/
-├── NimbusNotifications/ # Notification system
-│   └── Components/
-│       └── Notification/
-└── NimbusOnboarding/    # Onboarding flow
+│   │   ├── ButtonStyles/    # All 7 button styles + previews
+│   │   ├── Checkbox/        # Checkbox components + extensions
+│   │   ├── List/            # List item components
+│   │   ├── ScrollView/      # Custom scroll view wrapper
+│   │   └── Scroller/        # Standalone scroller component
+│   ├── Examples/            # Theme examples and showcases
+│   └── Extensions/          # Component convenience methods
+├── NimbusNotifications/     # Complete notification system
+│   ├── Components/
+│   │   └── Notification/    # Views, modifiers, gestures, animations
+│   └── Extensions/          # Notification convenience methods
+└── NimbusOnboarding/        # Onboarding flow with FluidGradient
     └── Components/
-        └── Onboarding/
+        └── Onboarding/      # Feature pages, navigation, animations
 ```
 
 </details>
@@ -1031,17 +1143,17 @@ Sources/
 <tr>
 <th>Nimbus Theme (Default)</th>
 <th>Maritime Theme</th>
-<th>Warm Theme</th>
+<th>Custom Warm Theme</th>
 </tr>
 <tr>
 <td><img src="Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseNimbusTheme.1.png" width="300" alt="Nimbus Theme"></td>
 <td><img src="Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseMaritimeTheme.1.png" width="300" alt="Maritime Theme"></td>
-<td><img src="Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseWarmTheme.1.png" width="300" alt="Warm Theme"></td>
+<td><img src="Tests/NimbusUITests/Snapshots/__Snapshots__/SnapshotTests/showcaseWarmTheme.1.png" width="300" alt="Custom Warm Theme"></td>
 </tr>
 <tr>
-<td><em>Clean, balanced design</em></td>
-<td><em>Professional, structured</em></td>
-<td><em>Friendly, accessible</em></td>
+<td><em>Clean, balanced design with protocol defaults</em></td>
+<td><em>Professional, structured with selective overrides</em></td>
+<td><em>Friendly, accessible with extensive customization</em></td>
 </tr>
 </table>
 
