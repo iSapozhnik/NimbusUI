@@ -72,7 +72,7 @@ let package = Package(
             dependencies: [
                 "NimbusCore",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ]
+            ],
         ),
         .testTarget(
             name: "NimbusComponentsTests", 
@@ -80,7 +80,7 @@ let package = Package(
                 "NimbusCore",
                 "NimbusComponents",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ]
+            ],
         ),
         .testTarget(
             name: "NimbusNotificationsTests",
@@ -88,7 +88,7 @@ let package = Package(
                 "NimbusCore",
                 "NimbusNotifications", 
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ]
+            ],
         ),
         .testTarget(
             name: "NimbusOnboardingTests",
@@ -96,7 +96,17 @@ let package = Package(
                 "NimbusCore",
                 "NimbusOnboarding",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ]
+            ],
+        ),
+        .testTarget(
+            name: "NimbusUITests",
+            dependencies: [
+                "NimbusCore",
+                "NimbusComponents", 
+                "NimbusNotifications",
+                "NimbusOnboarding",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
         ),
     ]
 )

@@ -21,7 +21,7 @@ struct ShowcaseView<Content>: View where Content: View {
                     .environment(\.colorScheme, .light)
             }
             .padding()
-            .background(.white)
+            .background(.gray)
             
             VStack {
                 Text("Dark Mode")
@@ -34,6 +34,5 @@ struct ShowcaseView<Content>: View where Content: View {
             .padding()
             .background(.black)
         }
-        .frame(minWidth: 800)
     }
 }
