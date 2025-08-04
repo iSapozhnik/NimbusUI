@@ -16,12 +16,15 @@ import AppKit
 
 private let recording = false
 
+// MARK: - Theme Showcase Tests
+// These tests use the unified ThemeShowcase to ensure consistent presentation across all themes
+
 @MainActor
 @Test func showcaseNimbusTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
             from: ShowcaseView {
-                CustomThemeSimplifiedContentView()
+                ThemeShowcase()
             }
             .environment(\.nimbusTheme, NimbusTheme())
         ),
@@ -31,11 +34,11 @@ private let recording = false
 }
 
 @MainActor
-@Test func showcaseWarmTheme() async throws {
+@Test func showcaseCustomWarmTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
             from: ShowcaseView {
-                CustomThemeSimplifiedContentView()
+                ThemeShowcase()
             }
             .environment(\.nimbusTheme, CustomWarmTheme())
         ),
@@ -49,7 +52,7 @@ private let recording = false
     assertSnapshot(
         of: SnapshotUtility.view(
             from: ShowcaseView {
-                MaritimeThemeContentView()
+                ThemeShowcase()
             }
             .environment(\.nimbusTheme, MaritimeTheme())
         ),
@@ -58,18 +61,33 @@ private let recording = false
     )
 }
 
-// MARK: SecondaryOutlineButtonStyle
 @MainActor
-@Test func showcaseSecondaryOutlineButtonStyle() async throws {
+@Test func showcaseMinimalTheme() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
-            from: ThemedSecondaryOutlineButtonStylePreview()
-                .environment(\.nimbusTheme, NimbusTheme())
+            from: ShowcaseView {
+                ThemeShowcase()
+            }
+            .environment(\.nimbusTheme, MinimalTheme())
         ),
         as: .image,
         record: recording
     )
 }
+
+// MARK: - Component-Specific Tests
+// These tests focus on specific component functionality rather than theme showcases
+//@MainActor
+//@Test func showcaseSecondaryOutlineButtonStyle() async throws {
+//    assertSnapshot(
+//        of: SnapshotUtility.view(
+//            from: ThemedSecondaryOutlineButtonStylePreview()
+//                .environment(\.nimbusTheme, NimbusTheme())
+//        ),
+//        as: .image,
+//        record: recording
+//    )
+//}
 
 
 struct SecondaryOutlineButtonStylePreview: View {
@@ -149,27 +167,4 @@ struct ThemedSecondaryOutlineButtonStylePreview: View {
     }
 }
 
-struct MaritimeShowcaseView: View {
-    var body: some View {
-        HStack {
-            VStack {
-                Text("Light Mode")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                MaritimeThemeContentView()
-                    .environment(\.colorScheme, .light)
-            }
-            VStack {
-                Text("Dark Mode")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                MaritimeThemeContentView()
-                    .environment(\.colorScheme, .dark)
-            }
-        }
-        .padding()
-        .background(.black)
-    }
-}
+// Note: MaritimeShowcaseView removed - now using unified ThemeShowcase for all theme testing

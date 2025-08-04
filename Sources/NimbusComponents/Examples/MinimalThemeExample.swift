@@ -235,206 +235,41 @@ extension MinimalTheme {
 }
 
 #if DEBUG
-/// Comprehensive showcase of the MinimalTheme to demonstrate that
-/// default component tokens provide a complete, beautiful experience
+/// Minimal theme showcase using the unified ThemeShowcase
+/// This provides consistent presentation across all themes
 @available(macOS 15.0, *)
 #Preview("Minimal Theme Showcase") {
-    MinimalThemeShowcaseView()
-        .environment(\.nimbusTheme, MinimalTheme())
+    ThemeShowcase()
+        .environment(\.nimbusTheme, MinimalTheme.default)
 }
 
-/// Showcase view demonstrating that minimal themes are fully functional
-private struct MinimalThemeShowcaseView: View {
-    @Environment(\.nimbusTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
-    
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Header
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Minimal Theme Showcase")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(theme.primaryTextColor(for: colorScheme))
-                    
-                    Text("This theme implements only 17 required properties and uses defaults for ALL component tokens. Notice how everything still looks great!")
-                        .font(.subheadline)
-                        .foregroundColor(theme.secondaryTextColor(for: colorScheme))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                
-                // Color palette
-                ColorPaletteSection()
-                
-                // Button showcase
-                ButtonShowcaseSection()
-                
-                // Component integration
-                ComponentIntegrationSection()
-                
-                // Developer note
-                DeveloperNotesSection()
-            }
-            .padding(32)
-        }
-        .background(theme.backgroundColor(for: colorScheme))
-    }
+/// Simple usage example for testing and development
+@available(macOS 15.0, *)
+#Preview("Minimal Usage Example") {
+    MinimalUsageExample()
 }
 
-private struct ColorPaletteSection: View {
-    @Environment(\.nimbusTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
-    
+/// Minimal usage example showing MinimalTheme in action
+private struct MinimalUsageExample: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Color Palette")
-                .font(.headline)
-                .foregroundColor(theme.primaryTextColor(for: colorScheme))
+        VStack(spacing: 16) {
+            Text("Minimal Theme Example")
+                .font(.title)
+                .padding()
             
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
-                MinimalColorSwatch(name: "Primary", color: theme.primaryColor(for: colorScheme))
-                MinimalColorSwatch(name: "Success", color: theme.successColor(for: colorScheme))
-                MinimalColorSwatch(name: "Warning", color: theme.warningColor(for: colorScheme))
-                MinimalColorSwatch(name: "Error", color: theme.errorColor(for: colorScheme))
-            }
-        }
-    }
-}
-
-private struct ButtonShowcaseSection: View {
-    @Environment(\.nimbusTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Button Styles (Using Default Component Tokens)")
-                .font(.headline)
-                .foregroundColor(theme.primaryTextColor(for: colorScheme))
-            
-            VStack(spacing: 12) {
-                HStack(spacing: 12) {
-                    Button("Primary Default") {}
-                        .buttonStyle(.primary)
-                    Button("Primary Prominent") {}
-                        .buttonStyle(.accent)
-                    Button("Delete", role: .destructive) {}
-                        .buttonStyle(.accent)
-                }
-                
-                HStack(spacing: 12) {
-                    Button("Secondary Prominent") {}
-                        .buttonStyle(.secondary)
-                    Button("Secondary Bordered") {}
-                        .buttonStyle(.secondaryOutline)
-                    Button("With Icon", systemImage: "star.fill") {}
-                        .buttonStyle(.accent)
-                }
+            HStack(spacing: 12) {
+                Button("Primary") {}.buttonStyle(.primary)
+                Button("Secondary") {}.buttonStyle(.secondary)
+                Button("Accent") {}.buttonStyle(.accent)
             }
             
-            Text("All button corner radii, padding, and spacing use sensible defaults!")
+            Text("Clean iOS-inspired design using only 17 required properties with beautiful defaults for everything else.")
                 .font(.caption)
-                .foregroundColor(theme.tertiaryTextColor(for: colorScheme))
+                .multilineTextAlignment(.center)
+                .padding()
         }
-    }
-}
-
-private struct ComponentIntegrationSection: View {
-    @Environment(\.nimbusTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Component Integration (All Using Defaults)")
-                .font(.headline)
-                .foregroundColor(theme.primaryTextColor(for: colorScheme))
-            
-            Text("Every component works beautifully with default tokens:")
-                .font(.subheadline)
-                .foregroundColor(theme.secondaryTextColor(for: colorScheme))
-            
-            VStack(alignment: .leading, spacing: 8) {
-                BulletPoint(text: "✅ Buttons: Using default corner radii, spacing, and elevation")
-                BulletPoint(text: "✅ Lists: Using default item height and corner radii")
-                BulletPoint(text: "✅ Scrollers: Using default width, knob size, and opacity")
-                BulletPoint(text: "✅ Checkboxes: Using default size, spacing, and borders")
-                BulletPoint(text: "✅ All components: Properly themed colors and interactions")
-            }
-        }
-    }
-}
-
-private struct DeveloperNotesSection: View {
-    @Environment(\.nimbusTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Developer Experience")
-                .font(.headline)
-                .foregroundColor(theme.primaryTextColor(for: colorScheme))
-            
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Before: 45+ properties to implement")
-                    .font(.subheadline)
-                    .foregroundColor(theme.errorColor(for: colorScheme))
-                    .strikethrough()
-                
-                Text("After: Only 17 required properties")
-                    .font(.subheadline)
-                    .foregroundColor(theme.successColor(for: colorScheme))
-                    .fontWeight(.medium)
-                
-                Text("Want to customize a component? Just add the specific property you need. Otherwise, beautiful defaults work out of the box!")
-                    .font(.caption)
-                    .foregroundColor(theme.secondaryTextColor(for: colorScheme))
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .padding(16)
-        .background(theme.secondaryBackgroundColor(for: colorScheme))
-        .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading))
-        .overlay(
-            RoundedRectangle(cornerRadius: theme.cornerRadii.topLeading)
-                .stroke(theme.borderColor(for: colorScheme), lineWidth: 1)
-        )
-    }
-}
-
-private struct MinimalColorSwatch: View {
-    @Environment(\.nimbusTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
-    
-    let name: String
-    let color: Color
-    
-    var body: some View {
-        VStack(spacing: 6) {
-            Circle()
-                .fill(color)
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Circle()
-                        .stroke(theme.borderColor(for: colorScheme), lineWidth: 1)
-                )
-            
-            Text(name)
-                .font(.caption2)
-                .foregroundColor(theme.secondaryTextColor(for: colorScheme))
-        }
-    }
-}
-
-private struct BulletPoint: View {
-    @Environment(\.nimbusTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
-    
-    let text: String
-    
-    var body: some View {
-        Text(text)
-            .font(.caption)
-            .foregroundColor(theme.secondaryTextColor(for: colorScheme))
+        .environment(\.nimbusTheme, MinimalTheme.default)
+        .padding()
     }
 }
 #endif
