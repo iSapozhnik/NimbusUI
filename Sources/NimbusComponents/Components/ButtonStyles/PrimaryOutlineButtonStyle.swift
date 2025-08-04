@@ -28,20 +28,39 @@ public struct PrimaryOutlineButtonStyle: ButtonStyle {
 
     @State private var isHovering: Bool
     
+    #if DEBUG
+    @State private var debugIsPressed: Bool
+    private let isDebugMode: Bool
+    #endif
+    
     // Default initializer
     public init() {
         self.isHovering = false
+        #if DEBUG
+        self.debugIsPressed = false
+        self.isDebugMode = false
+        #endif
     }
 
     #if DEBUG
         init(
-            isHovering: Bool = false
+            isHovering: Bool = false,
+            isPressed: Bool = false
         ) {
             self.isHovering = isHovering
+            self.debugIsPressed = isPressed
+            self.isDebugMode = true
         }
     #endif
     
     public func makeBody(configuration: Configuration) -> some View {
+        
+        #if DEBUG
+        let effectiveIsPressed = isDebugMode ? debugIsPressed : configuration.isPressed
+        #else
+        let effectiveIsPressed = configuration.isPressed
+        #endif
+        
         let color = theme.primaryColor(for: colorScheme)
         let defaultAppearance = ButtonAppearance(
             fill: .clear,
@@ -76,7 +95,7 @@ public struct PrimaryOutlineButtonStyle: ButtonStyle {
             .modifier(
                 NimbusFilledModifier(
                     isHovering: isHovering,
-                    isPressed: configuration.isPressed,
+                    isPressed: effectiveIsPressed,
                     fill: AnyShapeStyle(defaultAppearance.fill),
                     hovering: AnyShapeStyle(defaultAppearance.hover),
                     pressed: AnyShapeStyle(defaultAppearance.press)

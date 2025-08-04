@@ -276,35 +276,72 @@ public struct ButtonVariantsView<S: ButtonStyle>: View {
     
     @ViewBuilder
     private func normalButton(text: String, withHover: Bool = false, withPressed: Bool = false) -> some View {
-        if withHover {
-            if style is PrimaryButtonStyle {
+        switch (withHover, withPressed) {
+        case (true, false):
+            switch style {
+            case is PrimaryButtonStyle:
                 Button(text) {}
                     .buttonStyle(PrimaryButtonStyle(isHovering: true))
                     .controlSize(.regular)
-            } else if style is SecondaryButtonStyle {
+            case is SecondaryButtonStyle:
                 Button(text) {}
                     .buttonStyle(SecondaryButtonStyle(isHovering: true))
                     .controlSize(.regular)
-            } else {
+            case is AccentButtonStyle:
+                Button(text) {}
+                    .buttonStyle(AccentButtonStyle(isHovering: true))
+                    .controlSize(.regular)
+            case is PrimaryOutlineButtonStyle:
+                Button(text) {}
+                    .buttonStyle(PrimaryOutlineButtonStyle(isHovering: true))
+                    .controlSize(.regular)
+            case is SecondaryOutlineButtonStyle:
+                Button(text) {}
+                    .buttonStyle(SecondaryOutlineButtonStyle(isHovering: true))
+                    .controlSize(.regular)
+            default:
+                // LinkButtonStyle and CloseButtonStyle don't support hover states in debug mode
                 Button(text) {}
                     .buttonStyle(style)
                     .controlSize(.regular)
             }
-        } else if withPressed {
-            if style is PrimaryButtonStyle {
+        case (false, true):
+            switch style {
+            case is PrimaryButtonStyle:
                 Button(text) {}
                     .buttonStyle(PrimaryButtonStyle(isPressed: true))
                     .controlSize(.regular)
-            } else if style is SecondaryButtonStyle {
+            case is SecondaryButtonStyle:
                 Button(text) {}
                     .buttonStyle(SecondaryButtonStyle(isPressed: true))
                     .controlSize(.regular)
-            } else {
+            case is AccentButtonStyle:
+                Button(text) {}
+                    .buttonStyle(AccentButtonStyle(isPressed: true))
+                    .controlSize(.regular)
+            case is PrimaryOutlineButtonStyle:
+                Button(text) {}
+                    .buttonStyle(PrimaryOutlineButtonStyle(isPressed: true))
+                    .controlSize(.regular)
+            case is SecondaryOutlineButtonStyle:
+                Button(text) {}
+                    .buttonStyle(SecondaryOutlineButtonStyle(isPressed: true))
+                    .controlSize(.regular)
+            case is NimbusComponents.LinkButtonStyle:
+                Button(text) {}
+                    .buttonStyle(NimbusComponents.LinkButtonStyle(isPressed: true))
+                    .controlSize(.regular)
+            case is CloseButtonStyle:
+                Button(text) {}
+                    .buttonStyle(CloseButtonStyle(isPressed: true))
+                    .controlSize(.regular)
+            default:
+                // Fallback for any unknown button styles
                 Button(text) {}
                     .buttonStyle(style)
                     .controlSize(.regular)
             }
-        } else {
+        default:
             Button(text) {}
                 .buttonStyle(style)
                 .controlSize(.regular)
@@ -313,22 +350,46 @@ public struct ButtonVariantsView<S: ButtonStyle>: View {
     
     @ViewBuilder
     private func labelButton(text: String, systemImage: String, withHover: Bool = false, withPressed: Bool = false) -> some View {
-        if withHover {
-            if style is PrimaryButtonStyle {
+        switch (withHover, withPressed) {
+        case (true, false):
+            switch style {
+            case is PrimaryButtonStyle:
                 Button(action: {}) {
                     Label(text, systemImage: systemImage)
                 }
                 .buttonStyle(PrimaryButtonStyle(isHovering: true))
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
-            } else if style is SecondaryButtonStyle {
+            case is SecondaryButtonStyle:
                 Button(action: {}) {
                     Label(text, systemImage: systemImage)
                 }
                 .buttonStyle(SecondaryButtonStyle(isHovering: true))
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
-            } else {
+            case is AccentButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(AccentButtonStyle(isHovering: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            case is PrimaryOutlineButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(PrimaryOutlineButtonStyle(isHovering: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            case is SecondaryOutlineButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(SecondaryOutlineButtonStyle(isHovering: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            default:
+                // LinkButtonStyle and CloseButtonStyle don't support hover states in debug mode
                 Button(action: {}) {
                     Label(text, systemImage: systemImage)
                 }
@@ -336,22 +397,59 @@ public struct ButtonVariantsView<S: ButtonStyle>: View {
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
             }
-        } else if withPressed {
-            if style is PrimaryButtonStyle {
+        case (false, true):
+            switch style {
+            case is PrimaryButtonStyle:
                 Button(action: {}) {
                     Label(text, systemImage: systemImage)
                 }
                 .buttonStyle(PrimaryButtonStyle(isPressed: true))
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
-            } else if style is SecondaryButtonStyle {
+            case is SecondaryButtonStyle:
                 Button(action: {}) {
                     Label(text, systemImage: systemImage)
                 }
                 .buttonStyle(SecondaryButtonStyle(isPressed: true))
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
-            } else {
+            case is AccentButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(AccentButtonStyle(isPressed: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            case is PrimaryOutlineButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(PrimaryOutlineButtonStyle(isPressed: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            case is SecondaryOutlineButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(SecondaryOutlineButtonStyle(isPressed: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            case is NimbusComponents.LinkButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(NimbusComponents.LinkButtonStyle(isPressed: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            case is CloseButtonStyle:
+                Button(action: {}) {
+                    Label(text, systemImage: systemImage)
+                }
+                .buttonStyle(CloseButtonStyle(isPressed: true))
+                .controlSize(.regular)
+                .environment(\.nimbusButtonHasDivider, true)
+            default:
+                // Fallback for any unknown button styles
                 Button(action: {}) {
                     Label(text, systemImage: systemImage)
                 }
@@ -359,7 +457,7 @@ public struct ButtonVariantsView<S: ButtonStyle>: View {
                 .controlSize(.regular)
                 .environment(\.nimbusButtonHasDivider, true)
             }
-        } else {
+        default:
             Button(action: {}) {
                 Label(text, systemImage: systemImage)
             }
@@ -375,8 +473,23 @@ public struct ButtonVariantsView<S: ButtonStyle>: View {
 /// Primary button variants using PrimaryButtonStyle
 public typealias PrimaryButtonVariants = ButtonVariantsView<PrimaryButtonStyle>
 
+/// Accent button variants using AccentButtonStyle
+public typealias AccentButtonVariants = ButtonVariantsView<AccentButtonStyle>
+
 /// Secondary button variants using SecondaryButtonStyle  
 public typealias SecondaryButtonVariants = ButtonVariantsView<SecondaryButtonStyle>
+
+/// Primary outline button variants using PrimaryOutlineButtonStyle
+public typealias PrimaryOutlineButtonVariants = ButtonVariantsView<PrimaryOutlineButtonStyle>
+
+/// Secondary outline button variants using SecondaryOutlineButtonStyle
+public typealias SecondaryOutlineButtonVariants = ButtonVariantsView<SecondaryOutlineButtonStyle>
+
+/// Link button variants using NimbusComponents.LinkButtonStyle
+public typealias LinkButtonVariants = ButtonVariantsView<NimbusComponents.LinkButtonStyle>
+
+/// Close button variants using CloseButtonStyle
+public typealias CloseButtonVariants = ButtonVariantsView<CloseButtonStyle>
 
 // MARK: - Convenience Factory Methods
 
@@ -387,9 +500,44 @@ extension PrimaryButtonVariants {
     }
 }
 
+extension AccentButtonVariants {
+    /// Creates button variants for accent button style
+    public static func create() -> AccentButtonVariants {
+        ButtonVariantsView(style: AccentButtonStyle())
+    }
+}
+
 extension SecondaryButtonVariants {
     /// Creates button variants for secondary button style
     public static func create() -> SecondaryButtonVariants {
         ButtonVariantsView(style: SecondaryButtonStyle())
+    }
+}
+
+extension PrimaryOutlineButtonVariants {
+    /// Creates button variants for primary outline button style
+    public static func create() -> PrimaryOutlineButtonVariants {
+        ButtonVariantsView(style: PrimaryOutlineButtonStyle())
+    }
+}
+
+extension SecondaryOutlineButtonVariants {
+    /// Creates button variants for secondary outline button style
+    public static func create() -> SecondaryOutlineButtonVariants {
+        ButtonVariantsView(style: SecondaryOutlineButtonStyle())
+    }
+}
+
+extension LinkButtonVariants {
+    /// Creates button variants for link button style
+    public static func create() -> LinkButtonVariants {
+        ButtonVariantsView(style: NimbusComponents.LinkButtonStyle())
+    }
+}
+
+extension CloseButtonVariants {
+    /// Creates button variants for close button style
+    public static func create() -> CloseButtonVariants {
+        ButtonVariantsView(style: CloseButtonStyle())
     }
 }
