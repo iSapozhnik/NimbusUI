@@ -49,7 +49,3 @@ public extension ButtonStyle where Self == AccentButtonStyle {
     static var primaryProminent: Self { .init() }
 }
 
-@available(*, deprecated, renamed: "secondaryOutline", message: "Use `.secondaryOutline` instead of `.secondaryBordered`")
-public extension ButtonStyle where Self == SecondaryOutlineButtonStyle {
-    static var secondaryBordered: Self { .init() }
-}

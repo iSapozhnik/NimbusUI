@@ -122,8 +122,9 @@ import SwiftUI
                 }
                 .buttonStyle(.accent)
                 .controlSize(.regular)
-                .environment(\.nimbusButtonHasDivider, false)
+                .environment(\.nimbusButtonHasDivider, true)
                 .environment(\.nimbusButtonIconAlignment, .trailing)
+                .environment(\.nimbusButtonContentPadding, contentPadding)
             }
         }
     }

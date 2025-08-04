@@ -327,7 +327,7 @@ struct DragToDismissDemoView: View {
                 Button("Show Interactive Notification") {
                     showInteractiveDemo = true
                 }
-                .buttonStyle(.primaryProminent)
+                .buttonStyle(.accent)
                 
                 Button("Show Physics Demo") {
                     showPhysicsDemo = true
@@ -472,7 +472,7 @@ struct PresentationStyleDemoView: View {
                 Button("Scale\n(swipe up/down ↕)") {
                     showScale = true
                 }
-                .buttonStyle(.secondaryBordered)
+                .buttonStyle(.secondaryOutline)
                 .multilineTextAlignment(.center)
             }
             

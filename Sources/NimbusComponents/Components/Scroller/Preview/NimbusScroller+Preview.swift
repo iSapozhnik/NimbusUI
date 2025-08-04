@@ -55,11 +55,11 @@ private struct NimbusScrollerPreview: View {
                         
                         HStack(spacing: 8) {
                             Button("Top") { verticalValue = 0.0 }
-                                .buttonStyle(.secondaryBordered)
+                                .buttonStyle(.secondaryOutline)
                             Button("Mid") { verticalValue = 0.5 }
-                                .buttonStyle(.secondaryBordered)
+                                .buttonStyle(.secondaryOutline)
                             Button("Bottom") { verticalValue = 1.0 }
-                                .buttonStyle(.secondaryBordered)
+                                .buttonStyle(.secondaryOutline)
                         }
                         .font(.caption2)
                     }
@@ -101,11 +101,11 @@ private struct NimbusScrollerPreview: View {
                             
                             HStack(spacing: 6) {
                                 Button("L") { horizontalValue = 0.0 }
-                                    .buttonStyle(.secondaryBordered)
+                                    .buttonStyle(.secondaryOutline)
                                 Button("C") { horizontalValue = 0.5 }
-                                    .buttonStyle(.secondaryBordered)
+                                    .buttonStyle(.secondaryOutline)
                                 Button("R") { horizontalValue = 1.0 }
-                                    .buttonStyle(.secondaryBordered)
+                                    .buttonStyle(.secondaryOutline)
                             }
                             .font(.caption2)
                         }
@@ -161,11 +161,11 @@ private struct NimbusScrollerPreview: View {
                         
                         HStack(spacing: 8) {
                             Button("Top") { customValue = 0.0 }
-                                .buttonStyle(.secondaryBordered)
+                                .buttonStyle(.secondaryOutline)
                             Button("Mid") { customValue = 0.5 }
-                                .buttonStyle(.secondaryBordered)
+                                .buttonStyle(.secondaryOutline)
                             Button("Bottom") { customValue = 1.0 }
-                                .buttonStyle(.secondaryBordered)
+                                .buttonStyle(.secondaryOutline)
                         }
                         .font(.caption2)
                     }
