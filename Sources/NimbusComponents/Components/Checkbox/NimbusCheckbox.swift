@@ -46,7 +46,7 @@ public struct NimbusCheckbox: View {
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: cornerRadii.topLeading)
-                    .fill(isOn ? color : .clear)
+                    .fill(isOn ? color.gradient : Color.clear.gradient)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadii.topLeading)
                             .stroke(
@@ -70,7 +70,6 @@ public struct NimbusCheckbox: View {
         }
         .buttonStyle(.plain)
         .frame(width: size, height: size)
-        .opacity(isEnabled ? 1.0 : 0.5)
         .onHover { hovering in
             if isEnabled {
                 withAnimation(theme.animationFast) {

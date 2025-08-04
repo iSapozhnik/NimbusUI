@@ -639,6 +639,65 @@ public extension ComponentName {
 - ✅ **Type Safety**: Compile-time validation of configuration values
 - ✅ **Future-Proof**: Easy to add new customization options
 
+#### Environment Variable Usage Rule (CRITICAL)
+**NEVER use environment variables directly in code - ALWAYS use convenience methods for ALL NimbusUI components:**
+
+❌ **WRONG - Direct Environment Usage (Multiple Components):**
+```swift
+// Checkbox - WRONG
+NimbusCheckbox(isOn: $isChecked)
+    .environment(\.nimbusCheckboxStrokeWidth, 2.5)
+    .environment(\.nimbusCheckboxLineCap, .round)
+    .environment(\.nimbusCheckboxSize, 28)
+
+// Button - WRONG  
+Button("Save") { }
+    .buttonStyle(.primary)
+    .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(12))
+    .environment(\.nimbusElevation, .medium)
+
+// Scroller - WRONG
+NimbusScroller(...)
+    .environment(\.nimbusScrollerWidth, 16)
+    .environment(\.nimbusScrollerKnobWidth, 12)
+```
+
+✅ **CORRECT - Convenience Methods (Multiple Components):**
+```swift
+// Checkbox - CORRECT
+NimbusCheckbox(isOn: $isChecked)
+    .strokeWidth(2.5)
+    .lineCap(.round)
+    .size(28)
+
+// Button - CORRECT
+Button("Save") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(12))
+    .elevation(.medium)
+
+// Scroller - CORRECT  
+NimbusScroller(...)
+    .scrollerWidth(16)
+    .knobWidth(12)
+```
+
+**Why This Universal Rule Exists:**
+- **Developer Experience**: Convenience methods are discoverable via Xcode autocomplete across ALL components
+- **Type Safety**: Methods provide compile-time validation of parameters for every component
+- **Documentation**: Methods include comprehensive inline documentation for every customization option
+- **Universal Consistency**: ALL components follow the same customization pattern (Checkbox, Button, Scroller, etc.)
+- **Future-Proof**: Internal environment keys can change without breaking user code across the entire design system
+- **Chainable API**: Methods create clean, readable SwiftUI modifier chains for every component
+- **Design System Cohesion**: Ensures a unified developer experience across the entire NimbusUI library
+
+**Universal Application:**
+- ✅ **ALL Current Components**: Buttons, Checkboxes, Scrollers, Notifications, etc.
+- ✅ **ALL Future Components**: This rule applies to every new component added to NimbusUI
+- ✅ **ALL Customization Properties**: Size, colors, corner radii, spacing, interactions, etc.
+
+**Exception:** Only use environment variables directly in component extensions when implementing the convenience methods themselves.
+
 #### Theme Examples by Complexity
 - **Minimal Theme**: Only 17 core properties - `MinimalTheme` (perfect starting point)
 - **Selective Override**: Core + few component tokens - `MaritimeTheme` (scroller customization)

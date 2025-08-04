@@ -109,7 +109,7 @@ public struct NimbusCheckboxItem: View {
             )
         }
         .buttonStyle(.plain)
-        .opacity(isEnabled ? 1.0 : 0.5)
+//        .opacity(isEnabled ? 1.0 : 0.5)
         .onHover { hovering in
             if isEnabled {
                 withAnimation(theme.animationFast) {
@@ -142,10 +142,10 @@ public struct NimbusCheckboxItem: View {
     }
     
     private var titleTextColor: Color {
-        isEnabled ? theme.primaryTextColor(for: colorScheme) : theme.tertiaryTextColor(for: colorScheme)
+        theme.primaryTextColor(for: colorScheme)
     }
     
     private var subtitleTextColor: Color {
-        isEnabled ? theme.secondaryTextColor(for: colorScheme) : theme.tertiaryTextColor(for: colorScheme)
+        theme.secondaryTextColor(for: colorScheme)
     }
 }
