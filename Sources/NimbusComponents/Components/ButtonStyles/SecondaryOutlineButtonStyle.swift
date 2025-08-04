@@ -11,19 +11,23 @@ import NimbusCore
 public struct SecondaryOutlineButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.nimbusAnimationFast) private var animationFast
-    @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
-    @Environment(\.nimbusMinHeight) private var overrideMinHeight
+    @Environment(\.nimbusAnimationFast) private var envAnimationFast
+    @Environment(\.nimbusButtonCornerRadii) private var envCornerRadii
+    @Environment(\.nimbusHorizontalPadding) private var envHorizontalPadding
+    @Environment(\.nimbusMinHeight) private var envMinHeight
+    @Environment(\.nimbusElevation) private var envElevation
     @Environment(\.controlSize) private var controlSize
     
     // Button Label Configuration
-    @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
-    @Environment(\.nimbusButtonIconAlignment) private var overrideIconAlignment
-    @Environment(\.nimbusButtonContentPadding) private var overrideContentPadding
-    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var overrideLabelContentPadding
+    @Environment(\.nimbusButtonHasDivider) private var envHasDivider
+    @Environment(\.nimbusButtonIconAlignment) private var envIconAlignment
+    @Environment(\.nimbusButtonContentPadding) private var envContentPadding
+    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var envLabelContentPadding
+
 
     @State private var isHovering: Bool
 
+    // Default initializer
     public init() {
         self.isHovering = false
     }
@@ -37,21 +41,26 @@ public struct SecondaryOutlineButtonStyle: ButtonStyle {
     #endif
 
     public func makeBody(configuration: Configuration) -> some View {
+        // Use environment values with theme fallbacks
+        let finalHorizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: envHorizontalPadding)
+        let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
+        
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
+        let finalHasDivider = envHasDivider
+        let finalIconAlignment = envIconAlignment
+        let finalContentPadding = envContentPadding ?? envLabelContentPadding
+        
         let content = configuration.label
             .modifier(AutoLabelDetectionModifier(
-                hasDivider: overrideHasDivider,
-                iconAlignment: overrideIconAlignment, 
-                contentPadding: overrideContentPadding ?? overrideLabelContentPadding,
+                hasDivider: finalHasDivider,
+                iconAlignment: finalIconAlignment, 
+                contentPadding: finalContentPadding,
                 theme: theme
             ))
         
-        let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
-        let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
-        
         content
             .font(.system(size: fontSize, weight: .medium))
-            .padding(.horizontal, horizontalPadding)
+            .padding(.horizontal, finalHorizontalPadding)
             .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
@@ -67,7 +76,7 @@ public struct SecondaryOutlineButtonStyle: ButtonStyle {
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
-            .animation(animationFast, value: isHovering)
+            .animation(envAnimationFast, value: isHovering)
     }
 }
 

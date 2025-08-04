@@ -75,7 +75,7 @@
 - Material blur effects
 
 ### ⚡ **Developer Experience**
-- Swift 6.1+ with modern concurrency
+- Swift 5.9+ with modern concurrency
 - Comprehensive SwiftUI environment integration
 - Extensive documentation and examples
 - Built for real-world macOS applications
@@ -90,12 +90,48 @@
 
 ### Swift Package Manager
 
-Add NimbusUI to your project using Swift Package Manager:
+Add NimbusUI to your project using Swift Package Manager. In Xcode, select `File > Add Packages...` and enter the repository URL:
+
+```
+https://github.com/iSapozhnik/NimbusUI.git
+```
+
+### Package Dependencies
+
+Add the desired libraries to your target's dependencies. You can choose to include all libraries via the umbrella `NimbusUI` product, or select only the specific libraries you need.
 
 ```swift
+// In your Package.swift
 dependencies: [
     .package(url: "https://github.com/iSapozhnik/NimbusUI.git", from: "1.0.0")
+],
+targets: [
+    .target(
+        name: "YourApp",
+        dependencies: [
+            // Option 1: Add all libraries
+            "NimbusUI",
+            
+            // Option 2: Add only the libraries you need
+            .product(name: "NimbusCore", package: "NimbusUI"),
+            .product(name: "NimbusComponents", package: "NimbusUI"),
+            .product(name: "NimbusNotifications", package: "NimbusUI"),
+            .product(name: "NimbusOnboarding", package: "NimbusUI")
+        ]
+    )
 ]
+```
+
+### Importing Libraries
+
+Once added, import the modules in your Swift files:
+
+```swift
+import NimbusCore         // Core theming, modifiers, and utilities
+import NimbusComponents   // Buttons, checkboxes, lists, etc.
+import NimbusNotifications// Notification system
+import NimbusOnboarding   // Onboarding flow
+import NimbusUI           // Includes all of the above
 ```
 
 ### Requirements
@@ -103,12 +139,14 @@ dependencies: [
 | Requirement | Version |
 |-------------|---------|
 | **macOS** | 14.0+ |
-| **Swift** | 6.1+ |
+| **Swift** | 5.9+ |
 | **Xcode** | 15.0+ |
 
 ---
 
 ## 🚀 Quick Start
+
+Apply a theme to any view hierarchy using the `.theme()` modifier. NimbusUI components will automatically adapt their appearance based on the theme.
 
 ```swift
 import SwiftUI
@@ -123,7 +161,7 @@ struct ContentView: View {
             Button("Accent Action") { }
                 .buttonStyle(.accent)
         }
-        .environment(\.nimbusTheme, NimbusTheme.default)
+        .theme(NimbusTheme.default)
         .padding()
     }
 }
@@ -181,44 +219,74 @@ Button("More Options") { }
 </details>
 
 <details>
-<summary><strong>Enhanced Button + Label API</strong></summary>
+<summary><strong>Button Customization with Convenience Methods</strong></summary>
 
-NimbusUI automatically detects Label usage and applies appropriate styling:
+NimbusUI provides SwiftUI-idiomatic convenience methods for button customization:
 
 ```swift
-// Plain text button (no changes needed)
-Button("Delete") { }
-    .buttonStyle(.accent)
+// Basic button with custom styling
+Button("Save Changes") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(12))
+    .elevation(.medium)
+    .controlSize(.large)
 
-// Label with divider (auto-applied)
+// Label button with divider and icon alignment
 Button(action: {}) {
     Label("Export", systemImage: "square.and.arrow.up")
 }
 .buttonStyle(.accent)
-.environment(\.nimbusButtonHasDivider, true)
+.hasDivider(true)
+.iconAlignment(.leading)
+.controlSize(.regular)
 
-// Label with trailing icon
+// Advanced customization with multiple modifiers
 Button(action: {}) {
-    Label("Next", systemImage: "arrow.right")
+    Label("Delete", systemImage: "trash")
 }
 .buttonStyle(.accent)
-.environment(\.nimbusButtonIconAlignment, .trailing)
+.cornerRadii(RectangleCornerRadii(8))
+.elevation(.high)
+.labelConfiguration(hasDivider: true, iconAlignment: .trailing, contentPadding: 8)
+
+// Icon-only square button
+Button(action: {}) {
+    Image(systemName: "gear")
+}
+.buttonStyle(.secondary)
+.iconOnly()
+.controlSize(.regular)
+
+// Wide banner button
+Button("Get Started Now") { }
+    .buttonStyle(.accent)
+    .banner(aspectRatio: 3.0)
+    .controlSize(.large)
 ```
 
-</details>
+**Available Convenience Methods:**
+- `.cornerRadii(RectangleCornerRadii)` - Custom corner radii
+- `.elevation(Elevation)` - Shadow depth (.low, .medium, .high)
+- `.hasDivider(Bool)` - Divider between icon and text
+- `.iconAlignment(HorizontalAlignment)` - Icon position (.leading/.trailing)
+- `.contentPadding(CGFloat)` - Spacing between icon and text
+- `.labelConfiguration(hasDivider:iconAlignment:contentPadding:)` - Combined label settings
+- `.iconOnly(size:)` - Square aspect ratio for icons
+- `.banner(aspectRatio:)` - Wide buttons for call-to-actions
 
-<details>
-<summary><strong>Button Customization</strong></summary>
-
-Override specific properties while maintaining theme consistency:
-
+**Migration from Legacy Environment Values:**
 ```swift
-Button("Custom Button") { }
+// Old approach (still works)
+Button("Save") { }
     .buttonStyle(.primary)
-    .controlSize(.large)
-    .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(16))
-    .environment(\.nimbusMinHeight, 50)
-    .environment(\.nimbusButtonMaterial, .thin)
+    .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(12))
+    .environment(\.nimbusElevation, .medium)
+
+// New convenience method approach (recommended)
+Button("Save") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(12))
+    .elevation(.medium)
 ```
 
 </details>
@@ -268,29 +336,29 @@ Optional aspect ratio constraints for specialized button layouts:
 Button { } label: { Image(systemName: "gear") }
     .buttonStyle(.primary)
     .controlSize(.regular)
-    .environment(\.nimbusAspectRatio, 1.0)
-    .environment(\.nimbusAspectRatioContentMode, .fit)
+    .nimbusAspectRatio(1.0)
+    .nimbusAspectRatioContentMode(.fit)
 
 // Wide banner button (3:1 aspect ratio)
 Button("Get Started Now") { }
     .buttonStyle(.accent)
     .controlSize(.large)
-    .environment(\.nimbusAspectRatio, 3.0)
-    .environment(\.nimbusAspectRatioHasFixedHeight, true)
+    .nimbusAspectRatio(3.0)
+    .nimbusAspectRatioHasFixedHeight(true)
 
 // Proportional responsive button (2.5:1 ratio)
 Button("Continue") { }
     .buttonStyle(.primary)
     .controlSize(.regular)
-    .environment(\.nimbusAspectRatio, 2.5)
-    .environment(\.nimbusAspectRatioContentMode, .fit)
-    .environment(\.nimbusAspectRatioHasFixedHeight, false)
+    .nimbusAspectRatio(2.5)
+    .nimbusAspectRatioContentMode(.fit)
+    .nimbusAspectRatioHasFixedHeight(false)
 ```
 
 **Aspect Ratio Environment Values:**
-- `nimbusAspectRatio: CGFloat?` - Target aspect ratio (width/height)
-- `nimbusAspectRatioContentMode: ContentMode?` - How content should fit (`.fit` by default)
-- `nimbusAspectRatioHasFixedHeight: Bool` - Whether height should be fixed (`true` by default)
+- `nimbusAspectRatio(CGFloat?)` - Target aspect ratio (width/height)
+- `nimbusAspectRatioContentMode(ContentMode?)` - How content should fit (`.fit` by default)
+- `nimbusAspectRatioHasFixedHeight(Bool)` - Whether height should be fixed (`true` by default)
 
 **Use Cases:**
 - Square buttons for toolbar icons or action buttons
@@ -359,7 +427,7 @@ NimbusCheckboxItem(
 - ✅ **Subtitle Support**: Optional secondary text with proper spacing
 - ✅ **Hover States**: Interactive feedback with smooth animations
 - ✅ **Accessibility**: Full VoiceOver and keyboard navigation support
-- ✅ **Customizable**: Override size, spacing, corner radius via environment
+- ✅ **Customizable**: Override size, spacing, corner radius via convenience modifiers
 - ✅ **Vertical Alignment**: Center or baseline alignment options
 
 </details>
@@ -394,16 +462,16 @@ ListItem(items: $items, selection: $selection, item: .constant("Item 1")) { bind
 <details>
 <summary><strong>Interactive Features</strong></summary>
 
-Enable hover effects and customize appearance:
+Enable hover effects and customize appearance with convenience modifiers:
 
 ```swift
 ListItem(items: $items, selection: $selection, item: $item) { binding in
     Text(binding.wrappedValue)
         .padding()
 }
-.environment(\.nimbusListItemHighlightOnHover, true)
-.environment(\.nimbusListItemHeight, 60)
-.environment(\.nimbusListItemCornerRadii, RectangleCornerRadii(12))
+.nimbusListItemHighlightOnHover(true)
+.nimbusListItemHeight(60)
+.nimbusListItemCornerRadii(RectangleCornerRadii(12))
 ```
 
 </details>
@@ -741,11 +809,18 @@ NimbusUI features a sophisticated theme system that provides both consistency an
 </table>
 
 ```swift
-// Apply any theme
-.environment(\.nimbusTheme, MinimalTheme.default)
-.environment(\.nimbusTheme, NimbusTheme.default)
-.environment(\.nimbusTheme, MaritimeTheme())
-.environment(\.nimbusTheme, CustomWarmTheme())
+// Apply any theme using the .theme() modifier
+MyView()
+    .theme(MinimalTheme.default)
+
+MyView()
+    .theme(NimbusTheme.default)
+
+MyView()
+    .theme(MaritimeTheme())
+
+MyView()
+    .theme(CustomWarmTheme())
 ```
 
 ### Theme Complexity Levels
@@ -878,6 +953,8 @@ struct MyCustomTheme: NimbusTheming {
 
 ## 🏗️ Architecture
 
+The NimbusUI package is divided into four main libraries, allowing you to import only the functionality you need.
+
 <details>
 <summary><strong>Core Systems</strong></summary>
 
@@ -911,45 +988,27 @@ struct MyCustomTheme: NimbusTheming {
 </details>
 
 <details>
-<summary><strong>Component Organization</strong></summary>
+<summary><strong>Library Structure</strong></summary>
 
 ```
-Sources/NimbusUI/Components/
-├── ButtonStyles/           # Button style implementations
-│   ├── Appearance.swift
-│   ├── PrimaryButtonStyle.swift
-│   ├── AccentButtonStyle.swift
-│   ├── SecondaryButtonStyle.swift
-│   ├── PrimaryOutlineButtonStyle.swift
-│   ├── SecondaryOutlineButtonStyle.swift
-│   ├── LinkButtonStyle.swift
-│   ├── CloseButtonStyle.swift
-│   └── Preview/           # Dedicated preview files
-├── Checkbox/              # Checkbox components
-│   ├── NimbusCheckbox.swift
-│   ├── NimbusCheckboxItem.swift
-│   └── Preview/
-├── List/                  # List components
-│   ├── ListItem.swift
-│   └── Preview/
-├── Onboarding/            # Onboarding system
-│   ├── FeaturePageView.swift
-│   ├── OnboardingView.swift
-│   ├── PageControlView.swift
-│   └── Preview/
-├── ScrollView/            # Custom scroll view
-│   ├── NimbusScrollView.swift
-│   └── Preview/
-└── Scroller/              # Custom scroller component
-    ├── NimbusScroller.swift
-    └── Preview/
+Sources/
+├── NimbusCore/          # Core theming, modifiers, and utilities
+│   ├── Theming/
+│   ├── Modifiers/
+│   └── Extensions/
+├── NimbusComponents/    # UI components like buttons, lists, etc.
+│   ├── Components/
+│   │   ├── ButtonStyles/
+│   │   ├── Checkbox/
+│   │   └── ...
+│   └── Extensions/
+├── NimbusNotifications/ # Notification system
+│   └── Components/
+│       └── Notification/
+└── NimbusOnboarding/    # Onboarding flow
+    └── Components/
+        └── Onboarding/
 ```
-
-**Folder Structure Guidelines:**
-1. **Component Folder**: Named after the component
-2. **Implementation Files**: Main component files in folder root
-3. **Preview Folder**: Dedicated `Preview/` subfolder
-4. **Preview Files**: Pattern `ComponentName+Preview.swift`
 
 </details>
 
@@ -1081,6 +1140,11 @@ We extend our deepest gratitude to:
 <tr>
 <td><a href="https://github.com/Cindori/FluidGradient">FluidGradient</a></td>
 <td>Beautiful gradient animations</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><a href="https://github.com/raymondjavaxx/SmoothGradient">SmoothGradient</a></td>
+<td>Additional gradient effects</td>
 <td>MIT</td>
 </tr>
 <tr>

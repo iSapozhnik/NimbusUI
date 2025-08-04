@@ -187,38 +187,63 @@ Button("Custom") { }
     .environment(\.nimbusMinHeight, 50)
 ```
 
-### Enhanced Button + Label API Usage
-The enhanced API provides flexible button configurations:
+### Button Customization with Convenience Methods
+NimbusUI provides SwiftUI-idiomatic convenience methods for button customization, following the same pattern as NimbusScroller:
 
 ```swift
-// Plain text button (no changes needed)
+// Basic button styles (no customization needed)
 Button("Save") { }
     .buttonStyle(.accent)
     .controlSize(.regular)
 
-// Label with default divider (auto-applied)
+// Button with custom corner radii and elevation
+Button("Custom") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(16))
+    .elevation(.medium)
+    .controlSize(.large)
+
+// Label button with convenience methods
 Button(action: {}) {
     Label("Delete", systemImage: "trash")
 }
 .buttonStyle(.accent)
 .controlSize(.regular)
-.environment(\.nimbusButtonHasDivider, true)
+.hasDivider(true)
+.iconAlignment(.leading)
 
-// Label without divider
-Button(action: {}) {
-    Label("Export", systemImage: "square.and.arrow.up")
-}
-.buttonStyle(.accent)
-.controlSize(.small)
-.environment(\.nimbusButtonHasDivider, false)
-
-// Label with trailing icon and custom size
+// Label without divider and trailing icon
 Button(action: {}) {
     Label("Next", systemImage: "arrow.right")
 }
 .buttonStyle(.accent)
-.controlSize(.large)
-.environment(\.nimbusButtonIconAlignment, .trailing)
+.controlSize(.small)
+.hasDivider(false)
+.iconAlignment(.trailing)
+
+// Advanced customization with multiple modifiers
+Button(action: {}) {
+    Label("Export", systemImage: "square.and.arrow.up")
+}
+.buttonStyle(.primary)
+.controlSize(.regular)
+.cornerRadii(RectangleCornerRadii(8))
+.elevation(.high)
+.labelConfiguration(hasDivider: true, iconAlignment: .leading, contentPadding: 8)
+
+// Icon-only square button
+Button(action: {}) {
+    Image(systemName: "gear")
+}
+.buttonStyle(.secondary)
+.controlSize(.regular)
+.iconOnly()
+
+// Wide banner button
+Button("Get Started Now") { }
+    .buttonStyle(.accent)
+    .controlSize(.large)
+    .banner(aspectRatio: 3.0)
 
 // ControlSize variations across button styles
 VStack {
@@ -238,6 +263,48 @@ VStack {
         .buttonStyle(.secondaryOutline)
         .controlSize(.mini)
 }
+```
+
+### Available Button Convenience Methods
+
+**Core Customization:**
+- `.cornerRadii(RectangleCornerRadii)` - Sets button corner radii
+- `.minHeight(CGFloat)` - Sets minimum button height
+- `.horizontalPadding(CGFloat)` - Sets horizontal padding
+- `.elevation(Elevation)` - Sets shadow depth
+
+**Label Configuration:**
+- `.hasDivider(Bool)` - Controls divider between icon and text
+- `.iconAlignment(HorizontalAlignment)` - Sets icon position (leading/trailing)
+- `.contentPadding(CGFloat)` - Sets spacing between icon and text
+
+**Aspect Ratio & Layout:**
+- `.aspectRatio(CGFloat, contentMode: ContentMode)` - Sets button aspect ratio
+- `.fixedHeight(Bool)` - Controls height behavior with aspect ratio
+
+**Convenience Combinations:**
+- `.labelConfiguration(hasDivider:iconAlignment:contentPadding:)` - Configure label settings in one call
+- `.iconOnly(size:)` - Configure for square icon-only usage
+- `.banner(aspectRatio:)` - Configure for wide banner buttons
+
+**Migration from Legacy API:**
+```swift
+// Old complex initializer approach
+Button("Save") { }
+    .buttonStyle(.primary(
+        cornerRadii: RectangleCornerRadii(12),
+        elevation: .medium,
+        hasDivider: true,
+        iconAlignment: .trailing
+    ))
+
+// New convenience method approach
+Button("Save") { }
+    .buttonStyle(.primary)
+    .cornerRadii(RectangleCornerRadii(12))
+    .elevation(.medium)
+    .hasDivider(true)
+    .iconAlignment(.trailing)
 ```
 
 ### Notification System Usage

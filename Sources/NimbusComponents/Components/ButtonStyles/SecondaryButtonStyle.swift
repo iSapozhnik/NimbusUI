@@ -11,19 +11,20 @@ import NimbusCore
 public struct SecondaryButtonStyle: ButtonStyle {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
-    @Environment(\.nimbusButtonCornerRadii) private var overrideCornerRadii
-    @Environment(\.nimbusMinHeight) private var overrideMinHeight
-    @Environment(\.nimbusHorizontalPadding) private var overrideHorizontalPadding
+    @Environment(\.nimbusAnimationFast) private var envAnimationFast
+    @Environment(\.nimbusButtonCornerRadii) private var envCornerRadii
+    @Environment(\.nimbusMinHeight) private var envMinHeight
+    @Environment(\.nimbusHorizontalPadding) private var envHorizontalPadding
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.nimbusElevation) private var overrideElevation
+    @Environment(\.nimbusElevation) private var envElevation
     @Environment(\.controlSize) private var controlSize
     
     // Button Label Configuration
-    @Environment(\.nimbusButtonHasDivider) private var overrideHasDivider
-    @Environment(\.nimbusButtonIconAlignment) private var overrideIconAlignment
-    @Environment(\.nimbusButtonContentPadding) private var overrideContentPadding
-    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var overrideLabelContentPadding
+    @Environment(\.nimbusButtonHasDivider) private var envHasDivider
+    @Environment(\.nimbusButtonIconAlignment) private var envIconAlignment
+    @Environment(\.nimbusButtonContentPadding) private var envContentPadding
+    @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var envLabelContentPadding
+
 
     @State private var isHovering: Bool
     
@@ -32,6 +33,7 @@ public struct SecondaryButtonStyle: ButtonStyle {
     private let isDebugMode: Bool
     #endif
     
+    // Default initializer
     public init() {
         self.isHovering = false
         #if DEBUG
@@ -52,17 +54,22 @@ public struct SecondaryButtonStyle: ButtonStyle {
     #endif
     
     public func makeBody(configuration: Configuration) -> some View {
-        let cornerRadii = overrideCornerRadii ?? theme.buttonCornerRadii
-        let horizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: overrideHorizontalPadding)
+        // Use environment values with theme fallbacks
+        let finalCornerRadii = envCornerRadii ?? theme.buttonCornerRadii
+        let finalHorizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: envHorizontalPadding)
         let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
-        let elevation = overrideElevation ?? theme.elevation
+        let finalElevation = envElevation ?? theme.elevation
         
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
+        let finalHasDivider = envHasDivider
+        let finalIconAlignment = envIconAlignment
+        let finalContentPadding = envContentPadding ?? envLabelContentPadding
+        
         let content = configuration.label
             .modifier(AutoLabelDetectionModifier(
-                hasDivider: overrideHasDivider,
-                iconAlignment: overrideIconAlignment, 
-                contentPadding: overrideContentPadding ?? overrideLabelContentPadding,
+                hasDivider: finalHasDivider,
+                iconAlignment: finalIconAlignment, 
+                contentPadding: finalContentPadding,
                 theme: theme
             ))
         
@@ -75,7 +82,7 @@ public struct SecondaryButtonStyle: ButtonStyle {
         return content
             .font(.system(size: fontSize, weight: .medium))
             .foregroundStyle(theme.primaryTextColor(for: colorScheme))
-            .padding(.horizontal, horizontalPadding)
+            .padding(.horizontal, finalHorizontalPadding)
             .modifier(NimbusAspectRatioModifier())
             .opacity(isEnabled ? 1 : 0.5)
             .modifier(
@@ -87,10 +94,10 @@ public struct SecondaryButtonStyle: ButtonStyle {
                     pressed: AnyShapeStyle(tint(configuration: configuration).press)
                 )
             )
-            .clipShape(.rect(cornerRadii: cornerRadii))
+            .clipShape(.rect(cornerRadii: finalCornerRadii))
             .modifier(NimbusInnerShadowModifier())
-            .clipShape(.rect(cornerRadii: cornerRadii))
-            .modifier(NimbusShadowModifier(elevation: elevation))
+            .clipShape(.rect(cornerRadii: finalCornerRadii))
+            .modifier(NimbusShadowModifier(elevation: finalElevation))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
