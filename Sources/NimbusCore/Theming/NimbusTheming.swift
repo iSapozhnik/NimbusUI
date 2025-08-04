@@ -191,6 +191,12 @@ public extension NimbusTheming {
     /// Checkbox border width configuration
     var checkboxBorderWidth: CGFloat { 1 }
     
+    /// Checkbox checkmark stroke width configuration
+    var checkboxStrokeWidth: CGFloat { 1.5 }
+    
+    /// Checkbox checkmark line cap configuration  
+    var checkboxLineCap: CGLineCap { .round }
+    
     /// Checkbox item spacing configuration (spacing between checkbox and text)
     var checkboxItemSpacing: CGFloat { 12 }
     

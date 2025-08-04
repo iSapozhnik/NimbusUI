@@ -95,6 +95,8 @@ public extension EnvironmentValues {
     @Entry var nimbusCheckboxSize: CGFloat? = nil
     @Entry var nimbusCheckboxCornerRadii: RectangleCornerRadii? = nil
     @Entry var nimbusCheckboxBorderWidth: CGFloat? = nil
+    @Entry var nimbusCheckboxStrokeWidth: CGFloat? = nil
+    @Entry var nimbusCheckboxLineCap: CGLineCap? = nil
     @Entry var nimbusCheckboxItemSpacing: CGFloat? = nil
     @Entry var nimbusCheckboxItemTextSpacing: CGFloat? = nil
     @Entry var nimbusCheckboxItemPadding: CGFloat? = nil

@@ -584,6 +584,61 @@ Use the Task tool with specialized design system knowledge for:
 - **Button API Pattern**: Use `AutoLabelDetectionModifier` to conditionally apply `NimbusDividerLabelStyle` only when environment values are set
 - **Backward Compatibility**: Ensure new APIs don't break existing plain text button usage
 
+#### Convenience Methods Pattern (MANDATORY)
+**All components MUST provide SwiftUI-idiomatic convenience methods for customization following the Button pattern:**
+
+- **Environment Override Pattern**: Use `public extension ComponentType` with convenience methods that set environment values
+- **Method Categories**: 
+  - **Core Customization**: Size, colors, corner radii, borders
+  - **Behavioral Configuration**: States, interactions, animations  
+  - **Convenience Combinations**: Common multi-property configurations
+- **Implementation Structure**: Follow `Button+Extensions.swift` pattern with clear method grouping and comprehensive documentation
+- **Naming Convention**: Use descriptive method names that match the property they configure (e.g., `.strokeWidth()`, `.cornerRadii()`)
+
+**Example Implementation Pattern:**
+```swift
+// ComponentName+Extensions.swift
+public extension ComponentName {
+    // MARK: - Core Customization
+    
+    /// Sets the component size
+    func size(_ size: CGFloat) -> some View {
+        environment(\.nimbusComponentSize, size)
+    }
+    
+    /// Sets the component corner radii
+    func cornerRadii(_ radii: RectangleCornerRadii) -> some View {
+        environment(\.nimbusComponentCornerRadii, radii)
+    }
+    
+    // MARK: - Behavioral Configuration
+    
+    /// Controls component interaction behavior
+    func interactionEnabled(_ enabled: Bool) -> some View {
+        environment(\.nimbusComponentInteractionEnabled, enabled)
+    }
+    
+    // MARK: - Convenience Combinations
+    
+    /// Configures component with common settings
+    func customConfiguration(
+        size: CGFloat = 24,
+        cornerRadii: RectangleCornerRadii = RectangleCornerRadii(4)
+    ) -> some View {
+        self
+            .environment(\.nimbusComponentSize, size)
+            .environment(\.nimbusComponentCornerRadii, cornerRadii)
+    }
+}
+```
+
+**Benefits of This Pattern:**
+- ✅ **SwiftUI Idiomatic**: Matches native SwiftUI modifier patterns
+- ✅ **Developer Experience**: Chainable, discoverable, well-documented
+- ✅ **Consistency**: All components use the same customization approach
+- ✅ **Type Safety**: Compile-time validation of configuration values
+- ✅ **Future-Proof**: Easy to add new customization options
+
 #### Theme Examples by Complexity
 - **Minimal Theme**: Only 17 core properties - `MinimalTheme` (perfect starting point)
 - **Selective Override**: Core + few component tokens - `MaritimeTheme` (scroller customization)

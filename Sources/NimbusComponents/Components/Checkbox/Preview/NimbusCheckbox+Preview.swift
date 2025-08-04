@@ -132,17 +132,92 @@ import SwiftUI
     .padding()
 }
 
+#Preview("Stroke Customization") {
+    @Previewable @State var isChecked = true
+    
+    VStack(spacing: 20) {
+        HStack {
+            NimbusCheckbox(isOn: $isChecked)
+            Text("Default Stroke (2.0, round)")
+        }
+        
+        HStack {
+            NimbusCheckbox(isOn: $isChecked)
+                .environment(\.nimbusCheckboxStrokeWidth, 1.0)
+            Text("Thin Stroke (1.0)")
+        }
+        
+        HStack {
+            NimbusCheckbox(isOn: $isChecked)
+                .environment(\.nimbusCheckboxStrokeWidth, 3.5)
+            Text("Thick Stroke (3.5)")
+        }
+        
+        HStack {
+            NimbusCheckbox(isOn: $isChecked)
+                .environment(\.nimbusCheckboxLineCap, .butt)
+            Text("Butt Line Cap")
+        }
+        
+        HStack {
+            NimbusCheckbox(isOn: $isChecked)
+                .environment(\.nimbusCheckboxLineCap, .square)
+            Text("Square Line Cap")
+        }
+        
+        HStack {
+            NimbusCheckbox(isOn: $isChecked)
+                .environment(\.nimbusCheckboxSize, 32)
+                .environment(\.nimbusCheckboxStrokeWidth, 4.0)
+                .environment(\.nimbusCheckboxLineCap, .round)
+            Text("Large with Custom Stroke")
+        }
+        
+        HStack {
+            NimbusCheckbox(isOn: $isChecked)
+                .checkboxStrokeWidth(2.5)
+                .checkboxLineCap(.round)
+                .checkboxSize(28)
+            Text("Using Convenience Methods")
+        }
+    }
+    .environment(\.nimbusTheme, NimbusTheme.default)
+    .padding()
+}
+
 #Preview("Animation Showcase") {
     @Previewable @State var isChecked = false
     
     VStack(spacing: 30) {
-        Text("Tap to see bouncy animation")
+        Text("Tap to see stroke animation")
             .font(.headline)
         
         VStack(spacing: 20) {
-            NimbusCheckbox(isOn: $isChecked)
+            HStack(spacing: 20) {
+                VStack {
+                    NimbusCheckbox(isOn: $isChecked)
+                    Text("Default")
+                        .font(.caption)
+                }
+                
+                VStack {
+                    NimbusCheckbox(isOn: $isChecked)
+                        .environment(\.nimbusCheckboxSize, 32)
+                        .environment(\.nimbusCheckboxStrokeWidth, 3.0)
+                    Text("Large")
+                        .font(.caption)
+                }
+                
+                VStack {
+                    NimbusCheckbox(isOn: $isChecked)
+                        .environment(\.nimbusCheckboxSize, 20)
+                        .environment(\.nimbusCheckboxStrokeWidth, 1.5)
+                    Text("Small")
+                        .font(.caption)
+                }
+            }
             
-            Button("Toggle Checkbox") {
+            Button("Toggle All Checkboxes") {
                 isChecked.toggle()
             }
             .buttonStyle(.bordered)

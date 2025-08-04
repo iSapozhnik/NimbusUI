@@ -21,6 +21,8 @@ public struct NimbusCheckbox: View {
     @Environment(\.nimbusCheckboxSize) private var overrideSize
     @Environment(\.nimbusCheckboxCornerRadii) private var overrideCornerRadii
     @Environment(\.nimbusCheckboxBorderWidth) private var overrideBorderWidth
+    @Environment(\.nimbusCheckboxStrokeWidth) private var overrideStrokeWidth
+    @Environment(\.nimbusCheckboxLineCap) private var overrideLineCap
     
     @State private var isHovering: Bool = false
     
@@ -34,20 +36,21 @@ public struct NimbusCheckbox: View {
         let size = overrideSize ?? theme.checkboxSize
         let cornerRadii = overrideCornerRadii ?? theme.checkboxCornerRadii
         let borderWidth = overrideBorderWidth ?? theme.checkboxBorderWidth
-        
+        let strokeWidth = overrideStrokeWidth ?? theme.checkboxStrokeWidth
+        let lineCap = overrideLineCap ?? theme.checkboxLineCap
+        let color = theme.accentColor(for: colorScheme)
         Button(action: {
             if isEnabled {
                 isOn.toggle()
             }
         }) {
             ZStack {
-                // Background and border
                 RoundedRectangle(cornerRadius: cornerRadii.topLeading)
-                    .fill(isOn ? theme.primaryColor(for: colorScheme) : .clear)
+                    .fill(isOn ? color : .clear)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadii.topLeading)
                             .stroke(
-                                isOn ? theme.primaryColor(for: colorScheme) : theme.borderColor(for: colorScheme),
+                                isOn ? color.darker(by: 0.1) : theme.borderColor(for: colorScheme),
                                 lineWidth: borderWidth
                             )
                     )
@@ -56,10 +59,13 @@ public struct NimbusCheckbox: View {
                             .fill(isHovering && !isOn ? theme.secondaryBackgroundColor(for: colorScheme) : .clear)
                     )
                 
-                // Checkmark
-                CheckmarkView(isAnimating: isOn)
-                    .foregroundStyle(.white)
-                    .opacity(isOn ? 1.0 : 0.0)
+                CheckmarkView(
+                    isAnimating: isOn,
+                    strokeWidth: strokeWidth,
+                    lineCap: lineCap,
+                    size: size
+                )
+                .foregroundStyle(.white)
             }
         }
         .buttonStyle(.plain)
@@ -75,31 +81,109 @@ public struct NimbusCheckbox: View {
     }
 }
 
-/// Native SF Symbol checkmark view with bouncy animation
+/// Custom CGPath-based checkmark with stroke animation
 private struct CheckmarkView: View {
     let isAnimating: Bool
-    @State private var scale: CGFloat = 0.0
+    let strokeWidth: CGFloat
+    let lineCap: CGLineCap
+    let size: CGFloat
+    
+    @State private var strokeProgress: CGFloat = 0.0
     
     var body: some View {
-        Image(systemName: "checkmark")
-            .resizable()
-            .frame(width: 10, height: 10)
-            .scaleEffect(scale)
+        CheckmarkShape(strokeEnd: strokeProgress)
+            .stroke(
+                Color.white,
+                style: StrokeStyle(
+                    lineWidth: strokeWidth,
+                    lineCap: lineCap,
+                    lineJoin: .round
+                )
+            )
+            .frame(width: checkmarkSize, height: checkmarkSize)
             .onChange(of: isAnimating) { _, newValue in
                 if newValue {
-                    // Bouncy animation: 0 -> 1.2 -> 1.0
-                    withAnimation(.spring(.bouncy(duration: 0.25, extraBounce: 0.3))) {
-                        scale = 1.0
+                    // Reset stroke progress and animate
+//                    strokeProgress = 0.0
+                    
+                    // Smooth stroke animation
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        strokeProgress = 1.0
                     }
                 } else {
-                    // Quick scale down
-                    withAnimation(.easeInOut(duration: 0.1)) {
-                        scale = 0.0
+                    // Quick stroke reset
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        strokeProgress = 0.0
                     }
                 }
             }
             .onAppear {
-                scale = isAnimating ? 1.0 : 0.0
+                strokeProgress = isAnimating ? 1.0 : 0.0
             }
+    }
+    
+    /// Checkmark size relative to checkbox size (about 60% of checkbox size)
+    private var checkmarkSize: CGFloat {
+        size * 0.8
+    }
+}
+
+/// Custom shape for drawing an animated checkmark using CGPath
+private struct CheckmarkShape: Shape {
+    var strokeEnd: CGFloat
+    
+    var animatableData: CGFloat {
+        get { strokeEnd }
+        set { strokeEnd = newValue }
+    }
+    
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        
+        // Normalized control points for checkmark (inside unit square)
+        let startPoint = CGPoint(x: 0.2, y: 0.5)   // Left edge midY
+        let middlePoint = CGPoint(x: 0.45, y: 0.75) // Bottom area, slightly left of center
+        let endPoint = CGPoint(x: 0.8, y: 0.25)    // Top right area
+        
+        // Scale points to actual rect size
+        let scaledStart = CGPoint(
+            x: startPoint.x * rect.width + rect.minX,
+            y: startPoint.y * rect.height + rect.minY
+        )
+        let scaledMiddle = CGPoint(
+            x: middlePoint.x * rect.width + rect.minX,
+            y: middlePoint.y * rect.height + rect.minY
+        )
+        let scaledEnd = CGPoint(
+            x: endPoint.x * rect.width + rect.minX,
+            y: endPoint.y * rect.height + rect.minY
+        )
+        
+        // Create the checkmark path
+        if strokeEnd > 0 {
+            path.move(to: scaledStart)
+            
+            if strokeEnd <= 0.5 {
+                // First half: draw from start to middle
+                let progress = strokeEnd * 2 // Scale to 0-1 for first segment
+                let currentPoint = CGPoint(
+                    x: scaledStart.x + (scaledMiddle.x - scaledStart.x) * progress,
+                    y: scaledStart.y + (scaledMiddle.y - scaledStart.y) * progress
+                )
+                path.addLine(to: currentPoint)
+            } else {
+                // First half complete, draw second half
+                path.addLine(to: scaledMiddle)
+                
+                let progress = (strokeEnd - 0.5) * 2 // Scale to 0-1 for second segment
+                let currentPoint = CGPoint(
+                    x: scaledMiddle.x + (scaledEnd.x - scaledMiddle.x) * progress,
+                    y: scaledMiddle.y + (scaledEnd.y - scaledMiddle.y) * progress
+                )
+                path.addLine(to: currentPoint)
+            }
+        }
+        
+        return path
     }
 }

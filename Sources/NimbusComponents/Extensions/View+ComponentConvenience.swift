@@ -155,6 +155,20 @@ public extension View {
     func checkboxItemSpacing(_ spacing: CGFloat) -> some View {
         environment(\.nimbusCheckboxItemSpacing, spacing)
     }
+    
+    /// Sets the stroke width for checkbox checkmarks
+    /// - Parameter width: The stroke width to apply to checkbox checkmarks
+    /// - Returns: A view with the specified checkbox stroke width applied
+    func checkboxStrokeWidth(_ width: CGFloat) -> some View {
+        environment(\.nimbusCheckboxStrokeWidth, width)
+    }
+    
+    /// Sets the line cap style for checkbox checkmarks
+    /// - Parameter cap: The line cap style to apply to checkbox checkmarks
+    /// - Returns: A view with the specified checkbox line cap applied
+    func checkboxLineCap(_ cap: CGLineCap) -> some View {
+        environment(\.nimbusCheckboxLineCap, cap)
+    }
 }
 
 // MARK: - List Configuration
