@@ -210,6 +210,17 @@ public extension NimbusTheming {
     var checkboxItemMinHeight: CGFloat { 44 }
 }
 
+// MARK: - Badge Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// Badge content padding configuration
+    var badgeContentPadding: EdgeInsets { EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8) }
+    
+    /// Badge border width configuration
+    var badgeBorderWidth: CGFloat { 1.0 }
+    
+}
+
 // MARK: - Scroller Component Tokens (Optional with Defaults)
 
 public extension NimbusTheming {

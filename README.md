@@ -26,6 +26,7 @@
 - [🧱 Components](#-components)
   - [Button Styles](#button-styles)
   - [Checkbox Components](#checkbox-components)
+  - [Badge Components](#badge-components)
   - [List Components](#list-components)
   - [Scroll Components](#scroll-components)
   - [Notification System](#notification-system)
@@ -61,6 +62,7 @@
 ### 🧱 **Rich Component Library**
 - Comprehensive button hierarchy (7 styles)
 - Interactive checkboxes with positioning
+- Semantic badge components with flexible shapes
 - Customizable list items with hover states
 - Custom scroll components with theming
 - Notification system with semantic types
@@ -501,6 +503,154 @@ NimbusCheckboxItem("Enable notifications", isOn: $isChecked)
 - ✅ **Accessibility**: Full VoiceOver and keyboard navigation support
 - ✅ **Customizable**: Override size, spacing, corner radius via convenience modifiers
 - ✅ **Vertical Alignment**: Center or baseline alignment options
+
+</details>
+
+---
+
+### Badge Components
+
+Semantic badge components with content-adaptive sizing, flexible shapes, and semantic color coding for status indicators, labels, and notifications.
+
+<details>
+<summary><strong>Basic Badge Usage</strong></summary>
+
+Create badges with semantic types and automatic theming:
+
+```swift
+import NimbusComponents
+
+// Primary badges with solid backgrounds
+PrimaryBadge("New", semanticType: .info)
+PrimaryBadge("Success", semanticType: .success)
+PrimaryBadge("Warning", semanticType: .warning)
+PrimaryBadge("Error", semanticType: .error)
+
+// Secondary badges with transparent backgrounds and borders
+SecondaryBadge("Draft", semanticType: .info)
+SecondaryBadge("Published", semanticType: .success)
+SecondaryBadge("Review", semanticType: .warning)
+SecondaryBadge("Failed", semanticType: .error)
+```
+
+</details>
+
+<details>
+<summary><strong>Badge with Icons</strong></summary>
+
+Enhanced badges with SF Symbols for better visual communication:
+
+```swift
+// Primary badge with icon
+PrimaryBadge("New Feature", systemImage: "star.fill", semanticType: .info)
+PrimaryBadge("Completed", systemImage: "checkmark.circle.fill", semanticType: .success)
+PrimaryBadge("Attention", systemImage: "exclamationmark.triangle.fill", semanticType: .warning)
+PrimaryBadge("Failed", systemImage: "xmark.circle.fill", semanticType: .error)
+
+// Secondary badge with icon
+SecondaryBadge("3 items", systemImage: "doc.text", semanticType: .info)
+SecondaryBadge("Synced", systemImage: "cloud.fill", semanticType: .success)
+```
+
+</details>
+
+<details>
+<summary><strong>Badge Shapes & Customization</strong></summary>
+
+Flexible badge shapes and content-adaptive sizing with convenience methods:
+
+```swift
+// Capsule badges (default)
+PrimaryBadge("Capsule Shape", semanticType: .info)
+    .capsule()
+
+// Rounded rectangle badges with custom corner radius
+SecondaryBadge("Rounded 4px", semanticType: .success)
+    .roundedRect(4)
+
+SecondaryBadge("Rounded 12px", semanticType: .warning)
+    .roundedRect(12)
+
+// Custom border width (secondary badges only)
+SecondaryBadge("Thick Border", semanticType: .info)
+    .borderWidth(2.5)
+
+// Custom padding with EdgeInsets for maximum flexibility
+PrimaryBadge("Custom Padding", semanticType: .success)
+    .contentPadding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+
+// Uniform padding shorthand
+SecondaryBadge("Equal Padding", semanticType: .warning)
+    .contentPadding(10)
+```
+
+</details>
+
+<details>
+<summary><strong>ControlSize Support</strong></summary>
+
+Badges automatically adapt to controlSize for consistent typography and spacing:
+
+```swift
+// Different sizes with adaptive font and padding scaling
+VStack(spacing: 8) {
+    PrimaryBadge("Large", semanticType: .info)
+        .controlSize(.large)     // 18pt font, enhanced padding
+    
+    PrimaryBadge("Regular", semanticType: .success)
+        .controlSize(.regular)   // 14pt font, standard padding (default)
+    
+    PrimaryBadge("Small", semanticType: .warning)
+        .controlSize(.small)     // 12pt font, compact padding
+    
+    PrimaryBadge("Mini", semanticType: .error)
+        .controlSize(.mini)      // 10pt font, minimal padding
+}
+
+// Works with all badge types and shapes
+SecondaryBadge("Responsive", semanticType: .info)
+    .roundedRect(8)
+    .controlSize(.large)
+    .borderWidth(1.5)
+```
+
+</details>
+
+<details>
+<summary><strong>Content-Adaptive Sizing</strong></summary>
+
+Badges automatically size based on their content without fixed dimensions:
+
+```swift
+// Short text adapts naturally
+PrimaryBadge("New", semanticType: .info)
+
+// Long text wraps appropriately
+PrimaryBadge("This is a very long badge text that demonstrates content adaptation", semanticType: .success)
+    .capsule()
+
+// Mixed content lengths in the same layout
+HStack(spacing: 8) {
+    SecondaryBadge("Short", semanticType: .info)
+    SecondaryBadge("Medium Length", semanticType: .success)
+    SecondaryBadge("This is a much longer badge text", semanticType: .warning)
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Badge Features</strong></summary>
+
+- 🎨 **Semantic Types**: Info, Success, Warning, Error with automatic theme colors
+- 🔄 **Two Styles**: PrimaryBadge (solid) and SecondaryBadge (outlined) 
+- 📐 **Flexible Shapes**: Capsule and rounded rectangle with custom radius
+- 📏 **Content-Adaptive**: Automatically sizes based on content and padding
+- 🎛️ **ControlSize Support**: Responsive typography and spacing across all sizes
+- 🔧 **EdgeInsets Padding**: Asymmetric padding control for precise layouts
+- 🎭 **Theme Integration**: Automatic semantic colors with light/dark mode support
+- 🔗 **Icon Support**: SF Symbols integration for enhanced visual communication
+- ✨ **Convenience Methods**: SwiftUI-idiomatic customization API
 
 </details>
 
@@ -1002,6 +1152,7 @@ The theme system is organized into **required core tokens** and **optional compo
 | Component | Tokens |
 |-----------|---------|
 | **Button** | `buttonCornerRadii`, `compactButtonCornerRadii`, `labelContentSpacing` |
+| **Badge** | `badgeContentPadding`, `badgeBorderWidth` |
 | **List** | `listItemCornerRadii`, `listItemHeight` |
 | **Checkbox** | `checkboxSize`, `checkboxCornerRadii`, `checkboxBorderWidth`, `checkboxItemSpacing`, etc. |
 | **Scroller** | `scrollerWidth`, `scrollerKnobWidth`, `scrollerKnobPadding`, `scrollerSlotCornerRadius`, etc. |
@@ -1108,6 +1259,7 @@ Sources/
 │   ├── Components/
 │   │   ├── ButtonStyles/    # All 7 button styles + previews
 │   │   ├── Checkbox/        # Checkbox components + extensions
+│   │   ├── Badge/           # Badge components with semantic types
 │   │   ├── List/            # List item components
 │   │   ├── ScrollView/      # Custom scroll view wrapper
 │   │   └── Scroller/        # Standalone scroller component

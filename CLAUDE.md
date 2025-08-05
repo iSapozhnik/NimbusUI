@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Ivan Sapozhnik (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
-NimbusUI is a SwiftUI component library for macOS 14.0+ applications, built with Swift Package Manager. It provides a comprehensive theming system, reusable UI components, and custom view modifiers.
+NimbusUI is a modular SwiftUI component library for macOS 14.0+ applications, built with Swift Package Manager. It provides a comprehensive theming system, reusable UI components, and custom view modifiers through four main libraries that can be imported selectively or as a complete umbrella package.
 
 ## Development Commands
 
@@ -13,15 +13,33 @@ NimbusUI is a SwiftUI component library for macOS 14.0+ applications, built with
 # Build the package
 swift build
 
-# Run tests
+# Run tests (Swift Testing framework)
 swift test
+
+# Run specific test targets
+swift test --filter NimbusCoreTests
+swift test --filter NimbusComponentsTests  
+swift test --filter NimbusNotificationsTests
+swift test --filter NimbusOnboardingTests
 
 # Clean build artifacts
 swift package clean
 
 # Resolve dependencies
 swift package resolve
+
+# Update snapshots when needed
+swift test -Xswiftc -DUPDATE_SNAPSHOTS
 ```
+
+### Modular Library Structure
+NimbusUI is organized into four distinct libraries for selective importing:
+
+- **`NimbusCore`**: Core theming system, modifiers, utilities, and AppKit integrations
+- **`NimbusComponents`**: Main UI components (buttons, checkboxes, lists, scrollers)
+- **`NimbusNotifications`**: Complete notification system with semantic types and animations
+- **`NimbusOnboarding`**: Onboarding flows with FluidGradient and SmoothGradient animations
+- **`NimbusUI`**: Convenience umbrella library that includes all of the above
 
 ## Architecture
 
@@ -59,78 +77,80 @@ swift package resolve
 
 ### Key Components
 
-**Button System** (`Sources/NimbusUI/Components/ButtonStyles/`): Comprehensive button system with five main styles (primary, accent, secondary, primaryOutline, secondaryOutline) plus specialized styles (LinkButtonStyle, CloseButtonStyle). All styles feature Enhanced Button + Label API for automatic divider detection and full controlSize support (.large, .regular, .small, .mini). LinkButtonStyle provides text-only action buttons, CloseButtonStyle provides icon-only dismiss buttons.
+**Button System** (`Sources/NimbusComponents/Components/ButtonStyles/`): Comprehensive button system with five main styles (primary, accent, secondary, primaryOutline, secondaryOutline) plus specialized styles (LinkButtonStyle, CloseButtonStyle). All styles feature Enhanced Button + Label API for automatic divider detection and full controlSize support (.large, .regular, .small, .mini). LinkButtonStyle provides text-only action buttons, CloseButtonStyle provides icon-only dismiss buttons.
 
-**Checkbox System** (`Sources/NimbusUI/Components/Checkbox/`): `NimbusCheckbox` standalone component and `NimbusCheckboxItem` with title/subtitle support, flexible positioning (leading/trailing), and full theming integration.
+**Checkbox System** (`Sources/NimbusComponents/Components/Checkbox/`): `NimbusCheckbox` standalone component and `NimbusCheckboxItem` with title/subtitle support, flexible positioning (leading/trailing), and full theming integration.
 
-**List Components** (`Sources/NimbusUI/Components/List/`): `ListItem` with configurable hover states and theming.
+**Badge System** (`Sources/NimbusComponents/Components/Badge/`): `BadgeView` component for status indicators, counters, and labels with theming integration.
 
-**Onboarding System** (`Sources/NimbusUI/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
+**List Components** (`Sources/NimbusComponents/Components/List/`): `ListItem` with configurable hover states and theming.
 
-**Scroll System** (`Sources/NimbusUI/Components/ScrollView/` & `Sources/NimbusUI/Components/Scroller/`): `NimbusScrollView` (NSScrollView wrapper) and `NimbusScroller` (standalone scroller) with custom theming and visibility controls.
+**Scroll System** (`Sources/NimbusComponents/Components/ScrollView/` & `Sources/NimbusComponents/Components/Scroller/`): `NimbusScrollView` (NSScrollView wrapper) and `NimbusScroller` (standalone scroller) with custom theming and visibility controls.
 
-**Notification System** (`Sources/NimbusUI/Components/Notification/`): Complete notification system with `NimbusNotificationView` component, view modifier presentation (`.nimbusNotification()`), 4 semantic types (info, success, warning, error), auto-dismiss timing, icon alignment options, and enhanced color hierarchy using theme semantic colors.
+**Notification System** (`Sources/NimbusNotifications/Components/Notification/`): Complete notification system with `NimbusNotificationView` component, view modifier presentation (`.nimbusNotification()`), 4 semantic types (info, success, warning, error), auto-dismiss timing, icon alignment options, and enhanced color hierarchy using theme semantic colors.
 
-### Project Structure
+**Onboarding System** (`Sources/NimbusOnboarding/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
+
+### Modular Project Structure
 ```
-Sources/NimbusUI/
-├── NimbusUI.swift          # Library entry point
-├── Components/             # UI components following standardized structure
-│   ├── ButtonStyles/       # Button style implementations
-│   │   ├── Appearance.swift
-│   │   ├── PrimaryButtonStyle.swift
-│   │   ├── AccentButtonStyle.swift
-│   │   ├── SecondaryButtonStyle.swift
-│   │   ├── PrimaryOutlineButtonStyle.swift
-│   │   ├── SecondaryOutlineButtonStyle.swift
-│   │   ├── LinkButtonStyle.swift
-│   │   ├── CloseButtonStyle.swift
-│   │   └── Preview/        # Dedicated preview files
-│   │       ├── PrimaryButtonStyle+Preview.swift
-│   │       ├── AccentButtonStyle+Preview.swift
-│   │       ├── SecondaryButtonStyle+Preview.swift
-│   │       ├── PrimaryOutlineButtonStyle+Preview.swift
-│   │       ├── SecondaryOutlineButtonStyle+Preview.swift
-│   │       ├── LinkButtonStyle+Preview.swift
-│   │       └── CloseButtonStyle+Preview.swift
-│   ├── Checkbox/           # Checkbox components
-│   │   ├── NimbusCheckbox.swift
-│   │   ├── NimbusCheckboxItem.swift
-│   │   └── Preview/
-│   │       ├── NimbusCheckbox+Preview.swift
-│   │       └── NimbusCheckboxItem+Preview.swift
-│   ├── List/               # List components
-│   │   ├── ListItem.swift
-│   │   └── Preview/
-│   │       └── ListItem+Preview.swift
-│   ├── Notification/       # Notification system
-│   │   ├── NimbusNotificationView.swift
-│   │   ├── NimbusNotificationModifier.swift
-│   │   ├── View+NimbusNotification.swift
-│   │   ├── NotificationDismissBehavior.swift
-│   │   ├── NotificationType.swift
-│   │   ├── NotificationIconAlignment.swift
-│   │   └── Preview/
-│   │       └── NimbusNotificationView+Preview.swift
-│   ├── Onboarding/         # Onboarding system
-│   │   ├── FeaturePageView.swift
-│   │   ├── OnboardingView.swift
-│   │   ├── PageControlView.swift
-│   │   └── Preview/
-│   │       └── OnboardingView+Preview.swift
-│   ├── ScrollView/         # Custom scroll view
-│   │   ├── NimbusScrollView.swift
-│   │   └── Preview/
-│   │       └── NimbusScrollView+Preview.swift
-│   └── Scroller/           # Custom scroller component
-│       ├── NimbusScroller.swift
-│       └── Preview/
-│           └── NimbusScroller+Preview.swift
-├── Extensions/             # Swift extensions
-├── Modifiers/              # Custom SwiftUI modifiers
-├── Utilities/              # Utility classes and helpers
-│   └── ControlSizeUtility.swift # ControlSize mapping utility
-└── Theming/               # Theme system and protocols
+Sources/
+├── NimbusCore/              # Core foundation library
+│   ├── NimbusCore.swift     # Library entry point
+│   ├── Theming/             # Theme system and protocols
+│   │   ├── NimbusTheming.swift
+│   │   ├── NimbusTheme.swift
+│   │   ├── MaritimeTheme.swift
+│   │   └── CustomWarmTheme.swift
+│   ├── Modifiers/           # Custom SwiftUI view modifiers
+│   │   ├── NimbusFilledModifier.swift
+│   │   ├── NimbusShadowModifier.swift
+│   │   ├── NimbusAspectRatioModifier.swift
+│   │   └── [8 more modifiers]
+│   ├── Extensions/          # Swift and SwiftUI extensions
+│   ├── Utilities/           # Helper utilities
+│   │   ├── ControlSizeUtility.swift
+│   │   └── ListRoundedCornerBehavior.swift
+│   └── AppKit/             # AppKit integrations
+│       └── Scoller/
+├── NimbusComponents/        # Main UI components library
+│   ├── NimbusComponents.swift # Library entry point
+│   ├── Components/          # UI components with standardized structure
+│   │   ├── ButtonStyles/    # Button style implementations
+│   │   │   ├── [7 button styles].swift
+│   │   │   └── Preview/     # Dedicated preview files
+│   │   ├── Badge/           # Badge components
+│   │   │   ├── BadgeView.swift
+│   │   │   └── Preview/
+│   │   │       └── BadgeView+Preview.swift
+│   │   ├── Checkbox/        # Checkbox components
+│   │   │   ├── NimbusCheckbox.swift
+│   │   │   ├── NimbusCheckboxItem.swift
+│   │   │   ├── NimbusCheckbox+Extensions.swift
+│   │   │   └── Preview/
+│   │   ├── List/            # List components
+│   │   ├── ScrollView/      # Custom scroll view wrapper
+│   │   └── Scroller/        # Standalone scroller component
+│   ├── Examples/            # Theme examples and showcases
+│   └── Extensions/          # Component convenience methods
+├── NimbusNotifications/     # Notification system library
+│   ├── NimbusNotifications.swift # Library entry point
+│   ├── Components/
+│   │   └── Notification/    # Complete notification system
+│   │       ├── NimbusNotificationView.swift
+│   │       ├── NimbusNotificationModifier.swift
+│   │       ├── View+NimbusNotification.swift
+│   │       ├── [6 more notification files]
+│   │       └── Preview/
+│   └── Extensions/          # Notification convenience methods
+├── NimbusOnboarding/        # Onboarding system library
+│   ├── NimbusOnboarding.swift # Library entry point
+│   └── Components/
+│       └── Onboarding/      # Onboarding flow components
+│           ├── FeaturePageView.swift
+│           ├── OnboardingView.swift
+│           ├── PageControlView.swift
+│           └── Preview/
+└── NimbusUI/               # Umbrella library (convenience import)
 ```
 
 ### Component Folder Structure Standards
@@ -160,10 +180,14 @@ Sources/NimbusUI/
 
 ## Technical Requirements
 
-- **Swift**: 6.1+ minimum
+- **Swift**: 5.9+ minimum (Swift 6.1+ recommended)
 - **Platform**: macOS 14.0+ only
-- **Dependencies**: FluidGradient (v1.0.0+) for onboarding animations
+- **Dependencies**: 
+  - FluidGradient (v1.0.0+) for onboarding animations
+  - SmoothGradient (v1.0.1+) for enhanced gradient effects
+  - swift-snapshot-testing (v1.18.6+) for visual regression testing
 - **Testing**: Swift Testing framework (not XCTest)
+- **Architecture**: Modular library system supporting selective imports
 
 ## Usage Patterns
 
@@ -171,7 +195,10 @@ Sources/NimbusUI/
 Components use theme defaults with optional environment overrides:
 
 ```swift
-import NimbusUI
+// Import selectively or use umbrella library
+import NimbusCore        // For theming system
+import NimbusComponents  // For button styles
+// Or: import NimbusUI   // For all features
 
 // Basic theme application
 Button("Action") { }
@@ -185,6 +212,11 @@ Button("Custom") { }
     .environment(\.nimbusTheme, MaritimeTheme())
     .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(16))
     .environment(\.nimbusMinHeight, 50)
+
+// Modular imports for specific functionality
+import NimbusNotifications
+ContentView()
+    .nimbusNotification(isPresented: $showAlert, type: .success, message: "Success!")
 ```
 
 ### Button Customization with Convenience Methods
