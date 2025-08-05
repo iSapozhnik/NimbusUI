@@ -15,6 +15,24 @@ public enum Elevation: Int, CaseIterable, Hashable, Sendable {
     case extreme
 }
 
+/// Defines the shape type for badge components
+public enum BadgeType: Hashable, Sendable {
+    /// Capsule shape with rounded ends
+    case capsule
+    /// Rounded rectangle with custom corner radius
+    case roundedRect(CGFloat)
+    
+    /// Creates the appropriate shape for the badge type
+    public func shape() -> AnyShape {
+        switch self {
+        case .capsule:
+            return AnyShape(Capsule(style: .continuous))
+        case .roundedRect(let radius):
+            return AnyShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+        }
+    }
+}
+
 // MARK: - Common
 // These environment values are internal APIs used by convenience methods.
 // They are not intended for direct use by library consumers.
@@ -101,6 +119,15 @@ public extension EnvironmentValues {
     @Entry var nimbusCheckboxItemTextSpacing: CGFloat? = nil
     @Entry var nimbusCheckboxItemPadding: CGFloat? = nil
     @Entry var nimbusCheckboxItemMinHeight: CGFloat? = nil
+}
+
+// MARK: Badge
+// Internal APIs for convenience methods - not for direct consumer use
+
+public extension EnvironmentValues {
+    @Entry var nimbusBadgeType: BadgeType? = nil
+    @Entry var nimbusBadgeBorderWidth: CGFloat? = nil
+    @Entry var nimbusBadgeContentPadding: EdgeInsets? = nil
 }
 
 // MARK: Notification Handle
