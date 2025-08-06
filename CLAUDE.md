@@ -36,7 +36,7 @@ swift test -Xswiftc -DUPDATE_SNAPSHOTS
 NimbusUI is organized into four distinct libraries for selective importing:
 
 - **`NimbusCore`**: Core theming system, modifiers, utilities, and AppKit integrations
-- **`NimbusComponents`**: Main UI components (buttons, checkboxes, lists, scrollers)
+- **`NimbusComponents`**: Main UI components (buttons, checkboxes, toggles, lists, scrollers)
 - **`NimbusNotifications`**: Complete notification system with semantic types and animations
 - **`NimbusOnboarding`**: Onboarding flows with FluidGradient and SmoothGradient animations
 - **`NimbusUI`**: Convenience umbrella library that includes all of the above
@@ -80,6 +80,8 @@ NimbusUI is organized into four distinct libraries for selective importing:
 **Button System** (`Sources/NimbusComponents/Components/ButtonStyles/`): Comprehensive button system with five main styles (primary, accent, secondary, primaryOutline, secondaryOutline) plus specialized styles (LinkButtonStyle, CloseButtonStyle). All styles feature Enhanced Button + Label API for automatic divider detection and full controlSize support (.large, .regular, .small, .mini). LinkButtonStyle provides text-only action buttons, CloseButtonStyle provides icon-only dismiss buttons.
 
 **Checkbox System** (`Sources/NimbusComponents/Components/Checkbox/`): `NimbusCheckbox` standalone component and `NimbusCheckboxItem` with title/subtitle support, flexible positioning (leading/trailing), and full theming integration.
+
+**Toggle System** (`Sources/NimbusComponents/Components/Toggle/`): `NimbusToggle` interactive toggle switch with drag gestures, customizable shapes (circle, square, rounded rectangle), and `NimbusToggleItem` with title/subtitle support. Features real-time drag interaction, threshold-based switching, controlSize integration, and comprehensive animation presets (bouncy, smooth, quick). All components follow the convenience method pattern with methods like `.circularToggle()`, `.squareToggle()`, `.roundedToggle()`, `.toggleKnobSize()`, `.trackWidth()`, etc.
 
 **Badge System** (`Sources/NimbusComponents/Components/Badge/`): `BadgeView` component for status indicators, counters, and labels with theming integration.
 
@@ -126,6 +128,12 @@ Sources/
 │   │   │   ├── NimbusCheckbox.swift
 │   │   │   ├── NimbusCheckboxItem.swift
 │   │   │   ├── NimbusCheckbox+Extensions.swift
+│   │   │   └── Preview/
+│   │   ├── Toggle/          # Toggle components
+│   │   │   ├── NimbusToggle.swift
+│   │   │   ├── NimbusToggleItem.swift
+│   │   │   ├── NimbusToggle+Extensions.swift
+│   │   │   ├── NimbusToggleShape.swift
 │   │   │   └── Preview/
 │   │   ├── List/            # List components
 │   │   ├── ScrollView/      # Custom scroll view wrapper
@@ -295,6 +303,31 @@ VStack {
         .buttonStyle(.secondaryOutline)
         .controlSize(.mini)
 }
+
+// Toggle examples with shapes and customization
+@State private var isEnabled = false
+@State private var darkMode = true
+
+// Basic toggle with drag interaction
+NimbusToggle(isOn: $isEnabled)
+    .circularToggle()
+    .controlSize(.regular)
+
+// Toggle item with subtitle and custom positioning
+NimbusToggleItem(
+    "Dark Mode", 
+    subtitle: "Use dark theme throughout the app",
+    isOn: $darkMode,
+    togglePosition: .leading
+)
+.controlSize(.large)
+
+// Customized toggle with animation
+NimbusToggle(isOn: $isEnabled)
+    .squareToggle()
+    .toggleKnobSize(22)
+    .toggleKnobPadding(6)
+    .bouncyToggle()
 ```
 
 ### Available Button Convenience Methods
@@ -338,6 +371,34 @@ Button("Save") { }
     .hasDivider(true)
     .iconAlignment(.trailing)
 ```
+
+### Available Toggle Convenience Methods
+
+**Shape Configuration:**
+- `.circularToggle()` - Traditional iOS-style circular knob with capsule track
+- `.squareToggle()` - Modern square knob with rectangular track  
+- `.roundedToggle(cornerRadius:)` - Custom rounded rectangle knob and track
+
+**Size & Dimensions:**
+- `.toggleKnobSize(CGFloat)` - Sets knob diameter
+- `.toggleKnobPadding(CGFloat)` - Sets padding around knob inside track
+- `.trackWidth(CGFloat)` - Override auto-calculated track width
+- `.trackHeight(CGFloat)` - Override auto-calculated track height
+
+**Animation Styles:**
+- `.bouncyToggle()` - Bouncy spring animation with enhanced bounce
+- `.smoothToggle()` - Smooth spring animation (default feel)
+- `.quickToggle()` - Quick easeInOut animation for snappy interactions
+- `.toggleAnimation(Animation)` - Custom animation spring
+
+**Toggle Item Configuration:**
+- `.toggleItemSpacing(CGFloat)` - Space between toggle and text
+- `.toggleTextSpacing(CGFloat)` - Space between title and subtitle
+- `.toggleItemPadding(CGFloat)` - Padding around toggle items
+- `.toggleItemMinHeight(CGFloat)` - Minimum height for toggle items
+
+**Toggle Integration Notes:**
+Toggle components automatically respond to SwiftUI's native controlSize environment just like buttons and other controls. The convenience method pattern ensures consistent developer experience across all NimbusUI components.
 
 ### Notification System Usage
 The notification system provides semantic notifications with flexible presentation:
@@ -688,6 +749,12 @@ Button("Save") { }
     .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(12))
     .environment(\.nimbusElevation, .medium)
 
+// Toggle - WRONG
+NimbusToggle(isOn: $isToggled)
+    .environment(\.nimbusToggleKnobSize, 24)
+    .environment(\.nimbusToggleKnobPadding, 6)
+    .environment(\.nimbusToggleShape, .circle)
+
 // Scroller - WRONG
 NimbusScroller(...)
     .environment(\.nimbusScrollerWidth, 16)
@@ -708,6 +775,12 @@ Button("Save") { }
     .cornerRadii(RectangleCornerRadii(12))
     .elevation(.medium)
 
+// Toggle - CORRECT
+NimbusToggle(isOn: $isToggled)
+    .toggleKnobSize(24)
+    .toggleKnobPadding(6)
+    .circularToggle()
+
 // Scroller - CORRECT  
 NimbusScroller(...)
     .scrollerWidth(16)
@@ -724,7 +797,7 @@ NimbusScroller(...)
 - **Design System Cohesion**: Ensures a unified developer experience across the entire NimbusUI library
 
 **Universal Application:**
-- ✅ **ALL Current Components**: Buttons, Checkboxes, Scrollers, Notifications, etc.
+- ✅ **ALL Current Components**: Buttons, Checkboxes, Toggles, Scrollers, Notifications, etc.
 - ✅ **ALL Future Components**: This rule applies to every new component added to NimbusUI
 - ✅ **ALL Customization Properties**: Size, colors, corner radii, spacing, interactions, etc.
 

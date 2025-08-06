@@ -26,6 +26,7 @@
 - [🧱 Components](#-components)
   - [Button Styles](#button-styles)
   - [Checkbox Components](#checkbox-components)
+  - [Toggle Components](#toggle-components)
   - [Badge Components](#badge-components)
   - [List Components](#list-components)
   - [Scroll Components](#scroll-components)
@@ -62,6 +63,7 @@
 ### 🧱 **Rich Component Library**
 - Comprehensive button hierarchy (7 styles)
 - Interactive checkboxes with positioning
+- Toggle switches with drag gestures and shape options
 - Semantic badge components with flexible shapes
 - Customizable list items with hover states
 - Custom scroll components with theming
@@ -131,7 +133,7 @@ Once added, import the modules in your Swift files:
 
 ```swift
 import NimbusCore         // Core theming, modifiers, and utilities
-import NimbusComponents   // Buttons, checkboxes, lists, etc.
+import NimbusComponents   // Buttons, checkboxes, toggles, lists, etc.
 import NimbusNotifications// Notification system
 import NimbusOnboarding   // Onboarding flow
 import NimbusUI           // Includes all of the above
@@ -503,6 +505,230 @@ NimbusCheckboxItem("Enable notifications", isOn: $isChecked)
 - ✅ **Accessibility**: Full VoiceOver and keyboard navigation support
 - ✅ **Customizable**: Override size, spacing, corner radius via convenience modifiers
 - ✅ **Vertical Alignment**: Center or baseline alignment options
+
+</details>
+
+---
+
+### Toggle Components
+
+Interactive toggle switch components with drag gestures, customizable shapes, and smooth animations.
+
+<details>
+<summary><strong>Basic Toggle</strong></summary>
+
+A standalone toggle switch that mimics SwiftUI's Toggle API:
+
+```swift
+@State private var isEnabled = false
+
+NimbusToggle(isOn: $isEnabled)
+```
+
+</details>
+
+<details>
+<summary><strong>Toggle Item</strong></summary>
+
+A complete toggle item with title, optional subtitle, and flexible positioning:
+
+```swift
+@State private var notifications = true
+@State private var darkMode = false
+
+// Basic toggle item
+NimbusToggleItem(
+    "Enable Notifications",
+    isOn: $notifications
+)
+
+// With subtitle
+NimbusToggleItem(
+    "Dark Mode",
+    subtitle: "Use dark theme throughout the app",
+    isOn: $darkMode
+)
+
+// Leading toggle position
+NimbusToggleItem(
+    "Auto-Save",
+    subtitle: "Automatically save changes",
+    isOn: $notifications,
+    togglePosition: .leading
+)
+```
+
+</details>
+
+<details>
+<summary><strong>Toggle Shapes</strong></summary>
+
+Three distinct toggle shapes with automatic track adaptation:
+
+```swift
+@State private var setting1 = false
+@State private var setting2 = true
+@State private var setting3 = false
+
+// Circle toggle (traditional iOS style)
+NimbusToggle(isOn: $setting1)
+    .circularToggle()
+
+// Square toggle (modern style)
+NimbusToggle(isOn: $setting2)
+    .squareToggle()
+
+// Rounded rectangle with custom radius
+NimbusToggle(isOn: $setting3)
+    .roundedToggle(cornerRadius: 8)
+```
+
+**Available Shapes:**
+- `.circularToggle()` - Traditional iOS-style circular knob with capsule track
+- `.squareToggle()` - Modern square knob with rectangular track
+- `.roundedToggle(cornerRadius:)` - Custom rounded rectangle knob and track
+
+</details>
+
+<details>
+<summary><strong>ControlSize Integration</strong></summary>
+
+Toggles automatically adapt to SwiftUI's controlSize environment:
+
+```swift
+// Different sizes with adaptive dimensions and padding
+VStack(spacing: 12) {
+    NimbusToggle(isOn: $setting)
+        .controlSize(.extraLarge)  // 28px knob, 8px padding
+    
+    NimbusToggle(isOn: $setting)
+        .controlSize(.large)       // 24px knob, 6px padding
+    
+    NimbusToggle(isOn: $setting)
+        .controlSize(.regular)     // 20px knob, 4px padding (default)
+    
+    NimbusToggle(isOn: $setting)
+        .controlSize(.small)       // 16px knob, 3px padding
+    
+    NimbusToggle(isOn: $setting)
+        .controlSize(.mini)        // 12px knob, 2px padding
+}
+
+// Works with toggle items too
+NimbusToggleItem("Setting", isOn: $setting)
+    .controlSize(.large)
+```
+
+</details>
+
+<details>
+<summary><strong>Toggle Customization</strong></summary>
+
+Use convenience methods for easy customization without environment variables:
+
+```swift
+@State private var isToggled = false
+
+// Custom knob size and padding
+NimbusToggle(isOn: $isToggled)
+    .toggleKnobSize(24)
+    .toggleKnobPadding(6)
+    .circularToggle()
+
+// Custom track dimensions (overrides auto-calculated size)
+NimbusToggle(isOn: $isToggled)
+    .trackWidth(80)
+    .trackHeight(32)
+    .toggleKnobSize(24)
+    .toggleKnobPadding(4)
+
+// Toggle item with custom spacing
+NimbusToggleItem("Custom Setting", isOn: $isToggled)
+    .toggleItemSpacing(20)
+    .toggleTextSpacing(4)
+    .toggleItemPadding(16)
+```
+
+**Available Convenience Methods:**
+- `.toggleKnobSize(CGFloat)` - Sets knob diameter
+- `.toggleKnobPadding(CGFloat)` - Sets padding around knob inside track
+- `.trackWidth(CGFloat)` - Override auto-calculated track width
+- `.trackHeight(CGFloat)` - Override auto-calculated track height
+- `.toggleItemSpacing(CGFloat)` - Space between toggle and text in items
+- `.toggleTextSpacing(CGFloat)` - Space between title and subtitle
+- `.toggleItemPadding(CGFloat)` - Padding around toggle items
+
+</details>
+
+<details>
+<summary><strong>Animation Styles</strong></summary>
+
+Built-in animation presets for different interaction feels:
+
+```swift
+@State private var setting1 = false
+@State private var setting2 = true
+@State private var setting3 = false
+
+// Bouncy spring animation
+NimbusToggle(isOn: $setting1)
+    .bouncyToggle()
+
+// Smooth spring animation (default style)
+NimbusToggle(isOn: $setting2)
+    .smoothToggle()
+
+// Quick easeInOut animation
+NimbusToggle(isOn: $setting3)
+    .quickToggle()
+
+// Custom animation spring
+NimbusToggle(isOn: $setting1)
+    .toggleAnimation(.spring(duration: 0.5, bounce: 0.3))
+```
+
+</details>
+
+<details>
+<summary><strong>Drag Interaction</strong></summary>
+
+Native drag-to-toggle functionality with threshold-based switching:
+
+```swift
+@State private var isEnabled = false
+
+// Toggle supports both tap and drag interactions
+NimbusToggle(isOn: $isEnabled)
+    .circularToggle()
+    
+// The toggle will switch when:
+// 1. User taps anywhere on the toggle
+// 2. User drags the knob past the halfway threshold
+// 3. Drag animations smoothly follow finger movement
+```
+
+**Interaction Features:**
+- ✅ **Tap to Toggle**: Instant switching with smooth animation
+- ✅ **Drag Interaction**: Real-time knob following during drag
+- ✅ **Threshold Detection**: Smart switching based on drag distance
+- ✅ **Smooth Animations**: Spring-based transitions with customizable timing
+- ✅ **Disabled State Handling**: Proper disabled interaction behavior
+
+</details>
+
+<details>
+<summary><strong>Toggle Features</strong></summary>
+
+- 🎛️ **Interactive Design**: Tap or drag to toggle with smooth animations
+- 🔄 **Shape Options**: Circle, square, and rounded rectangle knob/track combinations
+- 📏 **ControlSize Integration**: Automatic scaling with SwiftUI's native controlSize
+- 🎭 **Theme Integration**: Works seamlessly with all NimbusUI themes
+- 📱 **Drag Gestures**: Natural drag-to-toggle with threshold detection
+- ⚡ **Animation Presets**: Bouncy, smooth, and quick animation styles
+- 🎨 **Hover States**: Interactive feedback with theme-aware colors
+- ♿ **Accessibility**: Full VoiceOver and keyboard navigation support
+- 🔧 **Flexible Positioning**: Leading or trailing toggle placement in items
+- ✨ **Convenience Methods**: SwiftUI-idiomatic customization API
 
 </details>
 
@@ -1259,6 +1485,7 @@ Sources/
 │   ├── Components/
 │   │   ├── ButtonStyles/    # All 7 button styles + previews
 │   │   ├── Checkbox/        # Checkbox components + extensions
+│   │   ├── Toggle/          # Toggle components with shapes + extensions
 │   │   ├── Badge/           # Badge components with semantic types
 │   │   ├── List/            # List item components
 │   │   ├── ScrollView/      # Custom scroll view wrapper
