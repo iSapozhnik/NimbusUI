@@ -128,15 +128,16 @@ import NimbusCore
     .padding()
 }
 
-#Preview("Toggle Sizes") {
+#Preview("Control Sizes") {
     @Previewable @State var miniToggle = true
     @Previewable @State var smallToggle = false
     @Previewable @State var regularToggle = true
     @Previewable @State var largeToggle = false
+    @Previewable @State var extraLargeToggle = true
     
     VStack(spacing: 20) {
         VStack(spacing: 8) {
-            Text("Toggle Sizes")
+            Text("ControlSize Integration")
                 .font(.headline)
             
             VStack(spacing: 12) {
@@ -144,28 +145,35 @@ import NimbusCore
                     Text("Mini:")
                     Spacer()
                     NimbusToggle(isOn: $miniToggle)
-                        .miniToggle()
+                        .controlSize(.mini)
                 }
                 
                 HStack {
                     Text("Small:")
                     Spacer()
                     NimbusToggle(isOn: $smallToggle)
-                        .smallToggle()
+                        .controlSize(.small)
                 }
                 
                 HStack {
                     Text("Regular:")
                     Spacer()
                     NimbusToggle(isOn: $regularToggle)
-                        .regularToggle()
+                        .controlSize(.regular)
                 }
                 
                 HStack {
                     Text("Large:")
                     Spacer()
                     NimbusToggle(isOn: $largeToggle)
-                        .largeToggle()
+                        .controlSize(.large)
+                }
+                
+                HStack {
+                    Text("Extra Large:")
+                    Spacer()
+                    NimbusToggle(isOn: $extraLargeToggle)
+                        .controlSize(.extraLarge)
                 }
             }
         }

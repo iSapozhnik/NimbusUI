@@ -117,13 +117,13 @@ private let recording = false
 }
 
 @MainActor
-@Test func toggleSizes() async throws {
+@Test func toggleControlSizes() async throws {
     assertSnapshot(
         of: SnapshotUtility.view(
             from: ShowcaseView {
                 VStack(spacing: 20) {
                     VStack(spacing: 8) {
-                        Text("Toggle Sizes")
+                        Text("ControlSize Integration")
                             .font(.headline)
                         
                         VStack(spacing: 12) {
@@ -132,9 +132,9 @@ private let recording = false
                                 Spacer()
                                 HStack(spacing: 8) {
                                     NimbusToggle(isOn: .constant(false))
-                                        .miniToggle()
+                                        .controlSize(.mini)
                                     NimbusToggle(isOn: .constant(true))
-                                        .miniToggle()
+                                        .controlSize(.mini)
                                 }
                             }
                             
@@ -143,9 +143,9 @@ private let recording = false
                                 Spacer()
                                 HStack(spacing: 8) {
                                     NimbusToggle(isOn: .constant(false))
-                                        .smallToggle()
+                                        .controlSize(.small)
                                     NimbusToggle(isOn: .constant(true))
-                                        .smallToggle()
+                                        .controlSize(.small)
                                 }
                             }
                             
@@ -154,9 +154,9 @@ private let recording = false
                                 Spacer()
                                 HStack(spacing: 8) {
                                     NimbusToggle(isOn: .constant(false))
-                                        .regularToggle()
+                                        .controlSize(.regular)
                                     NimbusToggle(isOn: .constant(true))
-                                        .regularToggle()
+                                        .controlSize(.regular)
                                 }
                             }
                             
@@ -165,11 +165,70 @@ private let recording = false
                                 Spacer()
                                 HStack(spacing: 8) {
                                     NimbusToggle(isOn: .constant(false))
-                                        .largeToggle()
+                                        .controlSize(.large)
                                     NimbusToggle(isOn: .constant(true))
-                                        .largeToggle()
+                                        .controlSize(.large)
                                 }
                             }
+                            
+                            HStack {
+                                Text("Extra Large:")
+                                Spacer()
+                                HStack(spacing: 8) {
+                                    NimbusToggle(isOn: .constant(false))
+                                        .controlSize(.extraLarge)
+                                    NimbusToggle(isOn: .constant(true))
+                                        .controlSize(.extraLarge)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding()
+            }
+            .environment(\.nimbusTheme, NimbusTheme.default)
+        ),
+        as: .image,
+        record: recording
+    )
+}
+
+@MainActor
+@Test func toggleControlSizeUnified() async throws {
+    assertSnapshot(
+        of: SnapshotUtility.view(
+            from: ShowcaseView {
+                VStack(spacing: 20) {
+                    VStack(spacing: 8) {
+                        Text("Unified ControlSize Behavior")
+                            .font(.headline)
+                        
+                        Text("Large controlSize affects all controls consistently")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        VStack(spacing: 12) {
+                            HStack {
+                                Button("Button") { }
+                                    .buttonStyle(.secondary)
+                                NimbusToggle(isOn: .constant(true))
+                                NimbusToggleItem("Setting", isOn: .constant(false))
+                            }
+                            .controlSize(.large)
+                            
+                            Divider()
+                            
+                            Text("Small controlSize demonstration")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            HStack {
+                                Button("Button") { }
+                                    .buttonStyle(.secondary)
+                                NimbusToggle(isOn: .constant(false))
+                                NimbusToggleItem("Setting", isOn: .constant(true))
+                            }
+                            .controlSize(.small)
                         }
                     }
                 }

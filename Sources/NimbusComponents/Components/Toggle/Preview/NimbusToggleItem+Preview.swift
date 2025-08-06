@@ -275,7 +275,7 @@ import NimbusCore
                 .toggleTextSpacing(8)
                 .toggleItemPadding(16)
                 .toggleItemMinHeight(60)
-                .largeToggle()
+                .controlSize(.large)
                 
                 NimbusToggleItem(
                     "Compact Item",
@@ -287,7 +287,7 @@ import NimbusCore
                 .toggleTextSpacing(2)
                 .toggleItemPadding(4)
                 .toggleItemMinHeight(32)
-                .smallToggle()
+                .controlSize(.small)
             }
         }
     }

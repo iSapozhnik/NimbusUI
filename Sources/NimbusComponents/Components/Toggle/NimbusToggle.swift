@@ -16,6 +16,7 @@ public struct NimbusToggle: View {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.controlSize) private var controlSize
     
     // Environment overrides
     @Environment(\.nimbusToggleKnobSize) private var overrideKnobSize
@@ -36,8 +37,8 @@ public struct NimbusToggle: View {
     }
     
     public var body: some View {
-        let knobSize = overrideKnobSize ?? theme.toggleKnobSize
-        let knobPadding = overrideKnobPadding ?? theme.toggleKnobPadding
+        let knobSize = overrideKnobSize ?? controlSizeBasedKnobSize
+        let knobPadding = overrideKnobPadding ?? controlSizeBasedKnobPadding
         let toggleShape = parseToggleShape(overrideShapeString ?? theme.toggleDefaultShapeStyle)
         let trackWidth = overrideTrackWidth ?? toggleShape.recommendedTrackWidth(knobSize: knobSize, knobPadding: knobPadding)
         let trackHeight = overrideTrackHeight ?? toggleShape.trackHeight(knobSize: knobSize, knobPadding: knobPadding)
@@ -126,8 +127,8 @@ public struct NimbusToggle: View {
         }
         .onAppear {
             // Set initial knob position without animation
-            let knobSize = overrideKnobSize ?? theme.toggleKnobSize
-            let knobPadding = overrideKnobPadding ?? theme.toggleKnobPadding
+            let knobSize = overrideKnobSize ?? controlSizeBasedKnobSize
+            let knobPadding = overrideKnobPadding ?? controlSizeBasedKnobPadding
             let toggleShape = parseToggleShape(overrideShapeString ?? theme.toggleDefaultShapeStyle)
             let trackWidth = overrideTrackWidth ?? toggleShape.recommendedTrackWidth(knobSize: knobSize, knobPadding: knobPadding)
             let maxOffset = toggleShape.knobTravelDistance(
@@ -162,6 +163,42 @@ public struct NimbusToggle: View {
                 }
             }
             return .circle // Default fallback
+        }
+    }
+    
+    // MARK: - ControlSize Integration
+    
+    private var controlSizeBasedKnobSize: CGFloat {
+        switch controlSize {
+        case .extraLarge:
+            return 28
+        case .large:
+            return 24
+        case .regular:
+            return 20
+        case .small:
+            return 16
+        case .mini:
+            return 12
+        @unknown default:
+            return theme.toggleKnobSize
+        }
+    }
+    
+    private var controlSizeBasedKnobPadding: CGFloat {
+        switch controlSize {
+        case .extraLarge:
+            return 8
+        case .large:
+            return 6
+        case .regular:
+            return 4
+        case .small:
+            return 3
+        case .mini:
+            return 2
+        @unknown default:
+            return theme.toggleKnobPadding
         }
     }
     

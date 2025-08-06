@@ -144,45 +144,28 @@ public extension View {
     }
 }
 
-// MARK: - Toggle Size Convenience Methods
+// MARK: - Toggle Integration Notes
 
-public extension View {
-    /// Configures toggle for large size usage
-    /// - Returns: A view with large toggle configuration applied
-    func largeToggle() -> some View {
-        self
-            .toggleKnobSize(24)
-            .toggleKnobPadding(6)
-    }
-    
-    /// Configures toggle for regular size usage (default)
-    /// - Returns: A view with regular toggle configuration applied
-    func regularToggle() -> some View {
-        self
-            .toggleKnobSize(20)
-            .toggleKnobPadding(4)
-    }
-    
-    /// Configures toggle for small size usage
-    /// - Returns: A view with small toggle configuration applied
-    func smallToggle() -> some View {
-        self
-            .toggleKnobSize(16)
-            .toggleKnobPadding(3)
-    }
-    
-    /// Configures toggle for mini size usage
-    /// - Returns: A view with mini toggle configuration applied
-    func miniToggle() -> some View {
-        self
-            .toggleKnobSize(12)
-            .toggleKnobPadding(2)
-    }
-}
-
-// MARK: - Toggle Configuration Combinations
-
-public extension View {
-    // Note: Complex configuration methods removed due to SwiftUI type system limitations
-    // Users can chain individual methods like .toggleShape().toggleKnobSize().toggleKnobPadding()
-}
+/*
+ Toggle components automatically respond to SwiftUI's native controlSize environment:
+ 
+ // Natural SwiftUI way - controlSize affects all controls
+ VStack {
+     Button("Save") { }
+     NimbusToggle(isOn: $setting)
+     NimbusToggleItem("Enable", isOn: $option)
+ }
+ .controlSize(.large) // All controls become large
+ 
+ // Manual override still possible when needed
+ NimbusToggle(isOn: $setting)
+     .controlSize(.small)
+     .toggleKnobSize(18) // Override the controlSize-determined size
+ 
+ // Supported controlSize values:
+ // .extraLarge (knob: 28, padding: 8)
+ // .large      (knob: 24, padding: 6)
+ // .regular    (knob: 20, padding: 4) - default
+ // .small      (knob: 16, padding: 3)
+ // .mini       (knob: 12, padding: 2)
+ */
