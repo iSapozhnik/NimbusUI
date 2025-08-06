@@ -210,6 +210,40 @@ public extension NimbusTheming {
     var checkboxItemMinHeight: CGFloat { 44 }
 }
 
+// MARK: - Toggle Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// Toggle knob size configuration (diameter for circular knobs)
+    var toggleKnobSize: CGFloat { 20 }
+    
+    /// Toggle knob padding configuration (space around knob inside track)
+    var toggleKnobPadding: CGFloat { 4 }
+    
+    /// Toggle shape configuration (will be converted to NimbusToggleShape)
+    var toggleDefaultShapeStyle: String { "circle" }
+    
+    /// Toggle track width override (nil uses auto-calculated width based on shape)
+    var toggleTrackWidth: CGFloat? { nil }
+    
+    /// Toggle track height override (nil uses auto-calculated height based on knob + padding)
+    var toggleTrackHeight: CGFloat? { nil }
+    
+    /// Toggle animation spring configuration for knob movement
+    var toggleAnimationSpring: Animation { .bouncy(duration: 0.4) }
+    
+    /// Toggle item spacing configuration (spacing between toggle and text)
+    var toggleItemSpacing: CGFloat { 12 }
+    
+    /// Toggle item text spacing configuration (spacing between title and subtitle)
+    var toggleItemTextSpacing: CGFloat { 4 }
+    
+    /// Toggle item padding configuration (around entire item)
+    var toggleItemPadding: CGFloat { 8 }
+    
+    /// Toggle item minimum height configuration
+    var toggleItemMinHeight: CGFloat { 44 }
+}
+
 // MARK: - Badge Component Tokens (Optional with Defaults)
 
 public extension NimbusTheming {

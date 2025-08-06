@@ -121,6 +121,22 @@ public extension EnvironmentValues {
     @Entry var nimbusCheckboxItemMinHeight: CGFloat? = nil
 }
 
+// MARK: Toggle
+// Internal APIs for convenience methods - not for direct consumer use
+
+public extension EnvironmentValues {
+    @Entry var nimbusToggleKnobSize: CGFloat? = nil
+    @Entry var nimbusToggleKnobPadding: CGFloat? = nil
+    @Entry var nimbusToggleShape: String? = nil
+    @Entry var nimbusToggleTrackWidth: CGFloat? = nil
+    @Entry var nimbusToggleTrackHeight: CGFloat? = nil
+    @Entry var nimbusToggleAnimationSpring: Animation? = nil
+    @Entry var nimbusToggleItemSpacing: CGFloat? = nil
+    @Entry var nimbusToggleItemTextSpacing: CGFloat? = nil
+    @Entry var nimbusToggleItemPadding: CGFloat? = nil
+    @Entry var nimbusToggleItemMinHeight: CGFloat? = nil
+}
+
 // MARK: Badge
 // Internal APIs for convenience methods - not for direct consumer use
 
