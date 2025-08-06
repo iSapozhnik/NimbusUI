@@ -85,7 +85,6 @@ import NimbusCore
 #Preview("Toggle Shapes") {
     @Previewable @State var circleToggle = false
     @Previewable @State var squareToggle = true
-    @Previewable @State var pillToggle = false
     @Previewable @State var roundedToggle = true
     
     VStack(spacing: 20) {
@@ -106,13 +105,6 @@ import NimbusCore
                     Spacer()
                     NimbusToggle(isOn: $squareToggle)
                         .squareToggle()
-                }
-                
-                HStack {
-                    Text("Pill:")
-                    Spacer()
-                    NimbusToggle(isOn: $pillToggle)
-                        .pillToggle()
                 }
                 
                 HStack {
@@ -216,7 +208,6 @@ import NimbusCore
                     Spacer()
                     NimbusToggle(isOn: $config3)
                         .quickToggle()
-                        .pillToggle()
                 }
                 
                 HStack {

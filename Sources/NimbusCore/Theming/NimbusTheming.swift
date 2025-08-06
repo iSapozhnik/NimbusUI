@@ -220,7 +220,7 @@ public extension NimbusTheming {
     var toggleKnobPadding: CGFloat { 4 }
     
     /// Toggle shape configuration (will be converted to NimbusToggleShape)
-    var toggleDefaultShapeStyle: String { "circle" }
+    var toggleDefaultShapeStyle: NimbusToggleShape { .circle }
     
     /// Toggle track width override (nil uses auto-calculated width based on shape)
     var toggleTrackWidth: CGFloat? { nil }

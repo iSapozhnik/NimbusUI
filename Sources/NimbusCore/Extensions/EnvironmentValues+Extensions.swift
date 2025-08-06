@@ -15,6 +15,17 @@ public enum Elevation: Int, CaseIterable, Hashable, Sendable {
     case extreme
 }
 
+/// Defines the shape of the toggle knob and automatically calculates the corresponding track shape.
+/// The track shape is intelligently determined based on the knob shape to ensure visual harmony.
+public enum NimbusToggleShape: Hashable, Sendable {
+    /// Circular knob with capsule track
+    case circle
+    /// Square knob with rounded rectangle track
+    case square
+    /// Rounded rectangle knob with matching track corner radius
+    case roundedRect(CGFloat)
+}
+
 /// Defines the shape type for badge components
 public enum BadgeType: Hashable, Sendable {
     /// Capsule shape with rounded ends
@@ -127,7 +138,7 @@ public extension EnvironmentValues {
 public extension EnvironmentValues {
     @Entry var nimbusToggleKnobSize: CGFloat? = nil
     @Entry var nimbusToggleKnobPadding: CGFloat? = nil
-    @Entry var nimbusToggleShape: String? = nil
+    @Entry var nimbusToggleShape: NimbusToggleShape? = nil
     @Entry var nimbusToggleTrackWidth: CGFloat? = nil
     @Entry var nimbusToggleTrackHeight: CGFloat? = nil
     @Entry var nimbusToggleAnimationSpring: Animation? = nil

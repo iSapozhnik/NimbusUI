@@ -163,7 +163,6 @@ import NimbusCore
 #Preview("Custom Shapes") {
     @Previewable @State var circleToggle = true
     @Previewable @State var squareToggle = false
-    @Previewable @State var pillToggle = true
     @Previewable @State var roundedToggle = false
     
     VStack(spacing: 20) {
@@ -185,13 +184,6 @@ import NimbusCore
                     isOn: $squareToggle
                 )
                 .squareToggle()
-                
-                NimbusToggleItem(
-                    "Pill Toggle",
-                    subtitle: "Fully rounded toggle",
-                    isOn: $pillToggle
-                )
-                .pillToggle()
                 
                 NimbusToggleItem(
                     "Rounded Toggle",

@@ -7,17 +7,7 @@
 
 import SwiftUI
 
-/// Defines the shape of the toggle knob and automatically calculates the corresponding track shape.
-/// The track shape is intelligently determined based on the knob shape to ensure visual harmony.
-public enum NimbusToggleShape: Hashable, Sendable {
-    /// Circular knob with capsule track (traditional iOS toggle style)
-    case circle
-    /// Square knob with rounded rectangle track
-    case square
-    /// Rounded rectangle knob with matching track corner radius
-    case roundedRect(CGFloat)
-    /// Fully rounded knob and track (pill-shaped)
-    case pill
+extension NimbusToggleShape {
     
     /// Returns the appropriate knob shape for the given size
     public func knobShape(for size: CGFloat) -> AnyShape {
@@ -28,8 +18,6 @@ public enum NimbusToggleShape: Hashable, Sendable {
             return AnyShape(Rectangle())
         case .roundedRect(let cornerRadius):
             return AnyShape(RoundedRectangle(cornerRadius: cornerRadius))
-        case .pill:
-            return AnyShape(Capsule())
         }
     }
     
@@ -51,16 +39,13 @@ public enum NimbusToggleShape: Hashable, Sendable {
             // Match the knob corner radius but account for padding
             let trackCornerRadius = cornerRadius + knobPadding
             return AnyShape(RoundedRectangle(cornerRadius: trackCornerRadius))
-        case .pill:
-            // Fully rounded track for pill-shaped knobs
-            return AnyShape(Capsule())
         }
     }
     
     /// Calculates the recommended track width based on knob size and padding
     public func recommendedTrackWidth(knobSize: CGFloat, knobPadding: CGFloat) -> CGFloat {
         switch self {
-        case .circle, .pill:
+        case .circle:
             // Traditional toggle ratio - track width should be about 1.8x knob diameter
             return knobSize * 1.8 + (knobPadding * 2)
         case .square, .roundedRect:
@@ -86,8 +71,8 @@ public enum NimbusToggleShape: Hashable, Sendable {
     /// Returns the default corner radius for the knob shape (used internally)
     var defaultCornerRadius: CGFloat {
         switch self {
-        case .circle, .pill:
-            return 0 // Will be handled by Circle/Capsule shapes
+        case .circle:
+            return 0
         case .square:
             return 0
         case .roundedRect(let cornerRadius):

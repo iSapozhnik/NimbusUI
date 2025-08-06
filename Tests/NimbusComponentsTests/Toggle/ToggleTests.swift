@@ -84,17 +84,6 @@ private let recording = false
                             }
                             
                             HStack {
-                                Text("Pill:")
-                                Spacer()
-                                HStack(spacing: 8) {
-                                    NimbusToggle(isOn: .constant(false))
-                                        .pillToggle()
-                                    NimbusToggle(isOn: .constant(true))
-                                        .pillToggle()
-                                }
-                            }
-                            
-                            HStack {
                                 Text("Rounded (8pt):")
                                 Spacer()
                                 HStack(spacing: 8) {
@@ -441,13 +430,6 @@ private let recording = false
                         isOn: .constant(false)
                     )
                     .squareToggle()
-                    
-                    NimbusToggleItem(
-                        "Pill Toggle",
-                        subtitle: "Fully rounded toggle",
-                        isOn: .constant(true)
-                    )
-                    .pillToggle()
                     
                     NimbusToggleItem(
                         "Rounded Toggle",

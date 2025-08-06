@@ -39,7 +39,7 @@ public struct NimbusToggle: View {
     public var body: some View {
         let knobSize = overrideKnobSize ?? controlSizeBasedKnobSize
         let knobPadding = overrideKnobPadding ?? controlSizeBasedKnobPadding
-        let toggleShape = parseToggleShape(overrideShapeString ?? theme.toggleDefaultShapeStyle)
+        let toggleShape = overrideShapeString ?? theme.toggleDefaultShapeStyle
         let trackWidth = overrideTrackWidth ?? toggleShape.recommendedTrackWidth(knobSize: knobSize, knobPadding: knobPadding)
         let trackHeight = overrideTrackHeight ?? toggleShape.trackHeight(knobSize: knobSize, knobPadding: knobPadding)
         let animationSpring = overrideAnimationSpring ?? theme.toggleAnimationSpring
@@ -129,7 +129,7 @@ public struct NimbusToggle: View {
             // Set initial knob position without animation
             let knobSize = overrideKnobSize ?? controlSizeBasedKnobSize
             let knobPadding = overrideKnobPadding ?? controlSizeBasedKnobPadding
-            let toggleShape = parseToggleShape(overrideShapeString ?? theme.toggleDefaultShapeStyle)
+            let toggleShape = overrideShapeString ?? theme.toggleDefaultShapeStyle
             let trackWidth = overrideTrackWidth ?? toggleShape.recommendedTrackWidth(knobSize: knobSize, knobPadding: knobPadding)
             let maxOffset = toggleShape.knobTravelDistance(
                 trackWidth: trackWidth,
@@ -144,26 +144,6 @@ public struct NimbusToggle: View {
     
     private func toggle() {
         isOn.toggle()
-    }
-    
-    private func parseToggleShape(_ shapeString: String) -> NimbusToggleShape {
-        switch shapeString.lowercased() {
-        case "circle":
-            return .circle
-        case "square":
-            return .square
-        case "pill":
-            return .pill
-        default:
-            // Check if it's a rounded rect with radius
-            if shapeString.hasPrefix("roundedRect(") && shapeString.hasSuffix(")") {
-                let radiusString = String(shapeString.dropFirst(12).dropLast(1))
-                if let radius = Double(radiusString) {
-                    return .roundedRect(radius)
-                }
-            }
-            return .circle // Default fallback
-        }
     }
     
     // MARK: - ControlSize Integration

@@ -29,18 +29,7 @@ public extension View {
     /// - Parameter shape: The toggle shape to apply
     /// - Returns: A view with the specified toggle shape applied
     func toggleShape(_ shape: NimbusToggleShape) -> some View {
-        let shapeString: String
-        switch shape {
-        case .circle:
-            shapeString = "circle"
-        case .square:
-            shapeString = "square"
-        case .pill:
-            shapeString = "pill"
-        case .roundedRect(let radius):
-            shapeString = "roundedRect(\(radius))"
-        }
-        return environment(\.nimbusToggleShape, shapeString)
+        environment(\.nimbusToggleShape, shape)
     }
     
     /// Sets the toggle track width (overrides auto-calculated width)
@@ -106,12 +95,6 @@ public extension View {
     /// - Returns: A view with square toggle shape applied
     func squareToggle() -> some View {
         toggleShape(.square)
-    }
-    
-    /// Sets the toggle to use fully rounded knob and track (pill-shaped)
-    /// - Returns: A view with pill toggle shape applied
-    func pillToggle() -> some View {
-        toggleShape(.pill)
     }
     
     /// Sets the toggle to use a rounded rectangle knob with specified corner radius
