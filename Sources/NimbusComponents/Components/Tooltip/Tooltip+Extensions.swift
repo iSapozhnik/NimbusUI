@@ -23,14 +23,9 @@ public extension NimbusTooltip {
         environment(\.nimbusTooltipElevation, level)
     }
     
-    /// Sets the tooltip maximum width
-    func maxWidth(_ width: CGFloat) -> some View {
-        environment(\.nimbusTooltipMaxWidth, width)
-    }
-    
     /// Sets the tooltip padding around content
-    func padding(_ padding: CGFloat) -> some View {
-        environment(\.nimbusTooltipPadding, padding)
+    func contentPadding(_ padding: EdgeInsets) -> some View {
+        environment(\.nimbusTooltipContentPadding, padding)
     }
     
     /// Sets the tooltip arrow size
@@ -154,6 +149,16 @@ public extension View {
     
     // MARK: - Tooltip Customization
     
+    /// Sets the tooltip background color
+    func tooltipBackgroundColor(_ color: Color) -> some View {
+        environment(\.nimbusTooltipBackgroundColor, color)
+    }
+    
+    /// Sets the tooltip foreground color
+    func tooltipForegroundColor(_ color: Color) -> some View {
+        environment(\.nimbusTooltipForegroundColor, color)
+    }
+    
     /// Sets the tooltip corner radii for any tooltip
     func tooltipCornerRadii(_ radii: RectangleCornerRadii) -> some View {
         environment(\.nimbusTooltipCornerRadii, radii)
@@ -164,14 +169,9 @@ public extension View {
         environment(\.nimbusTooltipElevation, level)
     }
     
-    /// Sets the tooltip maximum width for any tooltip
-    func tooltipMaxWidth(_ width: CGFloat) -> some View {
-        environment(\.nimbusTooltipMaxWidth, width)
-    }
-    
     /// Sets the tooltip padding for any tooltip
-    func tooltipPadding(_ padding: CGFloat) -> some View {
-        environment(\.nimbusTooltipPadding, padding)
+    func tooltipPadding(_ padding: EdgeInsets) -> some View {
+        environment(\.nimbusTooltipContentPadding, padding)
     }
     
     /// Sets the tooltip arrow size for any tooltip
@@ -195,8 +195,7 @@ public extension View {
     func tooltipConfiguration(
         cornerRadii: RectangleCornerRadii? = nil,
         elevation: Elevation? = nil,
-        maxWidth: CGFloat? = nil,
-        padding: CGFloat? = nil,
+        padding: EdgeInsets? = nil,
         hoverDelay: TimeInterval? = nil,
         adaptivePositioning: Bool? = nil
     ) -> some View {
@@ -208,11 +207,8 @@ public extension View {
         if let elevation = elevation {
             result = AnyView(result.environment(\.nimbusTooltipElevation, elevation))
         }
-        if let maxWidth = maxWidth {
-            result = AnyView(result.environment(\.nimbusTooltipMaxWidth, maxWidth))
-        }
         if let padding = padding {
-            result = AnyView(result.environment(\.nimbusTooltipPadding, padding))
+            result = AnyView(result.environment(\.nimbusTooltipContentPadding, padding))
         }
         if let hoverDelay = hoverDelay {
             result = AnyView(result.environment(\.nimbusTooltipHoverDelay, hoverDelay))

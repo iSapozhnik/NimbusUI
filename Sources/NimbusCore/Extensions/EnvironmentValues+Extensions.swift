@@ -168,10 +168,10 @@ public extension EnvironmentValues {
 // Internal APIs for convenience methods - not for direct consumer use
 
 public extension EnvironmentValues {
+    @Entry var nimbusTooltipBackgroundColor: Color? = nil
+    @Entry var nimbusTooltipForegroundColor: Color? = nil
     @Entry var nimbusTooltipCornerRadii: RectangleCornerRadii? = nil
     @Entry var nimbusTooltipElevation: Elevation? = nil
-    @Entry var nimbusTooltipMaxWidth: CGFloat? = nil
-    @Entry var nimbusTooltipPadding: CGFloat? = nil
     @Entry var nimbusTooltipArrowSize: CGFloat? = nil
     @Entry var nimbusTooltipOffsetDistance: CGFloat? = nil
     @Entry var nimbusTooltipTitleFontWeight: Font.Weight? = nil
@@ -179,6 +179,7 @@ public extension EnvironmentValues {
     @Entry var nimbusTooltipTitleFontSize: CGFloat? = nil
     @Entry var nimbusTooltipSubtitleFontSize: CGFloat? = nil
     @Entry var nimbusTooltipContentSpacing: CGFloat? = nil
+    @Entry var nimbusTooltipContentPadding: EdgeInsets? = nil
     @Entry var nimbusTooltipIconSpacing: CGFloat? = nil
     @Entry var nimbusTooltipIconSize: CGFloat? = nil
     @Entry var nimbusTooltipHoverDelay: TimeInterval? = nil

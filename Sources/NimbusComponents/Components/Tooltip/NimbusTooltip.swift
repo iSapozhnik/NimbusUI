@@ -19,16 +19,17 @@ public struct NimbusTooltip: View {
     @Environment(\.colorScheme) private var colorScheme
     
     // Tooltip-specific environment values with theme fallbacks
+    @Environment(\.nimbusTooltipBackgroundColor) private var backgroundColor
+    @Environment(\.nimbusTooltipForegroundColor) private var foregroundColor
     @Environment(\.nimbusTooltipCornerRadii) private var cornerRadii
     @Environment(\.nimbusTooltipElevation) private var elevation
-    @Environment(\.nimbusTooltipMaxWidth) private var maxWidth
-    @Environment(\.nimbusTooltipPadding) private var padding
     @Environment(\.nimbusTooltipArrowSize) private var arrowSize
     @Environment(\.nimbusTooltipTitleFontWeight) private var titleFontWeight
     @Environment(\.nimbusTooltipSubtitleFontWeight) private var subtitleFontWeight
     @Environment(\.nimbusTooltipTitleFontSize) private var titleFontSize
     @Environment(\.nimbusTooltipSubtitleFontSize) private var subtitleFontSize
     @Environment(\.nimbusTooltipContentSpacing) private var contentSpacing
+    @Environment(\.nimbusTooltipContentPadding) private var contentPadding
     @Environment(\.nimbusTooltipIconSpacing) private var iconSpacing
     @Environment(\.nimbusTooltipIconSize) private var iconSize
     
@@ -48,11 +49,10 @@ public struct NimbusTooltip: View {
         // Main tooltip content
         contentView
             .padding(effectivePadding)
-            .frame(maxWidth: effectiveMaxWidth)
+//            .frame(maxWidth: effectiveMaxWidth)
             .background(
                 RoundedRectangle(cornerRadius: effectiveCornerRadii.topLeading, style: .continuous)
-                    .fill(theme.tooltipBackgroundColor(for: colorScheme))
-                    .modifier(NimbusShadowModifier(elevation: effectiveElevation))
+                    .fill(effectiveBackgroundColor)
             )
             .overlay(alignment: arrowAlignment) {
                 // Arrow positioned at the edge of the tooltip
@@ -69,19 +69,21 @@ public struct NimbusTooltip: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: effectiveIconSize, height: effectiveIconSize)
-                    .foregroundColor(theme.tooltipTextColor(for: colorScheme))
+                    .foregroundColor(effectiveForegroundColor)
             }
             
             VStack(alignment: .leading, spacing: effectiveContentSpacing) {
                 Text(title)
                     .font(.system(size: effectiveTitleFontSize, weight: effectiveTitleFontWeight))
-                    .foregroundColor(theme.tooltipTextColor(for: colorScheme))
+                    .foregroundColor(effectiveForegroundColor)
+                    .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.leading)
                 
                 if let subtitle = subtitle {
                     Text(subtitle)
                         .font(.system(size: effectiveSubtitleFontSize, weight: effectiveSubtitleFontWeight))
-                        .foregroundColor(theme.tooltipTextColor(for: colorScheme))
+                        .foregroundColor(effectiveForegroundColor)
+                        .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.leading)
                 }
             }
@@ -91,13 +93,21 @@ public struct NimbusTooltip: View {
     
     private var arrow: some View {
         Triangle()
-            .fill(theme.tooltipBackgroundColor(for: colorScheme))
+            .fill(effectiveBackgroundColor)
             .frame(width: effectiveArrowSize, height: effectiveArrowSize)
             .rotationEffect(position.arrowRotation)
             .offset(arrowOffset)
     }
     
     // MARK: - Private Computed Properties
+    
+    private var effectiveBackgroundColor: Color {
+        backgroundColor ?? theme.tooltipBackgroundColor(for: colorScheme)
+    }
+    
+    private var effectiveForegroundColor: Color {
+        foregroundColor ?? theme.tooltipTextColor(for: colorScheme)
+    }
     
     private var effectiveCornerRadii: RectangleCornerRadii {
         cornerRadii ?? theme.tooltipCornerRadii
@@ -107,12 +117,8 @@ public struct NimbusTooltip: View {
         elevation ?? theme.tooltipElevation
     }
     
-    private var effectiveMaxWidth: CGFloat {
-        maxWidth ?? theme.tooltipMaxWidth
-    }
-    
-    private var effectivePadding: CGFloat {
-        padding ?? theme.tooltipPadding
+    private var effectivePadding: EdgeInsets {
+        contentPadding ?? theme.tooltipContentPadding
     }
     
     private var effectiveArrowSize: CGFloat {
@@ -192,7 +198,7 @@ private struct Triangle: Shape {
         
         // Create a wider-based triangle for better visual connection
         // The base should be wider than the height for better proportion
-        let baseWidth = width * 1.5 // Make base 50% wider
+        let baseWidth = width * 2
         let centerX = width / 2
         let leftBase = centerX - baseWidth / 2
         let rightBase = centerX + baseWidth / 2

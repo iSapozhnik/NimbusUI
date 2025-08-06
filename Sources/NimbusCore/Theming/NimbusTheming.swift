@@ -309,12 +309,6 @@ public extension NimbusTheming {
     /// Tooltip elevation level for shadows
     var tooltipElevation: Elevation { .medium }
     
-    /// Tooltip maximum width to prevent excessive stretching
-    var tooltipMaxWidth: CGFloat { 280 }
-    
-    /// Tooltip padding around content
-    var tooltipPadding: CGFloat { 4 }
-    
     /// Tooltip arrow size (width and height)
     var tooltipArrowSize: CGFloat { 8 }
     
@@ -335,6 +329,9 @@ public extension NimbusTheming {
     
     /// Spacing between title and subtitle
     var tooltipContentSpacing: CGFloat { 2 }
+    
+    /// Tooltip padding around content
+    var tooltipContentPadding: EdgeInsets { EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: 8) }
     
     /// Spacing between icon and text content
     var tooltipIconSpacing: CGFloat { 8 }

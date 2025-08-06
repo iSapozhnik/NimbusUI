@@ -31,8 +31,8 @@ struct TooltipModifier: ViewModifier {
     @State private var hoverTimer: Timer?
     @State private var anchorFrame: CGRect = .zero
     // Size measurement using reference implementation pattern
-    @State private var contentWidth: CGFloat = 10
-    @State private var contentHeight: CGFloat = 10
+    @State private var contentWidth: CGFloat = 0
+    @State private var contentHeight: CGFloat = 0
     @State private var screenBounds: CGRect = .zero
     
     // Theme-based environment values
@@ -82,22 +82,16 @@ struct TooltipModifier: ViewModifier {
                 // Match reference implementation: GeometryReader with no alignment
                 GeometryReader { geometry in
                     if isTooltipVisible {
-                        ZStack {
-                            NimbusTooltip(
-                                title: title,
-                                subtitle: subtitle,
-                                icon: icon,
-                                position: actualPosition
+                        tooltipContent
+                            .background(sizeMeasurer)
+                            .fixedSize(horizontal: true, vertical: false)
+                            .fixedSize()
+                            .offset(
+                                x: calculateOffsetX(geometry),
+                                y: calculateOffsetY(geometry)
                             )
-                        }
-                        .background(sizeMeasurer)
-                        .offset(
-                            x: calculateOffsetX(geometry),
-                            y: calculateOffsetY(geometry)
-                        )
-                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
-                        .animation(effectiveShowAnimation, value: isTooltipVisible)
-                        .zIndex(1000) // Ensure tooltip appears above other content
+                            .animation(effectiveShowAnimation, value: isTooltipVisible)
+                            .zIndex(1000)
                     }
                 }
             )
@@ -156,6 +150,16 @@ struct TooltipModifier: ViewModifier {
     
     private var effectiveAdaptivePositioning: Bool {
         adaptivePositioning ?? theme.tooltipAdaptivePositioning
+    }
+    
+    /// Tooltip content view that allows natural sizing before positioning
+    private var tooltipContent: some View {
+        NimbusTooltip(
+            title: title,
+            subtitle: subtitle,
+            icon: icon,
+            position: actualPosition
+        )
     }
     
     /// Size measurer view using reference implementation pattern

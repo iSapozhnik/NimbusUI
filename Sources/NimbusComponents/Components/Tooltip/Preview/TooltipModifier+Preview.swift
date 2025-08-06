@@ -30,8 +30,8 @@ import NimbusCore
             }
             .buttonStyle(.secondary)
             .nimbusTooltip(
-                "Main Information",
-                subtitle: "Additional details about this action"
+                "This is a very",
+                subtitle: "Content width \nblablabla\ntesttest test ets"
             )
             
             // Tooltip with icon
@@ -410,7 +410,6 @@ import NimbusCore
             .tooltipConfiguration(
                 cornerRadii: RectangleCornerRadii(12),
                 elevation: .high,
-                maxWidth: 200,
                 hoverDelay: 0.3
             )
             .nimbusTooltip(

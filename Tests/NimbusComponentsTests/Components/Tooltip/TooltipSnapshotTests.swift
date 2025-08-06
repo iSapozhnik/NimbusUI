@@ -176,6 +176,7 @@ private let recording = false
                             "This is a very long tooltip text that demonstrates how the tooltip handles text wrapping within the maximum width constraints",
                             position: .top
                         )
+                        .fixedSize()
                         
                         NimbusTooltip(
                             title: "Long Title Example",
@@ -183,6 +184,7 @@ private let recording = false
                             icon: Image(systemName: "text.alignleft"),
                             position: .bottom
                         )
+                        .frame(maxWidth: 180)
                         
                         // Custom max width
                         NimbusTooltip(
@@ -190,8 +192,9 @@ private let recording = false
                             subtitle: "This tooltip has a custom maximum width setting",
                             position: .top
                         )
-                        .maxWidth(180)
+                        .fixedSize()
                     }
+                    .fixedSize()
                 }
                 .padding()
             }
