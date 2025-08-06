@@ -163,3 +163,26 @@ public extension EnvironmentValues {
     @Entry var nimbusScrollerFadeDelay: TimeInterval? = nil
     @Entry var nimbusScrollerAnimationDuration: TimeInterval? = nil
 }
+
+// MARK: Tooltip
+// Internal APIs for convenience methods - not for direct consumer use
+
+public extension EnvironmentValues {
+    @Entry var nimbusTooltipCornerRadii: RectangleCornerRadii? = nil
+    @Entry var nimbusTooltipElevation: Elevation? = nil
+    @Entry var nimbusTooltipMaxWidth: CGFloat? = nil
+    @Entry var nimbusTooltipPadding: CGFloat? = nil
+    @Entry var nimbusTooltipArrowSize: CGFloat? = nil
+    @Entry var nimbusTooltipOffsetDistance: CGFloat? = nil
+    @Entry var nimbusTooltipTitleFontWeight: Font.Weight? = nil
+    @Entry var nimbusTooltipSubtitleFontWeight: Font.Weight? = nil
+    @Entry var nimbusTooltipTitleFontSize: CGFloat? = nil
+    @Entry var nimbusTooltipSubtitleFontSize: CGFloat? = nil
+    @Entry var nimbusTooltipContentSpacing: CGFloat? = nil
+    @Entry var nimbusTooltipIconSpacing: CGFloat? = nil
+    @Entry var nimbusTooltipIconSize: CGFloat? = nil
+    @Entry var nimbusTooltipHoverDelay: TimeInterval? = nil
+    @Entry var nimbusTooltipShowAnimation: Animation? = nil
+    @Entry var nimbusTooltipHideAnimation: Animation? = nil
+    @Entry var nimbusTooltipAdaptivePositioning: Bool? = nil
+}

@@ -13,6 +13,8 @@ import SwiftUI
 // - Checkbox components with flexible positioning
 // - List components with hover states
 // - Scroll components with custom theming
+// - Tooltip components with positioning and hover support
+// - Badge components with semantic types
 // - Clean convenience method APIs
 
 // Re-export core types for convenience

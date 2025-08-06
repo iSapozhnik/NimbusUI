@@ -300,6 +300,74 @@ public extension NimbusTheming {
     var notificationHandleFadeAnimation: Animation { .easeInOut(duration: 0.2) }
 }
 
+// MARK: - Tooltip Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// Tooltip corner radii configuration
+    var tooltipCornerRadii: RectangleCornerRadii { cornerRadii }
+    
+    /// Tooltip elevation level for shadows
+    var tooltipElevation: Elevation { .medium }
+    
+    /// Tooltip maximum width to prevent excessive stretching
+    var tooltipMaxWidth: CGFloat { 280 }
+    
+    /// Tooltip padding around content
+    var tooltipPadding: CGFloat { 4 }
+    
+    /// Tooltip arrow size (width and height)
+    var tooltipArrowSize: CGFloat { 8 }
+    
+    /// Tooltip offset distance from anchor view (in addition to arrow)
+    var tooltipOffsetDistance: CGFloat { 2 }
+    
+    /// Tooltip title font weight
+    var tooltipTitleFontWeight: Font.Weight { .regular }
+    
+    /// Tooltip subtitle font weight
+    var tooltipSubtitleFontWeight: Font.Weight { .light }
+    
+    /// Tooltip title font size
+    var tooltipTitleFontSize: CGFloat { 12 }
+    
+    /// Tooltip subtitle font size
+    var tooltipSubtitleFontSize: CGFloat { 10 }
+    
+    /// Spacing between title and subtitle
+    var tooltipContentSpacing: CGFloat { 2 }
+    
+    /// Spacing between icon and text content
+    var tooltipIconSpacing: CGFloat { 8 }
+    
+    /// Tooltip icon size
+    var tooltipIconSize: CGFloat { 16 }
+    
+    /// Animation duration for tooltip presentation
+    var tooltipAnimationDuration: TimeInterval { 0.2 }
+    
+    /// Animation for tooltip appearance
+    var tooltipShowAnimation: Animation { .easeOut(duration: tooltipAnimationDuration) }
+    
+    /// Animation for tooltip disappearance
+    var tooltipHideAnimation: Animation { .easeIn(duration: tooltipAnimationDuration) }
+    
+    /// Default hover delay before showing tooltip
+    var tooltipHoverDelay: TimeInterval { 0.5 }
+    
+    /// Enable adaptive positioning to automatically choose best tooltip position
+    var tooltipAdaptivePositioning: Bool { true }
+    
+    /// Tooltip background color (black in light mode, white in dark mode)
+    func tooltipBackgroundColor(for scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color.white : Color.black
+    }
+    
+    /// Tooltip text color (white in light mode, black in dark mode)
+    func tooltipTextColor(for scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color.black : Color.white
+    }
+}
+
 // MARK: - Convenience Methods
 
 public extension NimbusTheming {
