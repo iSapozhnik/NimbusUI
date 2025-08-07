@@ -27,6 +27,7 @@
   - [Button Styles](#button-styles)
   - [Checkbox Components](#checkbox-components)
   - [Badge Components](#badge-components)
+  - [TextField Components](#textfield-components)
   - [List Components](#list-components)
   - [Scroll Components](#scroll-components)
   - [Notification System](#notification-system)
@@ -63,6 +64,7 @@
 - Comprehensive button hierarchy (7 styles)
 - Interactive checkboxes with positioning
 - Semantic badge components with flexible shapes
+- Modifier-based text fields with enhanced visual stability and consistent theming
 - Customizable list items with hover states
 - Custom scroll components with theming
 - Notification system with semantic types
@@ -656,6 +658,82 @@ HStack(spacing: 8) {
 
 ---
 
+### TextField Components
+
+Stylized text input components with theme integration, focus and hover states, and support for various value types and formatting options.
+
+<details>
+<summary><strong>Basic TextField Usage</strong></summary>
+
+Create text fields with labels and prompts:
+
+```swift
+import NimbusComponents
+
+// Basic text fields
+NimbusTextField("Name", text: $name)
+NimbusTextField("Email", text: $email, prompt: Text("Enter your email address"))
+
+// With placeholder text
+NimbusTextField("Search", text: $searchText, prompt: Text("Search..."))
+```
+
+</details>
+
+<details>
+<summary><strong>Prompt Text and Placeholder</strong></summary>
+
+Add helpful placeholder text to guide users:
+
+```swift
+// Text fields with prompts
+NimbusTextField("Email", text: $email, prompt: Text("Enter your email address"))
+NimbusTextField("Search", text: $searchText, prompt: Text("Type to search..."))
+NimbusTextField("Password", text: $password, prompt: Text("Must be 8+ characters"))
+```
+
+</details>
+
+<details>
+<summary><strong>Advanced Customization</strong></summary>
+
+Customize appearance with convenience methods:
+
+```swift
+// Custom styling
+NimbusTextField("Custom Field", text: $text)
+    .contentPadding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+    .borderWidth(2)
+    .cornerRadii(RectangleCornerRadii(12))
+    .controlSize(.large)
+
+// Styling variations
+NimbusTextField("No Border", text: $text)
+    .bordered(false)
+
+NimbusTextField("No Background", text: $text)
+    .hasBackground(false)
+
+// Custom minimum height
+NimbusTextField("Tall Field", text: $text)
+    .minHeight(60)
+```
+
+</details>
+
+<details>
+<summary><strong>Features</strong></summary>
+
+- 🎨 **Theme Integration**: Automatic color adaptation with semantic theming
+- 🔄 **Focus & Hover States**: Interactive visual feedback
+- 📐 **ControlSize Support**: Automatic sizing (.extraLarge, .large, .regular, .small, .mini)
+- 🔧 **String Input Support**: Flexible string-based text input with prompt text
+- ✨ **Convenience Methods**: SwiftUI-idiomatic customization API
+
+</details>
+
+---
+
 ### List Components
 
 Interactive list items with selection states, hover effects, and flexible content:
@@ -1153,6 +1231,7 @@ The theme system is organized into **required core tokens** and **optional compo
 |-----------|---------|
 | **Button** | `buttonCornerRadii`, `compactButtonCornerRadii`, `labelContentSpacing` |
 | **Badge** | `badgeContentPadding`, `badgeBorderWidth` |
+| **TextField** | `textFieldContentPadding`, `textFieldBorderWidth`, `textFieldCornerRadii`, `textFieldMinHeight` |
 | **List** | `listItemCornerRadii`, `listItemHeight` |
 | **Checkbox** | `checkboxSize`, `checkboxCornerRadii`, `checkboxBorderWidth`, `checkboxItemSpacing`, etc. |
 | **Scroller** | `scrollerWidth`, `scrollerKnobWidth`, `scrollerKnobPadding`, `scrollerSlotCornerRadius`, etc. |

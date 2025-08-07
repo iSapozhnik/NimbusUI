@@ -18,48 +18,57 @@ public struct NimbusBorderedModifier: ViewModifier {
 
     private let isHovering: Bool
     private let fill: AnyShapeStyle, hovering: AnyShapeStyle
+    private let cornerRadii: RectangleCornerRadii?
 
     public init(
         isHovering: Bool = false,
-        fill: some ShapeStyle, hovering: some ShapeStyle
+        fill: some ShapeStyle, hovering: some ShapeStyle,
+        cornerRadii: RectangleCornerRadii? = nil
     ) {
         self.isHovering = isHovering
         self.fill = .init(fill)
         self.hovering = .init(hovering)
+        self.cornerRadii = cornerRadii
     }
 
     public init(
         isHovering: Bool = false,
-        cascading: some ShapeStyle
+        cascading: some ShapeStyle,
+        cornerRadii: RectangleCornerRadii? = nil
     ) {
         self.init(
             isHovering: isHovering,
             fill: cascading.opacity(0.7),
-            hovering: cascading
+            hovering: cascading,
+            cornerRadii: cornerRadii
         )
     }
 
     public init(
         isHovering: Bool = false,
-        hovering: some ShapeStyle
+        hovering: some ShapeStyle,
+        cornerRadii: RectangleCornerRadii? = nil
     ) {
         self.init(
             isHovering: isHovering,
-            fill: .clear, hovering: hovering
+            fill: .clear, hovering: hovering,
+            cornerRadii: cornerRadii
         )
     }
 
     public init(
-        isHovering: Bool = false
+        isHovering: Bool = false,
+        cornerRadii: RectangleCornerRadii? = nil
     ) {
         self.init(
             isHovering: isHovering,
-            cascading: .quaternary
+            cascading: .quaternary,
+            cornerRadii: cornerRadii
         )
     }
 
     public func body(content: Content) -> some View {
-        let cornerRadii = overrideCornerRadii ?? theme.compactButtonCornerRadii
+        let cornerRadii = cornerRadii ?? overrideCornerRadii ?? theme.compactButtonCornerRadii
         let borderWidth = envButtonBorderWidth ?? theme.buttonBorderWidth
         
         content
