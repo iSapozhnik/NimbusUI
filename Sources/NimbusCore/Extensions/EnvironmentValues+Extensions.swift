@@ -172,4 +172,9 @@ public extension EnvironmentValues {
     @Entry var nimbusTextFieldBorderWidth: CGFloat? = nil
     @Entry var nimbusTextFieldCornerRadii: RectangleCornerRadii? = nil
     @Entry var nimbusTextFieldMinHeight: CGFloat? = nil
+    
+    // TextField Icon Configuration
+    @Entry var nimbusTextFieldIcon: AnyView? = nil
+    @Entry var nimbusTextFieldIconAlignment: HorizontalAlignment? = nil
+    @Entry var nimbusTextFieldIconSpacing: CGFloat? = nil
 }

@@ -50,6 +50,35 @@ public extension NimbusTextField {
     func hasBackground(_ hasBackground: Bool = true) -> some View {
         environment(\.nimbusHasBackground, hasBackground)
     }
+    
+    // MARK: - Icon Configuration
+    
+    /// Sets an icon for the text field with specified alignment
+    func icon<Icon: View>(_ icon: Icon, alignment: HorizontalAlignment = .leading) -> some View {
+        self
+            .environment(\.nimbusTextFieldIcon, AnyView(icon))
+            .environment(\.nimbusTextFieldIconAlignment, alignment)
+    }
+    
+    /// Sets the horizontal alignment for the text field icon
+    func iconAlignment(_ alignment: HorizontalAlignment) -> some View {
+        environment(\.nimbusTextFieldIconAlignment, alignment)
+    }
+    
+    /// Sets the spacing between the icon and text field
+    func iconSpacing(_ spacing: CGFloat) -> some View {
+        environment(\.nimbusTextFieldIconSpacing, spacing)
+    }
+    
+    /// Convenience method to set a leading icon
+    func leadingIcon<Icon: View>(_ icon: Icon) -> some View {
+        self.icon(icon, alignment: .leading)
+    }
+    
+    /// Convenience method to set a trailing icon
+    func trailingIcon<Icon: View>(_ icon: Icon) -> some View {
+        self.icon(icon, alignment: .trailing)
+    }
 }
 
 // MARK: - Generic View Extensions
@@ -83,5 +112,22 @@ public extension View {
     /// Sets the text field minimum height for any text field component
     func textFieldMinHeight(_ height: CGFloat) -> some View {
         environment(\.nimbusTextFieldMinHeight, height)
+    }
+    
+    /// Sets an icon for any text field component with specified alignment
+    func textFieldIcon<Icon: View>(_ icon: Icon, alignment: HorizontalAlignment = .leading) -> some View {
+        self
+            .environment(\.nimbusTextFieldIcon, AnyView(icon))
+            .environment(\.nimbusTextFieldIconAlignment, alignment)
+    }
+    
+    /// Sets the horizontal alignment for text field icons in any text field component
+    func textFieldIconAlignment(_ alignment: HorizontalAlignment) -> some View {
+        environment(\.nimbusTextFieldIconAlignment, alignment)
+    }
+    
+    /// Sets the spacing between icon and text field for any text field component
+    func textFieldIconSpacing(_ spacing: CGFloat) -> some View {
+        environment(\.nimbusTextFieldIconSpacing, spacing)
     }
 }

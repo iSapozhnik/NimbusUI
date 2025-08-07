@@ -284,6 +284,9 @@ public extension NimbusTheming {
     
     /// TextField minimum height configuration
     var textFieldMinHeight: CGFloat { 32 }
+    
+    /// TextField icon spacing configuration (spacing between icon and text field)
+    var textFieldIconSpacing: CGFloat { 8 }
 }
 
 // MARK: - Notification Component Tokens (Optional with Defaults)

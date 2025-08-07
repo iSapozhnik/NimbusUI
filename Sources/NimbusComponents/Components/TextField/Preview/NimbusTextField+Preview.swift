@@ -143,3 +143,159 @@ private var textFieldGrid: some View {
             .cornerRadii(RectangleCornerRadii(8))
     }
 }
+
+// MARK: - Icon Examples
+
+#Preview("TextField - Basic Icon Examples") {
+    Group {
+        VStack(spacing: 16) {
+            NimbusTextField("Search", text: .constant(""), prompt: Text("Search..."))
+                .leadingIcon(Image(systemName: "magnifyingglass"))
+            
+            NimbusTextField("Email", text: .constant("john@example.com"))
+                .leadingIcon(Image(systemName: "envelope"))
+            
+            NimbusTextField("Password", text: .constant(""))
+                .trailingIcon(Image(systemName: "lock"))
+            
+            NimbusTextField("Username", text: .constant(""))
+                .leadingIcon(Image(systemName: "person.circle"))
+        }
+        .padding()
+        .environment(\.nimbusTheme, NimbusTheme.default)
+    }
+}
+
+#Preview("TextField - Icon Alignment & Spacing") {
+    Group {
+        VStack(spacing: 16) {
+            Text("Leading Icons")
+                .font(.headline)
+            
+            NimbusTextField("Default Spacing", text: .constant("Default"))
+                .leadingIcon(Image(systemName: "magnifyingglass"))
+            
+            NimbusTextField("Custom Spacing", text: .constant("Custom"))
+                .leadingIcon(Image(systemName: "magnifyingglass"))
+                .textFieldIconSpacing(12)
+            
+            Text("Trailing Icons")
+                .font(.headline)
+            
+            NimbusTextField("Settings", text: .constant("Configuration"))
+                .trailingIcon(Image(systemName: "gear"))
+            
+            NimbusTextField("Secure Field", text: .constant(""))
+                .trailingIcon(Image(systemName: "lock.fill"))
+                .textFieldIconSpacing(16)
+        }
+        .padding()
+        .environment(\.nimbusTheme, NimbusTheme.default)
+    }
+}
+
+#Preview("TextField - Icons with Control Sizes") {
+    Group {
+        VStack(spacing: 16) {
+            NimbusTextField("Extra Large", text: .constant("Sample Text"))
+                .leadingIcon(Image(systemName: "magnifyingglass"))
+                .controlSize(.extraLarge)
+            
+            NimbusTextField("Large", text: .constant("Sample Text"))
+                .leadingIcon(Image(systemName: "envelope"))
+                .controlSize(.large)
+            
+            NimbusTextField("Regular", text: .constant("Sample Text"))
+                .leadingIcon(Image(systemName: "person"))
+                .controlSize(.regular)
+            
+            NimbusTextField("Small", text: .constant("Sample Text"))
+                .leadingIcon(Image(systemName: "lock"))
+                .controlSize(.small)
+            
+            NimbusTextField("Mini", text: .constant("Sample Text"))
+                .leadingIcon(Image(systemName: "gear"))
+                .controlSize(.mini)
+        }
+        .padding()
+        .environment(\.nimbusTheme, NimbusTheme.default)
+    }
+}
+
+#Preview("TextField - Custom Icon Views") {
+    Group {
+        VStack(spacing: 16) {
+            NimbusTextField("Colored Icon", text: .constant("Custom color"))
+                .leadingIcon(
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(.red)
+                )
+            
+            NimbusTextField("Multiple Icons", text: .constant("Complex layout"))
+                .leadingIcon(
+                    HStack(spacing: 4) {
+                        Image(systemName: "star.fill")
+                        Image(systemName: "star.fill")
+                    }
+                    .foregroundColor(.yellow)
+                )
+            
+            NimbusTextField("Custom View", text: .constant("With badge"))
+                .trailingIcon(
+                    ZStack {
+                        Circle()
+                            .fill(.red)
+                            .frame(width: 16, height: 16)
+                        Text("!")
+                            .font(.caption2)
+                            .foregroundColor(.white)
+                    }
+                )
+        }
+        .padding()
+        .environment(\.nimbusTheme, NimbusTheme.default)
+    }
+}
+
+#Preview("TextField - Icons with Different Themes") {
+    Group {
+        ScrollView {
+            VStack(spacing: 32) {
+                VStack(spacing: 8) {
+                    Text("Nimbus Theme")
+                        .font(.headline)
+                    textFieldIconGrid
+                        .environment(\.nimbusTheme, NimbusTheme.default)
+                }
+                
+                VStack(spacing: 8) {
+                    Text("Maritime Theme")
+                        .font(.headline)
+                    textFieldIconGrid
+                        .environment(\.nimbusTheme, MaritimeTheme())
+                }
+                
+                VStack(spacing: 8) {
+                    Text("Custom Warm Theme")
+                        .font(.headline)
+                    textFieldIconGrid
+                        .environment(\.nimbusTheme, CustomWarmTheme())
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+private var textFieldIconGrid: some View {
+    VStack(spacing: 12) {
+        NimbusTextField("Search", text: .constant(""), prompt: Text("Search..."))
+            .leadingIcon(Image(systemName: "magnifyingglass"))
+        
+        NimbusTextField("Email", text: .constant("john@example.com"))
+            .leadingIcon(Image(systemName: "envelope"))
+        
+        NimbusTextField("Password", text: .constant(""))
+            .trailingIcon(Image(systemName: "lock"))
+    }
+}

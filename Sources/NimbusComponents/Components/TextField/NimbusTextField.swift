@@ -28,6 +28,11 @@ public struct NimbusTextField<Label>: View where Label: View {
     @Environment(\.nimbusTextFieldCornerRadii) private var cornerRadii
     @Environment(\.nimbusTextFieldMinHeight) private var minHeight
     
+    // TextField icon environment values
+    @Environment(\.nimbusTextFieldIcon) private var icon
+    @Environment(\.nimbusTextFieldIconAlignment) private var iconAlignment
+    @Environment(\.nimbusTextFieldIconSpacing) private var iconSpacing
+    
     @FocusState private var isFocused: Bool
     @State private var isHovering: Bool = false
     
@@ -74,23 +79,9 @@ public struct NimbusTextField<Label>: View where Label: View {
                 .font(.system(size: labelFontSize, weight: .medium))
                 .foregroundColor(labelColor)
             
-            TextField(text: $text, prompt: prompt) {}
-                .textFieldStyle(.plain)
-//                .font(.system(size: inputFontSize)) // once hoeverd causing text jump
-                .foregroundColor(inputTextColor)
-                .padding(effectiveContentPadding)
-                .frame(minHeight: effectiveMinHeight)
+            textFieldWithIconLayout
                 .modifier(NimbusFilledModifier(isHovering: isHovering, isPressed: isFocused))
                 .modifier(NimbusBorderedModifier(isHovering: isHovering, cornerRadii: effectiveCornerRadii))
-//                .background(
-//                    Group {
-//                        if hasBackground {
-//                            Rectangle()
-//                                .fill(backgroundFill)
-//                        }
-//                    }
-//                )
-                
                 .clipShape(RoundedRectangle(cornerRadius: effectiveCornerRadii.topLeading, style: .continuous))
                 .focused($isFocused)
                 .onHover { hovering in
@@ -100,6 +91,40 @@ public struct NimbusTextField<Label>: View where Label: View {
     }
     
     // MARK: - Private Computed Properties
+    
+    private var textFieldWithIconLayout: some View {
+        Group {
+            if let icon = icon {
+                HStack(spacing: effectiveIconSpacing) {
+                    if effectiveIconAlignment == .leading {
+                        iconView(icon)
+                        textField
+                    } else {
+                        textField
+                        iconView(icon)
+                    }
+                }
+                .padding(effectiveContentPadding)
+                .frame(minHeight: effectiveMinHeight)
+            } else {
+                textField
+                    .padding(effectiveContentPadding)
+                    .frame(minHeight: effectiveMinHeight)
+            }
+        }
+    }
+    
+    private var textField: some View {
+        TextField(text: $text, prompt: prompt) {}
+            .textFieldStyle(.plain)
+//            .font(.system(size: inputFontSize)) // once hoeverd causing text jump
+            .foregroundColor(inputTextColor)
+    }
+    
+    private func iconView(_ iconContent: AnyView) -> some View {
+        iconContent
+            .foregroundColor(iconColor)
+    }
     
     private var effectiveContentPadding: EdgeInsets {
         contentPadding ?? adjustedPaddingForControlSize
@@ -115,6 +140,14 @@ public struct NimbusTextField<Label>: View where Label: View {
     
     private var effectiveMinHeight: CGFloat {
         minHeight ?? adjustedMinHeightForControlSize
+    }
+    
+    private var effectiveIconSpacing: CGFloat {
+        iconSpacing ?? theme.textFieldIconSpacing
+    }
+    
+    private var effectiveIconAlignment: HorizontalAlignment {
+        iconAlignment ?? .leading
     }
     
     private var adjustedPaddingForControlSize: EdgeInsets {
@@ -195,6 +228,18 @@ public struct NimbusTextField<Label>: View where Label: View {
     private var inputTextColor: Color {
         if isEnabled {
             return theme.primaryTextColor(for: colorScheme)
+        } else {
+            return theme.tertiaryTextColor(for: colorScheme)
+        }
+    }
+    
+    private var iconColor: Color {
+        if isEnabled {
+            if isFocused {
+                return theme.primaryColor(for: colorScheme)
+            } else {
+                return theme.secondaryTextColor(for: colorScheme)
+            }
         } else {
             return theme.tertiaryTextColor(for: colorScheme)
         }
