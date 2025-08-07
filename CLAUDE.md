@@ -75,6 +75,49 @@ NimbusUI is organized into four distinct libraries for selective importing:
 - All button styles automatically apply label styling when environment values are present
 - Maintains full backward compatibility with plain text buttons
 
+## Modifier-First Architecture Guidelines
+
+**IMPORTANT**: NimbusUI follows a modifier-first architecture approach. Always prefer reusable modifiers over per-component custom implementations.
+
+### Core Principles
+
+1. **Reuse First**: Always check existing modifiers (`NimbusFilledModifier`, `NimbusBorderedModifier`, `NimbusHoverableModifier`, etc.) before implementing custom styling
+2. **Create Modifiers**: When existing modifiers don't meet requirements, create new reusable modifiers instead of per-component solutions
+3. **Avoid Duplication**: Never implement custom background/border/interaction logic within individual components
+4. **Consistency**: Modifiers ensure consistent behavior and styling across all components
+
+### Benefits
+
+- **Consistency**: All components behave identically for similar interactions
+- **Maintainability**: Changes to modifier behavior automatically apply to all components
+- **Code Reduction**: Eliminates duplicate styling logic across components
+- **Testing**: Modifiers can be tested independently and thoroughly
+
+### Implementation Example
+
+TextField component evolution shows this principle in action:
+- **Before**: Custom background/border implementation with potential visual inconsistencies
+- **After**: Uses `NimbusFilledModifier` and `NimbusBorderedModifier` for consistent styling with Button components
+
+### Modifier Evaluation Checklist
+
+When developing new components, evaluate styling needs with these questions:
+- [ ] Can existing modifiers handle this styling need?
+- [ ] If not, would a new modifier benefit multiple components?
+- [ ] Does this create consistent behavior across the design system?
+- [ ] Is the styling logic reusable and testable independently?
+
+### Available Core Modifiers
+
+- **`NimbusFilledModifier`**: Fill backgrounds with interaction states (hover, pressed)
+- **`NimbusBorderedModifier`**: Bordered appearance with hover states
+- **`NimbusHoverableModifier`**: Hover interactions with customizable effects
+- **`NimbusShadowModifier`**: Elevation-based shadows
+- **`NimbusInnerShadowModifier`**: Inner shadow effects
+- **`NimbusGradientBorderModifier`**: Gradient borders
+- **`LevitatingViewModifier`**: Floating effects
+- **`NimbusAspectRatioModifier`**: Aspect ratio constraints with controlSize integration
+
 ### Key Components
 
 **Button System** (`Sources/NimbusComponents/Components/ButtonStyles/`): Comprehensive button system with five main styles (primary, accent, secondary, primaryOutline, secondaryOutline) plus specialized styles (LinkButtonStyle, CloseButtonStyle). All styles feature Enhanced Button + Label API for automatic divider detection and full controlSize support (.large, .regular, .small, .mini). LinkButtonStyle provides text-only action buttons, CloseButtonStyle provides icon-only dismiss buttons.
@@ -84,6 +127,8 @@ NimbusUI is organized into four distinct libraries for selective importing:
 **Toggle System** (`Sources/NimbusComponents/Components/Toggle/`): `NimbusToggle` interactive toggle switch with drag gestures, customizable shapes (circle, square, rounded rectangle), and `NimbusToggleItem` with title/subtitle support. Features real-time drag interaction, threshold-based switching, controlSize integration, and comprehensive animation presets (bouncy, smooth, quick). All components follow the convenience method pattern with methods like `.circularToggle()`, `.squareToggle()`, `.roundedToggle()`, `.toggleKnobSize()`, `.trackWidth()`, etc.
 
 **Badge System** (`Sources/NimbusComponents/Components/Badge/`): `BadgeView` component for status indicators, counters, and labels with theming integration.
+
+**TextField System** (`Sources/NimbusComponents/Components/TextField/`): `NimbusTextField` component for styled text input with modifier-based architecture using `NimbusFilledModifier` and `NimbusBorderedModifier`, theme integration, enhanced visual stability, focus/hover states, string-based input with prompt text support, and full controlSize support (.extraLarge through .mini). Demonstrates the modifier-first architecture principle by reusing existing modifier components for consistent styling and behavior.
 
 **List Components** (`Sources/NimbusComponents/Components/List/`): `ListItem` with configurable hover states and theming.
 
@@ -124,6 +169,11 @@ Sources/
 │   │   │   ├── BadgeView.swift
 │   │   │   └── Preview/
 │   │   │       └── BadgeView+Preview.swift
+│   │   ├── TextField/       # TextField components
+│   │   │   ├── NimbusTextField.swift
+│   │   │   ├── NimbusTextField+Extensions.swift
+│   │   │   └── Preview/
+│   │   │       └── NimbusTextField+Preview.swift
 │   │   ├── Checkbox/        # Checkbox components
 │   │   │   ├── NimbusCheckbox.swift
 │   │   │   ├── NimbusCheckboxItem.swift
@@ -649,8 +699,16 @@ Use the Task tool with specialized design system knowledge for:
 3. **Performance Aware**: Components should be optimized for real-world usage
 4. **Accessibility**: All components must meet macOS accessibility standards
 5. **Composability**: Components should work well together and be easily combinable
+6. **Modifier-First Architecture**: Always prefer reusable modifiers over per-component custom implementations
 
 ### Component Development Standards
+
+#### Modifier-First Development (MANDATORY)
+- **Reuse Existing Modifiers**: ALWAYS check available modifiers (`NimbusFilledModifier`, `NimbusBorderedModifier`, `NimbusHoverableModifier`) before implementing custom styling
+- **Create Reusable Modifiers**: When existing modifiers don't meet needs, create new modifiers that can benefit multiple components
+- **Avoid Custom Implementations**: NEVER implement custom background/border/interaction logic within individual components
+- **Consistency Check**: Ensure new components use the same modifier patterns as existing components (see TextField's use of `NimbusFilledModifier` and `NimbusBorderedModifier`)
+- **Modifier Documentation**: Document which modifiers are used and why they were chosen over custom implementations
 
 #### File Organization (MANDATORY)
 - **Folder Structure**: ALWAYS follow the standardized component folder pattern

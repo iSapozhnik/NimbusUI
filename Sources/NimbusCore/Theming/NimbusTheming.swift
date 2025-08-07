@@ -304,6 +304,25 @@ public extension NimbusTheming {
     var scrollerAnimationDuration: TimeInterval { 0.1 }
 }
 
+// MARK: - TextField Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// TextField content padding configuration
+    var textFieldContentPadding: EdgeInsets { EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12) }
+    
+    /// TextField border width configuration
+    var textFieldBorderWidth: CGFloat { 1.0 }
+    
+    /// TextField corner radii configuration
+    var textFieldCornerRadii: RectangleCornerRadii { cornerRadii }
+    
+    /// TextField minimum height configuration
+    var textFieldMinHeight: CGFloat { 32 }
+    
+    /// TextField icon spacing configuration (spacing between icon and text field)
+    var textFieldIconSpacing: CGFloat { 8 }
+}
+
 // MARK: - Notification Component Tokens (Optional with Defaults)
 
 public extension NimbusTheming {

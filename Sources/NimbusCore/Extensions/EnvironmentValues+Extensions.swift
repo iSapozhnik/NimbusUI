@@ -190,3 +190,18 @@ public extension EnvironmentValues {
     @Entry var nimbusScrollerFadeDelay: TimeInterval? = nil
     @Entry var nimbusScrollerAnimationDuration: TimeInterval? = nil
 }
+
+// MARK: TextField
+// Internal APIs for convenience methods - not for direct consumer use
+
+public extension EnvironmentValues {
+    @Entry var nimbusTextFieldContentPadding: EdgeInsets? = nil
+    @Entry var nimbusTextFieldBorderWidth: CGFloat? = nil
+    @Entry var nimbusTextFieldCornerRadii: RectangleCornerRadii? = nil
+    @Entry var nimbusTextFieldMinHeight: CGFloat? = nil
+    
+    // TextField Icon Configuration
+    @Entry var nimbusTextFieldIcon: AnyView? = nil
+    @Entry var nimbusTextFieldIconAlignment: HorizontalAlignment? = nil
+    @Entry var nimbusTextFieldIconSpacing: CGFloat? = nil
+}
