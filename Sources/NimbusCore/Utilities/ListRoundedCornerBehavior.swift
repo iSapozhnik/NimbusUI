@@ -2,7 +2,7 @@
 //  ListRoundedCornerBehavior.swift
 //  NimbusCore
 //
-//  Created by Claude on 04.08.25.
+//  Created by Ivan Sapozhnik on 04.08.25.
 //
 
 import SwiftUI

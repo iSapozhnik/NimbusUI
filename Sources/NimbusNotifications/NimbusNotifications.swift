@@ -2,7 +2,7 @@
 //  NimbusNotifications.swift
 //  NimbusNotifications
 //
-//  Created by Claude on 03.08.25.
+//  Created by Ivan Sapozhnik on 03.08.25.
 //
 
 import SwiftUI
