@@ -369,8 +369,23 @@ public extension NimbusTheming {
     /// Bezel background blur material (NSVisualEffectView.Material)
     var bezelBlurMaterial: NSVisualEffectView.Material { .underWindowBackground }
     
-    /// Bezel position offset from center (y-axis)
+    /// Bezel position offset from center (y-axis) - deprecated, use bezelCenterOffset
     var bezelPositionOffset: CGFloat { 140.0 }
+    
+    /// Default bezel position when not explicitly specified
+    var bezelDefaultPosition: BezelPosition { .center }
+    
+    /// Bezel position offset from center (y-axis) for center position
+    var bezelCenterOffset: CGFloat { 140.0 }
+    
+    /// Bezel offset from top edge for top positions
+    var bezelTopOffset: CGFloat { 60.0 }
+    
+    /// Bezel offset from bottom edge for bottom positions  
+    var bezelBottomOffset: CGFloat { 60.0 }
+    
+    /// Bezel offset from leading/trailing edges for corner positions
+    var bezelHorizontalOffset: CGFloat { 60.0 }
     
     /// Animation timing for show transition
     var bezelShowAnimationDuration: TimeInterval { 0.33 }
