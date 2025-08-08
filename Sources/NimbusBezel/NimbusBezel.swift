@@ -45,11 +45,11 @@ public class NimbusBezel: Hashable, Equatable {
         didSet {
             let newValue = currentBezel
             if oldValue != nil && newValue == nil /* hide old! */ {
-                oldValue!._hide()
+                oldValue!.performHide()
             } else if oldValue == nil && newValue != nil /* show new! */ {
-                newValue!._show()
+                newValue!.performShow()
             } else if oldValue != nil && newValue != nil /* switch */ {
-                oldValue!._hide { newValue!._show() }
+                oldValue!.performHide { newValue!.performShow() }
             } else /* nil->nil */ {}
         }
     }
@@ -61,18 +61,18 @@ public class NimbusBezel: Hashable, Equatable {
         didSet {
             guard bezelQueue.count > 0 && currentBezel == nil else { return }
             currentBezel = bezelQueue.removeFirst()
-            _triggerNext()
+            triggerNext()
         }
     }
     
     /// If a bezel declares an interval of time to be placed on-screen, after that delay
     /// the bezel will be hidden and the next (possible) bezel in the queue will be
     /// shown automatically.
-    private static func _triggerNext() {
+    private static func triggerNext() {
         if let i = currentBezel?.hideInterval {
             DispatchQueue.main.asyncAfter(deadline: .now() + i) {
                 currentBezel = bezelQueue.count > 0 ? bezelQueue.removeFirst() : nil
-                _triggerNext()
+                triggerNext()
             }
         }
     }
@@ -139,12 +139,12 @@ public class NimbusBezel: Hashable, Equatable {
                          styleMask: .borderless, backing: .buffered, defer: false)
         effectView = NSVisualEffectView(frame: NSRect(origin: .zero, size: bezelSize))
         
-        _setupWindow()
-        _setupEffectView(cornerRadius: cornerRadius)
+        setupWindow()
+        setupEffectView(cornerRadius: cornerRadius)
     }
     
     /// Sets up the window with theme-aware configuration
-    private func _setupWindow() {
+    private func setupWindow() {
         window.isMovable = false
         window.ignoresMouseEvents = true
         window.acceptsMouseMovedEvents = false
@@ -162,10 +162,10 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Sets up the effect view with theme-aware configuration
-    private func _setupEffectView(cornerRadius: CGFloat) {
+    private func setupEffectView(cornerRadius: CGFloat) {
         effectView.state = .active
         effectView.blendingMode = .behindWindow
-        effectView.maskImage = _maskImage(cornerRadius: cornerRadius)
+        effectView.maskImage = maskImage(cornerRadius: cornerRadius)
         effectView.appearance = window.appearance
         effectView.material = theme.bezelBlurMaterial
     }
@@ -252,7 +252,7 @@ public class NimbusBezel: Hashable, Equatable {
             NimbusBezel.bezelQueue.remove(self)
         } else if NimbusBezel.currentBezel == self && interval != nil && hideInterval == nil { // set the autohide now
             hideInterval = interval
-            NimbusBezel._triggerNext()
+            NimbusBezel.triggerNext()
         } else {
             hideInterval = interval
         }
@@ -260,8 +260,8 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Actually set the bezel frame and animate its display on-screen.
-    private func _show(_ handler: @escaping () -> () = {}) {
-        _centerBezel()
+    private func performShow(_ handler: @escaping () -> () = {}) {
+        centerBezel()
         
         window.alphaValue = 0.0
         window.orderFront(nil)
@@ -273,7 +273,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Actually hide the bezel and animate it off-screen.
-    private func _hide(_ handler: @escaping () -> () = {}) {
+    private func performHide(_ handler: @escaping () -> () = {}) {
         window.alphaValue = 1.0
         NSAnimationContext.runAnimationGroup({
             $0.duration = theme.bezelHideAnimationDuration
@@ -285,7 +285,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// The round-rect frame the bezel should clip to.
-    private func _maskImage(cornerRadius c: CGFloat) -> NSImage {
+    private func maskImage(cornerRadius c: CGFloat) -> NSImage {
         let edge = 2.0 * c + 1.0
         let size = NSSize(width: edge, height: edge)
         let inset = NSEdgeInsets(top: c, left: c, bottom: c, right: c)
@@ -303,7 +303,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Centers the bezel in its system-default position.
-    private func _centerBezel() {
+    private func centerBezel() {
         guard let mainScreen = NSScreen.main else { return }
         let screenHorizontalMidPoint = mainScreen.frame.size.width / 2
         var newFrame = window.frame
