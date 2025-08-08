@@ -9,6 +9,46 @@ import SwiftUI
 import AppKit
 
 #if DEBUG
+ 
+extension BezelPosition {
+    var text: String {
+        switch self {
+        case .center: ".center"
+        case .top: ".top"
+        case .bottom: ".bottom"
+        case .topLeading: ".topLeading"
+        case .topTrailing: ".topTrailing"
+        case .bottomLeading: "bottomLeading"
+        case .bottomTrailing: ".bottomTrailing"
+        }
+    }
+}
+
+// MARK: - BezelPosition variants
+struct BezelPositionExamplesView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("BezelPosition variants")
+            
+            ForEach(BezelPosition.allCases, id: \.self) { position in
+                Button(position.text) {
+                    // Task completion notification
+                    let image = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
+                    NimbusBezel.show(
+                        image: image,
+                        text: position.text,
+                        position: position
+                    ).hide(after: .seconds(2))
+                }
+            }
+        }
+        .padding()
+    }
+}
+
+#Preview("BezelPosition variants") {
+    BezelPositionExamplesView()
+}
 
 // MARK: - Programmatic API Examples
 
@@ -34,7 +74,7 @@ struct BezelProgrammaticExamplesView: View {
                 Button("Volume Bezel (2s)") {
                     // Perfect for system-style notifications
                     let image = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
-                    NimbusBezel.show(image: image)
+                    NimbusBezel.show(image: image, position: .bottomTrailing)
                         .hide(after: .seconds(2))
                 }
                 
@@ -101,7 +141,7 @@ struct BezelProgrammaticExamplesView: View {
             }
         }
         .padding()
-        .frame(maxWidth: 400)
+        .fixedSize()
     }
     
     // MARK: - Helper Methods

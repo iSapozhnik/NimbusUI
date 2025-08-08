@@ -19,14 +19,14 @@ import SwiftUI
 // adapted from https://raw.githubusercontent.com/avaidyam/Parrot/refs/heads/master/MochaUI/SystemBezel.swift
 
 /// Defines the positioning options for bezel display
-public enum BezelPosition: String, CaseIterable {
-    case center = "center"
-    case top = "top"  
-    case bottom = "bottom"
-    case topLeading = "topLeading"
-    case topTrailing = "topTrailing"
-    case bottomLeading = "bottomLeading"
-    case bottomTrailing = "bottomTrailing"
+public enum BezelPosition: CaseIterable {
+    case center
+    case top
+    case bottom
+    case topLeading
+    case topTrailing
+    case bottomLeading
+    case bottomTrailing
 }
 
 /// A NimbusBezel is an on-screen view containing a quick message for the user.
@@ -123,13 +123,13 @@ public class NimbusBezel: Hashable, Equatable {
     
     /// Creates a new default unqueued bezel with no content.
     /// Uses the default theme and automatically detects system color scheme.
-    public convenience init(position: BezelPosition? = nil) {
+    public convenience init(position: BezelPosition = .bottom) {
         self.init(theme: NimbusTheme.default, position: position)
     }
     
     /// Creates a new default unqueued bezel with specified theme.
     /// Automatically detects system color scheme.
-    public convenience init(theme: NimbusTheming, position: BezelPosition? = nil) {
+    public convenience init(theme: NimbusTheming, position: BezelPosition = .bottom) {
         let systemColorScheme: ColorScheme = {
             let isDark = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
             return isDark ? .dark : .light
@@ -140,10 +140,10 @@ public class NimbusBezel: Hashable, Equatable {
     
     /// Creates a new default unqueued bezel with specified theme, color scheme, and position.
     /// This is the designated initializer.
-    public init(theme: NimbusTheming, colorScheme: ColorScheme, position: BezelPosition? = nil) {
+    public init(theme: NimbusTheming, colorScheme: ColorScheme, position: BezelPosition = .bottom) {
         self.theme = theme
         self.colorScheme = colorScheme
-        self.position = position ?? theme.bezelDefaultPosition
+        self.position = position
         
         let cornerRadius = theme.bezelCornerRadius
         let bezelSize = theme.bezelSize
@@ -186,7 +186,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Creates a new unqueued bezel with an image.
-    public convenience init(image: NSImage?, position: BezelPosition? = nil) {
+    public convenience init(image: NSImage?, position: BezelPosition = .bottom) {
         self.init(position: position)
         let imageView = BezelImageView()
         imageView.image = image
@@ -194,7 +194,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Creates a new unqueued bezel with an image and text.
-    public convenience init(image: NSImage?, text: String?, position: BezelPosition? = nil) {
+    public convenience init(image: NSImage?, text: String?, position: BezelPosition = .bottom) {
         self.init(position: position)
         let imageTextView = BezelImageTextView()
         imageTextView.image = image
@@ -203,7 +203,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Creates a new unqueued bezel with an image and optional theme.
-    public convenience init(image: NSImage?, theme: NimbusTheming, position: BezelPosition? = nil) {
+    public convenience init(image: NSImage?, theme: NimbusTheming, position: BezelPosition = .bottom) {
         self.init(theme: theme, position: position)
         let imageView = BezelImageView()
         imageView.image = image
@@ -211,7 +211,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Creates a new unqueued bezel with an image, text and optional theme.
-    public convenience init(image: NSImage?, text: String?, theme: NimbusTheming, position: BezelPosition? = nil) {
+    public convenience init(image: NSImage?, text: String?, theme: NimbusTheming, position: BezelPosition = .bottom) {
         self.init(theme: theme, position: position)
         let imageTextView = BezelImageTextView()
         imageTextView.image = image
@@ -220,7 +220,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Creates a new unqueued bezel with an image, theme, and color scheme.
-    public convenience init(image: NSImage?, theme: NimbusTheming, colorScheme: ColorScheme, position: BezelPosition? = nil) {
+    public convenience init(image: NSImage?, theme: NimbusTheming, colorScheme: ColorScheme, position: BezelPosition = .bottom) {
         self.init(theme: theme, colorScheme: colorScheme, position: position)
         let imageView = BezelImageView()
         imageView.image = image
@@ -228,7 +228,7 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Creates a new unqueued bezel with an image, text, theme, and color scheme.
-    public convenience init(image: NSImage?, text: String?, theme: NimbusTheming, colorScheme: ColorScheme, position: BezelPosition? = nil) {
+    public convenience init(image: NSImage?, text: String?, theme: NimbusTheming, colorScheme: ColorScheme, position: BezelPosition = .bottom) {
         self.init(theme: theme, colorScheme: colorScheme, position: position)
         let imageTextView = BezelImageTextView()
         imageTextView.image = image
@@ -301,13 +301,22 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// The round-rect frame the bezel should clip to.
-    private func maskImage(cornerRadius c: CGFloat) -> NSImage {
-        let edge = 2.0 * c + 1.0
+    private func maskImage(cornerRadius: CGFloat) -> NSImage {
+        let edge = 2.0 * cornerRadius + 1.0
         let size = NSSize(width: edge, height: edge)
-        let inset = NSEdgeInsets(top: c, left: c, bottom: c, right: c)
+        let inset = NSEdgeInsets(
+            top: cornerRadius,
+            left: cornerRadius,
+            bottom: cornerRadius,
+            right: cornerRadius
+        )
         
         let maskImage = NSImage(size: size, flipped: false) {
-            let bezierPath = NSBezierPath(roundedRect: $0, xRadius: c, yRadius: c)
+            let bezierPath = NSBezierPath(
+                roundedRect: $0,
+                xRadius: cornerRadius,
+                yRadius: cornerRadius
+            )
             NSColor.black.set()
             bezierPath.fill()
             return true
@@ -320,7 +329,7 @@ public class NimbusBezel: Hashable, Equatable {
     
     /// Positions the bezel according to its configured position.
     private func positionBezel() {
-        guard let mainScreen = NSScreen.main else { return }
+        guard let mainScreen = NSScreen.current else { return }
         let screenFrame = mainScreen.frame
         let bezelSize = window.frame.size
         var newFrame = window.frame
@@ -329,7 +338,7 @@ public class NimbusBezel: Hashable, Equatable {
         case .center:
             // Center horizontally, offset vertically using bezelCenterOffset
             newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
-            newFrame.origin.y = theme.bezelCenterOffset
+            newFrame.origin.y = (screenFrame.height - bezelSize.height) / 2
             
         case .top:
             // Center horizontally, position from top
@@ -380,7 +389,7 @@ public extension NimbusBezel {
     /// Shows a bezel with an image using the default theme
     /// Perfect for menubar apps that need system-level notifications
     @discardableResult
-    static func show(image: NSImage?, position: BezelPosition? = nil) -> NimbusBezel {
+    static func show(image: NSImage?, position: BezelPosition = .bottom) -> NimbusBezel {
         let bezel = NimbusBezel(image: image, position: position)
         return bezel.show()
     }
@@ -388,7 +397,7 @@ public extension NimbusBezel {
     /// Shows a bezel with an image and text using the default theme
     /// Perfect for menubar apps that need system-level notifications
     @discardableResult
-    static func show(image: NSImage?, text: String?, position: BezelPosition? = nil) -> NimbusBezel {
+    static func show(image: NSImage?, text: String?, position: BezelPosition = .bottom) -> NimbusBezel {
         let bezel = NimbusBezel(image: image, text: text, position: position)
         return bezel.show()
     }
@@ -396,7 +405,7 @@ public extension NimbusBezel {
     /// Shows a bezel with an image using a custom theme
     /// Perfect for menubar apps that need system-level notifications with custom styling
     @discardableResult
-    static func show(image: NSImage?, theme: NimbusTheming, position: BezelPosition? = nil) -> NimbusBezel {
+    static func show(image: NSImage?, theme: NimbusTheming, position: BezelPosition = .bottom) -> NimbusBezel {
         let bezel = NimbusBezel(image: image, theme: theme, position: position)
         return bezel.show()
     }
@@ -404,7 +413,7 @@ public extension NimbusBezel {
     /// Shows a bezel with an image and text using a custom theme
     /// Perfect for menubar apps that need system-level notifications with custom styling
     @discardableResult
-    static func show(image: NSImage?, text: String?, theme: NimbusTheming, position: BezelPosition? = nil) -> NimbusBezel {
+    static func show(image: NSImage?, text: String?, theme: NimbusTheming, position: BezelPosition = .bottom) -> NimbusBezel {
         let bezel = NimbusBezel(image: image, text: text, theme: theme, position: position)
         return bezel.show()
     }
