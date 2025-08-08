@@ -31,12 +31,6 @@ public enum BezelPosition: CaseIterable {
 
 /// A NimbusBezel is an on-screen view containing a quick message for the user.
 ///
-/// When the view is shown to the user, it appears as a floating window over all
-/// applications, but will never become key. The user will probably not be interacting
-/// with your app. The idea is to be as unobtrusive as possible, while still
-/// showing the user the information you want them to see. Two examples are the
-/// volume control, and a brief message saying that your settings have been saved.
-///
 /// NimbusBezel provides a programmatic API for standalone usage, perfect for menubar
 /// applications and system-level notifications. It integrates with the NimbusUI theming
 /// system for consistent styling across your application.
@@ -169,7 +163,7 @@ public class NimbusBezel: Hashable, Equatable {
         window.isReleasedWhenClosed = false
         window.collectionBehavior = [.canJoinAllSpaces, .ignoresCycle, .stationary,
                                     .fullScreenAuxiliary, .fullScreenDisallowsTiling]
-        window.setValue(true, forKey: "preventsActivation")
+//        window.setValue(true, forKey: "preventsActivation") // Private API ⚠️
         window.appearance = colorScheme == .dark ? NSAppearance(named: .darkAqua) : NSAppearance(named: .aqua)
         
         window.contentView = effectView
@@ -421,7 +415,7 @@ public extension NimbusBezel {
     }
 }
 
-public class BezelImageView: NSView {
+class BezelImageView: NSView {
     
     private lazy var imageView: NSImageView = {
         let v = NSImageView()
@@ -431,20 +425,22 @@ public class BezelImageView: NSView {
         return v
     }()
     
-    public var image: NSImage? {
+    var image: NSImage? {
         get { return imageView.image }
         set { imageView.image = newValue }
     }
     
-    public override init(frame frameRect: NSRect) {
+    override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         setup()
     }
-    public required init?(coder: NSCoder) {
+    
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    public func setup() {
+    
+    func setup() {
         addSubview(imageView)
         
         leftAnchor.constraint(equalTo: imageView.leftAnchor).isActive = true
@@ -452,11 +448,9 @@ public class BezelImageView: NSView {
         topAnchor.constraint(equalTo: imageView.topAnchor).isActive = true
         bottomAnchor.constraint(equalTo: imageView.bottomAnchor).isActive = true
     }
-    
-    public override var allowsVibrancy: Bool { return true }
 }
 
-public class BezelImageTextView: NSView {
+class BezelImageTextView: NSView {
     
     private lazy var imageView: NSImageView = {
         let v = NSImageView()
@@ -485,30 +479,30 @@ public class BezelImageTextView: NSView {
         return v
     }()
     
-    public var image: NSImage? {
+    var image: NSImage? {
         get { return imageView.image }
         set { imageView.image = newValue }
     }
     
-    public var text: String? {
+    var text: String? {
         get { return textField.stringValue }
         set { textField.stringValue = newValue ?? "" }
     }
     
-    public var font: NSFont? {
+    var font: NSFont? {
         get { return textField.font }
         set { textField.font = newValue }
     }
     
-    public override init(frame frameRect: NSRect) {
+    override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         setup()
     }
-    public required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    public func setup() {
+    func setup() {
         addSubview(imageView)
         addSubview(textField)
         
@@ -522,8 +516,6 @@ public class BezelImageTextView: NSView {
         
         imageView.bottomAnchor.constraint(equalTo: textField.topAnchor, constant: -10).isActive = true
     }
-    
-    public override var allowsVibrancy: Bool { return true }
 }
 
 // MARK: - Extensions
