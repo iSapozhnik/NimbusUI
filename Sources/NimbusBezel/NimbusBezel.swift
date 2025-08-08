@@ -29,20 +29,6 @@ public class NimbusBezel: Hashable, Equatable {
     // window padding = 20x20
     // window position = centerx140
     // window corners = 19
-//    public enum ColorMode {
-//        case light, lightReducedTransparency, lightIncreasedContrast
-//        case dark, darkReducedTransparency, darkIncreasedContrast
-//    }
-//    
-//    public static var activeColorMode: ColorMode {
-//        if NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast {
-//            return NSAppearance.system.name == .vibrantDark ? .darkIncreasedContrast : .lightIncreasedContrast
-//        }
-//        if NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency {
-//            return NSAppearance.system.name == .vibrantDark ? .darkReducedTransparency : .lightReducedTransparency
-//        }
-//        return NSAppearance.system.name == .vibrantDark ? .dark : .light
-//    }
     
     /// The currently displayed on-screen bezel. Changing this value causes the (possible)
     /// `oldValue` to be hidden and the (possible) `newValue` to be shown, if applicable.
