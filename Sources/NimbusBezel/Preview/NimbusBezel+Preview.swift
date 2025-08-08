@@ -10,133 +10,266 @@ import AppKit
 
 #if DEBUG
 
-// MARK: - SwiftUI Integration Examples
+// MARK: - Programmatic API Examples
 
-struct BezelSwiftUIExampleView: View {
-    @State private var showImageBezel = false
-    @State private var showTextBezel = false
-    @State private var showCustomBezel = false
-    @State private var showPersistentBezel = false
-    
+struct BezelProgrammaticExamplesView: View {
     var body: some View {
         VStack(spacing: 20) {
-            Text("SwiftUI Bezel Integration - Fixed Timing")
-                .font(.headline)
+            Text("NimbusBezel - Programmatic API")
+                .font(.title2)
+                .fontWeight(.semibold)
                 .padding(.bottom)
             
-            Button("Show 2s Image Bezel") {
-                showImageBezel = true
-            }
-            .nimbusBezel(
-                isPresented: $showImageBezel,
-                systemImageName: NSImage.touchBarAudioOutputVolumeHighTemplateName,
-                autoDismissAfter: .seconds(2)
-            )
+            Text("Direct method calls - no SwiftUI modifiers needed")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .padding(.bottom, 10)
             
-            Button("Show 3s Text Bezel") {
-                showTextBezel = true
-            }
-            .nimbusBezel(
-                isPresented: $showTextBezel,
-                systemImageName: NSImage.statusAvailableName,
-                text: "Will auto-dismiss after 3 seconds",
-                autoDismissAfter: .seconds(3)
-            )
+            // MARK: - Basic Usage
             
-            Button("Show 5s Custom Theme Bezel") {
-                showCustomBezel = true
-            }
-            .environment(\.nimbusTheme, MaritimeTheme())
-            .nimbusBezel(
-                isPresented: $showCustomBezel,
-                systemImageName: NSImage.networkName,
-                text: "Maritime theme - 5 second display",
-                autoDismissAfter: .seconds(5)
-            )
-            
-            HStack {
-                Button("Show Persistent") {
-                    showPersistentBezel = true
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Basic Usage")
+                    .font(.headline)
+                
+                Button("Volume Bezel (2s)") {
+                    // Perfect for system-style notifications
+                    let image = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
+                    NimbusBezel.show(image: image)
+                        .hide(after: .seconds(2))
                 }
                 
-                Button("Hide Persistent") {
-                    showPersistentBezel = false
+                Button("Success Message (3s)") {
+                    // Task completion notification
+                    let image = NSImage(named: NSImage.statusAvailableName)
+                    NimbusBezel.show(
+                        image: image,
+                        text: "Task completed successfully!"
+                    ).hide(after: .seconds(3))
                 }
-                .disabled(!showPersistentBezel)
             }
-            .nimbusBezel(
-                isPresented: $showPersistentBezel,
-                systemImageName: NSImage.infoName,
-                text: "Persistent bezel - manual dismiss only"
-                // No autoDismissAfter - must be manually dismissed
-            )
+            
+            Divider()
+            
+            // MARK: - Custom Themes
+            
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Custom Themes")
+                    .font(.headline)
+                
+                Button("Maritime Theme (4s)") {
+                    // Branded bezel with custom theme
+                    let image = NSImage(named: NSImage.networkName)
+                    NimbusBezel.show(
+                        image: image,
+                        text: "Maritime theme applied",
+                        theme: MaritimeTheme()
+                    ).hide(after: .seconds(4))
+                }
+                
+                Button("Default Theme vs Custom") {
+                    // Show difference between themes
+                    showThemeComparison()
+                }
+            }
+            
+            Divider()
+            
+            // MARK: - Real-World Scenarios
+            
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Real-World Scenarios")
+                    .font(.headline)
+                
+                Button("Simulate App Event") {
+                    // Simulate background task completion
+                    simulateAppEvent()
+                }
+                
+                Button("Show System Status") {
+                    // System status notification
+                    showSystemStatus()
+                }
+                
+                Button("Quick Flash (1s)") {
+                    // Very quick notification
+                    let image = NSImage(named: NSImage.cautionName)
+                    NimbusBezel.show(
+                        image: image,
+                        text: "Quick notification"
+                    ).hide(after: .seconds(1))
+                }
+            }
         }
         .padding()
+        .frame(maxWidth: 400)
     }
-}
-
-// MARK: - Standalone API Examples (for menubar apps)
-
-struct BezelStandaloneExampleView: View {
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("Standalone API - For Menubar Apps")
-                .font(.headline)
-                .padding(.bottom)
-            
-            Button("Show 2s Standalone Image Bezel") {
-                // Perfect for menubar apps - no SwiftUI context needed
-                let image = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
-                NimbusBezel.show(image: image)
-                    .hide(after: .seconds(2))
-            }
-            
-            Button("Show 3s Standalone Text Bezel") {
-                // With text and image
-                let image = NSImage(named: NSImage.statusAvailableName)
-                NimbusBezel.show(
-                    image: image,
-                    text: "Standalone API - 3 seconds"
-                ).hide(after: .seconds(3))
-            }
-            
-            Button("Show 4s Custom Theme Standalone") {
-                // With custom theme for consistent branding
-                let image = NSImage(named: NSImage.networkName)
-                NimbusBezel.show(
-                    image: image,
-                    text: "Maritime theme - 4 seconds",
-                    theme: MaritimeTheme()
-                ).hide(after: .seconds(4))
-            }
-            
-            Button("Show Immediate Hide Test") {
-                // Test that immediate hide works
-                let image = NSImage(named: NSImage.cautionName)
-                _ = NimbusBezel.show(
-                    image: image,
-                    text: "This will hide in 1 second"
-                ).hide(after: .seconds(1))
-            }
+    
+    // MARK: - Helper Methods
+    
+    private func showThemeComparison() {
+        // Show default theme first
+        let defaultImage = NSImage(named: NSImage.bluetoothTemplateName)
+        NimbusBezel.show(image: defaultImage, text: "Default Theme")
+            .hide(after: .seconds(2))
+        
+        // Show maritime theme after delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            let maritimeImage = NSImage(named: NSImage.bluetoothTemplateName)
+            NimbusBezel.show(
+                image: maritimeImage,
+                text: "Maritime Theme",
+                theme: MaritimeTheme()
+            ).hide(after: .seconds(2))
         }
-        .padding()
+    }
+    
+    private func simulateAppEvent() {
+        // Simulate a background operation
+        let loadingImage = NSImage(named: NSImage.refreshTemplateName)
+        NimbusBezel.show(image: loadingImage, text: "Processing...")
+            .hide(after: .seconds(1))
+        
+        // Show completion
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            let successImage = NSImage(named: NSImage.menuOnStateTemplateName)
+            NimbusBezel.show(image: successImage, text: "Process Complete!")
+                .hide(after: .seconds(2))
+        }
+    }
+    
+    private func showSystemStatus() {
+        let statusImage = NSImage(named: NSImage.computerName)
+        NimbusBezel.show(
+            image: statusImage,
+            text: "System Status: All Good"
+        ).hide(after: .seconds(3))
     }
 }
 
 // MARK: - Previews
 
-#Preview("SwiftUI Integration") {
-    BezelSwiftUIExampleView()
-        .environment(\.nimbusTheme, NimbusTheme.default)
-}
-
-#Preview("Standalone API") {
-    BezelStandaloneExampleView()
+#Preview("Programmatic API") {
+    BezelProgrammaticExamplesView()
 }
 
 #Preview("Maritime Theme") {
-    BezelSwiftUIExampleView()
+    BezelProgrammaticExamplesView()
         .environment(\.nimbusTheme, MaritimeTheme())
 }
+
+// MARK: - API Verification
+
+struct APIVerificationView: View {
+    var body: some View {
+        VStack {
+            Text("API Verification")
+                .font(.headline)
+            
+            Button("Test Basic API") {
+                // This should work without any SwiftUI context
+                testBasicAPI()
+            }
+        }
+        .padding()
+    }
+    
+    private func testBasicAPI() {
+        // Test all variations of the API
+        let image = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
+        
+        // Basic image-only
+        NimbusBezel.show(image: image).hide(after: .seconds(1))
+        
+        // With text  
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            NimbusBezel.show(image: image, text: "With text").hide(after: .seconds(1))
+        }
+        
+        // With theme
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.4) {
+            NimbusBezel.show(image: image, theme: MaritimeTheme()).hide(after: .seconds(1))
+        }
+        
+        // With text and theme
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.6) {
+            NimbusBezel.show(image: image, text: "Custom theme", theme: MaritimeTheme()).hide(after: .seconds(1))
+        }
+    }
+}
+
+#Preview("API Verification") {
+    APIVerificationView()
+}
+
+// MARK: - Usage Examples for Documentation
+
+/*
+
+## NimbusBezel - Programmatic Usage Examples
+
+Perfect for any app that needs system-level notifications without SwiftUI complexity.
+
+### Basic Usage
+```swift
+// Simple image bezel
+let image = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
+NimbusBezel.show(image: image).hide(after: .seconds(2))
+
+// With text message
+let successImage = NSImage(named: NSImage.statusAvailableName)
+NimbusBezel.show(image: successImage, text: "Task completed!")
+    .hide(after: .seconds(3))
+```
+
+### Custom Themes
+```swift
+// Use custom theme for branding
+NimbusBezel.show(
+    image: NSImage(named: NSImage.networkName),
+    text: "Connected to server",
+    theme: MaritimeTheme()
+).hide(after: .seconds(4))
+```
+
+### Real-World Integration
+```swift
+@IBAction func exportData(_ sender: NSButton) {
+    // Show processing
+    let loadingImage = NSImage(named: NSImage.refreshTemplateName)
+    NimbusBezel.show(image: loadingImage, text: "Exporting...")
+        .hide(after: .seconds(1))
+    
+    // Perform export...
+    exportDataToFile { success in
+        DispatchQueue.main.async {
+            if success {
+                let successImage = NSImage(named: NSImage.menuOnStateTemplateName)
+                NimbusBezel.show(image: successImage, text: "Export complete!")
+                    .hide(after: .seconds(2))
+            } else {
+                let errorImage = NSImage(named: NSImage.cautionName)
+                NimbusBezel.show(image: errorImage, text: "Export failed")
+                    .hide(after: .seconds(3))
+            }
+        }
+    }
+}
+```
+
+### Menubar App Usage
+```swift
+func showVolumeChanged() {
+    let volumeImage = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
+    NimbusBezel.show(image: volumeImage).hide(after: .seconds(1))
+}
+
+func showNetworkStatus(_ connected: Bool) {
+    let image = NSImage(named: connected ? NSImage.networkName : NSImage.cautionName)
+    let message = connected ? "Network connected" : "Network disconnected"
+    NimbusBezel.show(image: image, text: message).hide(after: .seconds(2))
+}
+```
+
+*/
 
 #endif
