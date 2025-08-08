@@ -284,6 +284,7 @@ public class NimbusBezel: Hashable, Equatable {
 
         NSAnimationContext.runAnimationGroup({
             $0.duration = theme.bezelShowAnimationDuration
+            $0.timingFunction = CAMediaTimingFunction(name: .easeIn)
             window.animator().alphaValue = 1.0
         }, completionHandler: handler)
     }
@@ -293,6 +294,7 @@ public class NimbusBezel: Hashable, Equatable {
         window.alphaValue = 1.0
         NSAnimationContext.runAnimationGroup({
             $0.duration = theme.bezelHideAnimationDuration
+            $0.timingFunction = CAMediaTimingFunction(name: .easeOut)
             window.animator().alphaValue = 0.0
         }, completionHandler: {
             self.window.close()
