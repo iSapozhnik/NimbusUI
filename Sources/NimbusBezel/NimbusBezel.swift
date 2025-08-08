@@ -14,7 +14,7 @@ import SwiftUI
 // - Smooth presentation animations
 // - Theme integration and customization
 // - macOS system-like visual design
-// - SwiftUI integration and standalone API
+// - Programmatic API for standalone usage
 
 // adapted from https://raw.githubusercontent.com/avaidyam/Parrot/refs/heads/master/MochaUI/SystemBezel.swift
 
@@ -26,9 +26,9 @@ import SwiftUI
 /// showing the user the information you want them to see. Two examples are the
 /// volume control, and a brief message saying that your settings have been saved.
 ///
-/// NimbusBezel supports both SwiftUI integration via view modifiers and standalone usage
-/// for menubar applications. It integrates with the NimbusUI theming system for consistent
-/// styling across your application.
+/// NimbusBezel provides a programmatic API for standalone usage, perfect for menubar
+/// applications and system-level notifications. It integrates with the NimbusUI theming
+/// system for consistent styling across your application.
 public class NimbusBezel: Hashable, Equatable {
     
     // MARK: - Configuration
@@ -43,7 +43,7 @@ public class NimbusBezel: Hashable, Equatable {
     /// `oldValue` to be hidden and the (possible) `newValue` to be shown, if applicable.
     private static var currentBezel: NimbusBezel? = nil {
         didSet {
-            let newValue = self.currentBezel
+            let newValue = currentBezel
             if oldValue != nil && newValue == nil /* hide old! */ {
                 oldValue!._hide()
             } else if oldValue == nil && newValue != nil /* show new! */ {
@@ -59,9 +59,9 @@ public class NimbusBezel: Hashable, Equatable {
     /// only when all preceeding bezels have been displayed and hidden.
     private static var bezelQueue: [NimbusBezel] = [] {
         didSet {
-            guard self.bezelQueue.count > 0 && self.currentBezel == nil else { return }
-            self.currentBezel = self.bezelQueue.removeFirst()
-            self._triggerNext()
+            guard bezelQueue.count > 0 && currentBezel == nil else { return }
+            currentBezel = bezelQueue.removeFirst()
+            _triggerNext()
         }
     }
     
@@ -69,17 +69,13 @@ public class NimbusBezel: Hashable, Equatable {
     /// the bezel will be hidden and the next (possible) bezel in the queue will be
     /// shown automatically.
     private static func _triggerNext() {
-        if let i = self.currentBezel?.hideInterval {
+        if let i = currentBezel?.hideInterval {
             DispatchQueue.main.asyncAfter(deadline: .now() + i) {
-                self.currentBezel = self.bezelQueue.count > 0 ? self.bezelQueue.removeFirst() : nil
-                self._triggerNext()
+                currentBezel = bezelQueue.count > 0 ? bezelQueue.removeFirst() : nil
+                _triggerNext()
             }
         }
     }
-    
-    //
-    //
-    //
     
     /// The internal window used by the bezel.
     private let window: NSWindow
@@ -95,10 +91,10 @@ public class NimbusBezel: Hashable, Equatable {
     public var contentView: NSView? = nil {
         didSet {
             oldValue?.removeFromSuperview()
-            if let n = self.contentView {
-                self.effectView.addSubview(n)
+            if let n = contentView {
+                effectView.addSubview(n)
                 let padding = theme.bezelContentPadding
-                n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
+                n.frame = effectView.bounds.insetBy(dx: padding, dy: padding)
             }
         }
     }
@@ -106,8 +102,8 @@ public class NimbusBezel: Hashable, Equatable {
     /// The appearance of the bezel. If `nil`, it follows the system appearance.
     public var appearance: NSAppearance? = nil {
         didSet {
-            self.window.appearance = self.appearance ?? NSAppearance.system
-            self.effectView.appearance = self.window.appearance
+            window.appearance = appearance ?? NSAppearance.system
+            effectView.appearance = window.appearance
         }
     }
     
@@ -139,120 +135,95 @@ public class NimbusBezel: Hashable, Equatable {
         let bezelFrame = NSRect(x: 0, y: theme.bezelPositionOffset, 
                                width: bezelSize.width, height: bezelSize.height)
         
-        self.window = NSWindow(contentRect: bezelFrame,
-                               styleMask: .borderless, backing: .buffered, defer: false)
-        self.effectView = NSVisualEffectView(frame: NSRect(origin: .zero, size: bezelSize))
+        window = NSWindow(contentRect: bezelFrame,
+                         styleMask: .borderless, backing: .buffered, defer: false)
+        effectView = NSVisualEffectView(frame: NSRect(origin: .zero, size: bezelSize))
         
-        self._setupWindow()
-        self._setupEffectView(cornerRadius: cornerRadius)
+        _setupWindow()
+        _setupEffectView(cornerRadius: cornerRadius)
     }
     
     /// Sets up the window with theme-aware configuration
     private func _setupWindow() {
-        self.window.isMovable = false
-        self.window.ignoresMouseEvents = true
-        self.window.acceptsMouseMovedEvents = false
-        self.window.backgroundColor = .clear
-        self.window.isOpaque = false
-        self.window.level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGWindowLevelForKey(.cursorWindow)))
-        self.window.isReleasedWhenClosed = false
-        self.window.collectionBehavior = [.canJoinAllSpaces, .ignoresCycle, .stationary,
-                                          .fullScreenAuxiliary, .fullScreenDisallowsTiling]
-        self.window.setValue(true, forKey: "preventsActivation")
-        self.window.appearance = colorScheme == .dark ? NSAppearance(named: .darkAqua) : NSAppearance(named: .aqua)
+        window.isMovable = false
+        window.ignoresMouseEvents = true
+        window.acceptsMouseMovedEvents = false
+        window.backgroundColor = .clear
+        window.isOpaque = false
+        window.level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGWindowLevelForKey(.cursorWindow)))
+        window.isReleasedWhenClosed = false
+        window.collectionBehavior = [.canJoinAllSpaces, .ignoresCycle, .stationary,
+                                    .fullScreenAuxiliary, .fullScreenDisallowsTiling]
+        window.setValue(true, forKey: "preventsActivation")
+        window.appearance = colorScheme == .dark ? NSAppearance(named: .darkAqua) : NSAppearance(named: .aqua)
         
-        self.window.contentView = self.effectView
-        self.window.contentView?.superview?.wantsLayer = true // root
+        window.contentView = effectView
+        window.contentView?.superview?.wantsLayer = true // root
     }
     
     /// Sets up the effect view with theme-aware configuration
     private func _setupEffectView(cornerRadius: CGFloat) {
-        self.effectView.state = .active
-        self.effectView.blendingMode = .behindWindow
-        self.effectView.maskImage = self._maskImage(cornerRadius: cornerRadius)
-        self.effectView.appearance = self.window.appearance
-        self.effectView.material = theme.bezelBlurMaterial
+        effectView.state = .active
+        effectView.blendingMode = .behindWindow
+        effectView.maskImage = _maskImage(cornerRadius: cornerRadius)
+        effectView.appearance = window.appearance
+        effectView.material = theme.bezelBlurMaterial
     }
     
     /// Creates a new unqueued bezel with an image.
     public convenience init(image: NSImage?) {
         self.init()
-        let t = BezelImageView()
-        t.image = image
-        self.contentView = t // doesn't trigger .didset
-        if let n = self.contentView { // replace .didset
-            self.effectView.addSubview(n)
-            let padding = theme.bezelContentPadding
-            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
-        }
+        let imageView = BezelImageView()
+        imageView.image = image
+        setupContentView(imageView)
     }
     
     /// Creates a new unqueued bezel with an image and text.
     public convenience init(image: NSImage?, text: String?) {
         self.init()
-        let t = BezelImageTextView()
-        t.image = image
-        t.text = text
-        self.contentView = t // doesn't trigger .didset
-        if let n = self.contentView { // replace .didset
-            self.effectView.addSubview(n)
-            let padding = theme.bezelContentPadding
-            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
-        }
+        let imageTextView = BezelImageTextView()
+        imageTextView.image = image
+        imageTextView.text = text
+        setupContentView(imageTextView)
     }
     
     /// Creates a new unqueued bezel with an image and optional theme.
     public convenience init(image: NSImage?, theme: NimbusTheming) {
         self.init(theme: theme)
-        let t = BezelImageView()
-        t.image = image
-        self.contentView = t // doesn't trigger .didset
-        if let n = self.contentView { // replace .didset
-            self.effectView.addSubview(n)
-            let padding = self.theme.bezelContentPadding
-            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
-        }
+        let imageView = BezelImageView()
+        imageView.image = image
+        setupContentView(imageView)
     }
     
     /// Creates a new unqueued bezel with an image, text and optional theme.
     public convenience init(image: NSImage?, text: String?, theme: NimbusTheming) {
         self.init(theme: theme)
-        let t = BezelImageTextView()
-        t.image = image
-        t.text = text
-        self.contentView = t // doesn't trigger .didset
-        if let n = self.contentView { // replace .didset
-            self.effectView.addSubview(n)
-            let padding = self.theme.bezelContentPadding
-            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
-        }
+        let imageTextView = BezelImageTextView()
+        imageTextView.image = image
+        imageTextView.text = text
+        setupContentView(imageTextView)
     }
     
     /// Creates a new unqueued bezel with an image, theme, and color scheme.
     public convenience init(image: NSImage?, theme: NimbusTheming, colorScheme: ColorScheme) {
         self.init(theme: theme, colorScheme: colorScheme)
-        let t = BezelImageView()
-        t.image = image
-        self.contentView = t // doesn't trigger .didset
-        if let n = self.contentView { // replace .didset
-            self.effectView.addSubview(n)
-            let padding = self.theme.bezelContentPadding
-            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
-        }
+        let imageView = BezelImageView()
+        imageView.image = image
+        setupContentView(imageView)
     }
     
     /// Creates a new unqueued bezel with an image, text, theme, and color scheme.
     public convenience init(image: NSImage?, text: String?, theme: NimbusTheming, colorScheme: ColorScheme) {
         self.init(theme: theme, colorScheme: colorScheme)
-        let t = BezelImageTextView()
-        t.image = image
-        t.text = text
-        self.contentView = t // doesn't trigger .didset
-        if let n = self.contentView { // replace .didset
-            self.effectView.addSubview(n)
-            let padding = self.theme.bezelContentPadding
-            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
-        }
+        let imageTextView = BezelImageTextView()
+        imageTextView.image = image
+        imageTextView.text = text
+        setupContentView(imageTextView)
+    }
+    
+    /// Helper method to set up content view with theme-aware padding
+    private func setupContentView(_ view: NSView) {
+        contentView = view
     }
     
     /// Set the visual appearance of the bezel. If `nil`, the bezel takes on
@@ -279,38 +250,34 @@ public class NimbusBezel: Hashable, Equatable {
             NimbusBezel.currentBezel = nil
         } else if NimbusBezel.currentBezel != self && interval == nil { // we're queued, dequeue
             NimbusBezel.bezelQueue.remove(self)
-        } else if NimbusBezel.currentBezel == self && interval != nil && self.hideInterval == nil { // set the autohide now
-            self.hideInterval = interval
+        } else if NimbusBezel.currentBezel == self && interval != nil && hideInterval == nil { // set the autohide now
+            hideInterval = interval
             NimbusBezel._triggerNext()
         } else {
-            self.hideInterval = interval
+            hideInterval = interval
         }
         return self
     }
     
-    //
-    //
-    //
-    
     /// Actually set the bezel frame and animate its display on-screen.
     private func _show(_ handler: @escaping () -> () = {}) {
-        self._centerBezel()
+        _centerBezel()
         
-        self.window.alphaValue = 0.0
-        self.window.orderFront(nil)
+        window.alphaValue = 0.0
+        window.orderFront(nil)
 
         NSAnimationContext.runAnimationGroup({
             $0.duration = theme.bezelShowAnimationDuration
-            self.window.animator().alphaValue = 1.0
+            window.animator().alphaValue = 1.0
         }, completionHandler: handler)
     }
     
     /// Actually hide the bezel and animate it off-screen.
     private func _hide(_ handler: @escaping () -> () = {}) {
-        self.window.alphaValue = 1.0
+        window.alphaValue = 1.0
         NSAnimationContext.runAnimationGroup({
             $0.duration = theme.bezelHideAnimationDuration
-            self.window.animator().alphaValue = 0.0
+            window.animator().alphaValue = 0.0
         }, completionHandler: {
             self.window.close()
             handler()
@@ -339,9 +306,9 @@ public class NimbusBezel: Hashable, Equatable {
     private func _centerBezel() {
         guard let mainScreen = NSScreen.main else { return }
         let screenHorizontalMidPoint = mainScreen.frame.size.width / 2
-        var newFrame = self.window.frame
-        newFrame.origin.x = screenHorizontalMidPoint - (self.window.frame.size.width / 2)
-        self.window.setFrame(newFrame, display: true, animate: false)
+        var newFrame = window.frame
+        newFrame.origin.x = screenHorizontalMidPoint - (window.frame.size.width / 2)
+        window.setFrame(newFrame, display: true, animate: false)
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -400,29 +367,25 @@ public class BezelImageView: NSView {
     }()
     
     public var image: NSImage? {
-        get { return self.imageView.image }
-        set { self.imageView.image = newValue }
+        get { return imageView.image }
+        set { imageView.image = newValue }
     }
-    
-    //
-    //
-    //
     
     public override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        self.setup()
+        setup()
     }
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.setup()
+        setup()
     }
     public func setup() {
-        self.addSubview(self.imageView)
+        addSubview(imageView)
         
-        self.leftAnchor.constraint(equalTo: self.imageView.leftAnchor).isActive = true
-        self.rightAnchor.constraint(equalTo: self.imageView.rightAnchor).isActive = true
-        self.topAnchor.constraint(equalTo: self.imageView.topAnchor).isActive = true
-        self.bottomAnchor.constraint(equalTo: self.imageView.bottomAnchor).isActive = true
+        leftAnchor.constraint(equalTo: imageView.leftAnchor).isActive = true
+        rightAnchor.constraint(equalTo: imageView.rightAnchor).isActive = true
+        topAnchor.constraint(equalTo: imageView.topAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: imageView.bottomAnchor).isActive = true
     }
     
     public override var allowsVibrancy: Bool { return true }
@@ -458,45 +421,41 @@ public class BezelImageTextView: NSView {
     }()
     
     public var image: NSImage? {
-        get { return self.imageView.image }
-        set { self.imageView.image = newValue }
+        get { return imageView.image }
+        set { imageView.image = newValue }
     }
     
     public var text: String? {
-        get { return self.textField.stringValue }
-        set { self.textField.stringValue = newValue ?? "" }
+        get { return textField.stringValue }
+        set { textField.stringValue = newValue ?? "" }
     }
     
     public var font: NSFont? {
-        get { return self.textField.font }
-        set { self.textField.font = newValue }
+        get { return textField.font }
+        set { textField.font = newValue }
     }
-    
-    //
-    //
-    //
     
     public override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        self.setup()
+        setup()
     }
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.setup()
+        setup()
     }
     public func setup() {
-        self.addSubview(self.imageView)
-        self.addSubview(self.textField)
+        addSubview(imageView)
+        addSubview(textField)
         
-        self.leftAnchor.constraint(equalTo: self.imageView.leftAnchor).isActive = true
-        self.rightAnchor.constraint(equalTo: self.imageView.rightAnchor).isActive = true
-        self.topAnchor.constraint(equalTo: self.imageView.topAnchor).isActive = true
+        leftAnchor.constraint(equalTo: imageView.leftAnchor).isActive = true
+        rightAnchor.constraint(equalTo: imageView.rightAnchor).isActive = true
+        topAnchor.constraint(equalTo: imageView.topAnchor).isActive = true
         
-        self.leftAnchor.constraint(equalTo: self.textField.leftAnchor).isActive = true
-        self.rightAnchor.constraint(equalTo: self.textField.rightAnchor).isActive = true
-        self.bottomAnchor.constraint(equalTo: self.textField.bottomAnchor).isActive = true
+        leftAnchor.constraint(equalTo: textField.leftAnchor).isActive = true
+        rightAnchor.constraint(equalTo: textField.rightAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: textField.bottomAnchor).isActive = true
         
-        self.imageView.bottomAnchor.constraint(equalTo: self.textField.topAnchor, constant: -10).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: textField.topAnchor, constant: -10).isActive = true
     }
     
     public override var allowsVibrancy: Bool { return true }
@@ -524,8 +483,9 @@ extension NSAppearance {
             let fallback = NSApp.effectiveAppearance
             return NSAppearance(named: isDark ? .darkAqua : .aqua) ?? fallback
         } else {
-            // Pre-10.14 fallback
-            return NSAppearance(named: isDark ? .vibrantDark : .vibrantLight) ?? NSAppearance(named: .aqua)!
+            // Pre-10.14 fallback - aqua should always be available
+            let fallbackAppearance = NSAppearance(named: isDark ? .vibrantDark : .vibrantLight)
+            return fallbackAppearance ?? NSAppearance(named: .aqua) ?? NSAppearance()
         }
     }
     
