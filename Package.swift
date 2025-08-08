@@ -22,10 +22,20 @@ let package = Package(
         .library(
             name: "NimbusOnboarding",
             targets: ["NimbusOnboarding"]),
+        .library(
+            name: "NimbusBezel",
+            targets: ["NimbusBezel"]),
         // Convenience umbrella library
         .library(
             name: "NimbusUI",
-            targets: ["NimbusCore", "NimbusComponents", "NimbusNotifications", "NimbusOnboarding"]),
+            targets: [
+                "NimbusCore",
+                "NimbusComponents",
+                "NimbusNotifications",
+                "NimbusOnboarding",
+                "NimbusBezel"
+            ]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Cindori/FluidGradient.git", from: "1.0.0"),
@@ -66,6 +76,12 @@ let package = Package(
             ]
         ),
         
+        // Optional bezel system
+        .target(
+            name: "NimbusBezel",
+            dependencies: ["NimbusCore"]
+        ),
+        
         // Test targets
         .testTarget(
             name: "NimbusCoreTests",
@@ -99,12 +115,21 @@ let package = Package(
             ],
         ),
         .testTarget(
+            name: "NimbusBezelsTests",
+            dependencies: [
+                "NimbusCore",
+                "NimbusBezel",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
+        ),
+        .testTarget(
             name: "NimbusUITests",
             dependencies: [
                 "NimbusCore",
                 "NimbusComponents", 
                 "NimbusNotifications",
                 "NimbusOnboarding",
+                "NimbusBezel",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
         ),
