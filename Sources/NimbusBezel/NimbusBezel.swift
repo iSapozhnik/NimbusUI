@@ -6,6 +6,7 @@
 //
 
 import AppKit
+import SwiftUI
 @_exported import NimbusCore
 
 // This module provides the NimbusUI bezel system:
@@ -13,6 +14,7 @@ import AppKit
 // - Smooth presentation animations
 // - Theme integration and customization
 // - macOS system-like visual design
+// - SwiftUI integration and standalone API
 
 // adapted from https://raw.githubusercontent.com/avaidyam/Parrot/refs/heads/master/MochaUI/SystemBezel.swift
 
@@ -23,12 +25,19 @@ import AppKit
 /// with your app. The idea is to be as unobtrusive as possible, while still
 /// showing the user the information you want them to see. Two examples are the
 /// volume control, and a brief message saying that your settings have been saved.
+///
+/// NimbusBezel supports both SwiftUI integration via view modifiers and standalone usage
+/// for menubar applications. It integrates with the NimbusUI theming system for consistent
+/// styling across your application.
 public class NimbusBezel: Hashable, Equatable {
     
-    // window size = 200x200
-    // window padding = 20x20
-    // window position = centerx140
-    // window corners = 19
+    // MARK: - Configuration
+    
+    /// The theme used for styling the bezel
+    private let theme: NimbusTheming
+    
+    /// The color scheme for appearance (light/dark mode)
+    private let colorScheme: ColorScheme
     
     /// The currently displayed on-screen bezel. Changing this value causes the (possible)
     /// `oldValue` to be hidden and the (possible) `newValue` to be shown, if applicable.
@@ -88,7 +97,8 @@ public class NimbusBezel: Hashable, Equatable {
             oldValue?.removeFromSuperview()
             if let n = self.contentView {
                 self.effectView.addSubview(n)
-                n.frame = self.effectView.bounds.insetBy(dx: 20, dy: 20)
+                let padding = theme.bezelContentPadding
+                n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
             }
         }
     }
@@ -102,15 +112,43 @@ public class NimbusBezel: Hashable, Equatable {
     }
     
     /// Creates a new default unqueued bezel with no content.
-    public init() {
-        let cornerRadius: CGFloat = 19.0
-        let bezelFrame = NSRect(x: 0, y: 140, width: 200, height: 200)
+    /// Uses the default theme and automatically detects system color scheme.
+    public convenience init() {
+        self.init(theme: NimbusTheme.default)
+    }
+    
+    /// Creates a new default unqueued bezel with specified theme.
+    /// Automatically detects system color scheme.
+    public convenience init(theme: NimbusTheming) {
+        let systemColorScheme: ColorScheme = {
+            let isDark = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
+            return isDark ? .dark : .light
+        }()
+        
+        self.init(theme: theme, colorScheme: systemColorScheme)
+    }
+    
+    /// Creates a new default unqueued bezel with specified theme and color scheme.
+    /// This is the designated initializer.
+    public init(theme: NimbusTheming, colorScheme: ColorScheme) {
+        self.theme = theme
+        self.colorScheme = colorScheme
+        
+        let cornerRadius = theme.bezelCornerRadius
+        let bezelSize = theme.bezelSize
+        let bezelFrame = NSRect(x: 0, y: theme.bezelPositionOffset, 
+                               width: bezelSize.width, height: bezelSize.height)
         
         self.window = NSWindow(contentRect: bezelFrame,
                                styleMask: .borderless, backing: .buffered, defer: false)
-        self.effectView = NSVisualEffectView(frame: NSRect(origin: .zero,
-                                                           size: bezelFrame.size))
+        self.effectView = NSVisualEffectView(frame: NSRect(origin: .zero, size: bezelSize))
         
+        self._setupWindow()
+        self._setupEffectView(cornerRadius: cornerRadius)
+    }
+    
+    /// Sets up the window with theme-aware configuration
+    private func _setupWindow() {
         self.window.isMovable = false
         self.window.ignoresMouseEvents = true
         self.window.acceptsMouseMovedEvents = false
@@ -121,13 +159,19 @@ public class NimbusBezel: Hashable, Equatable {
         self.window.collectionBehavior = [.canJoinAllSpaces, .ignoresCycle, .stationary,
                                           .fullScreenAuxiliary, .fullScreenDisallowsTiling]
         self.window.setValue(true, forKey: "preventsActivation")
-        self.window.appearance = NSAppearance.system
+        self.window.appearance = colorScheme == .dark ? NSAppearance(named: .darkAqua) : NSAppearance(named: .aqua)
         
         self.window.contentView = self.effectView
         self.window.contentView?.superview?.wantsLayer = true // root
+    }
+    
+    /// Sets up the effect view with theme-aware configuration
+    private func _setupEffectView(cornerRadius: CGFloat) {
         self.effectView.state = .active
         self.effectView.blendingMode = .behindWindow
         self.effectView.maskImage = self._maskImage(cornerRadius: cornerRadius)
+        self.effectView.appearance = self.window.appearance
+        self.effectView.material = theme.bezelBlurMaterial
     }
     
     /// Creates a new unqueued bezel with an image.
@@ -138,7 +182,8 @@ public class NimbusBezel: Hashable, Equatable {
         self.contentView = t // doesn't trigger .didset
         if let n = self.contentView { // replace .didset
             self.effectView.addSubview(n)
-            n.frame = self.effectView.bounds.insetBy(dx: 20, dy: 20)
+            let padding = theme.bezelContentPadding
+            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
         }
     }
     
@@ -151,7 +196,62 @@ public class NimbusBezel: Hashable, Equatable {
         self.contentView = t // doesn't trigger .didset
         if let n = self.contentView { // replace .didset
             self.effectView.addSubview(n)
-            n.frame = self.effectView.bounds.insetBy(dx: 20, dy: 20)
+            let padding = theme.bezelContentPadding
+            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
+        }
+    }
+    
+    /// Creates a new unqueued bezel with an image and optional theme.
+    public convenience init(image: NSImage?, theme: NimbusTheming) {
+        self.init(theme: theme)
+        let t = BezelImageView()
+        t.image = image
+        self.contentView = t // doesn't trigger .didset
+        if let n = self.contentView { // replace .didset
+            self.effectView.addSubview(n)
+            let padding = self.theme.bezelContentPadding
+            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
+        }
+    }
+    
+    /// Creates a new unqueued bezel with an image, text and optional theme.
+    public convenience init(image: NSImage?, text: String?, theme: NimbusTheming) {
+        self.init(theme: theme)
+        let t = BezelImageTextView()
+        t.image = image
+        t.text = text
+        self.contentView = t // doesn't trigger .didset
+        if let n = self.contentView { // replace .didset
+            self.effectView.addSubview(n)
+            let padding = self.theme.bezelContentPadding
+            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
+        }
+    }
+    
+    /// Creates a new unqueued bezel with an image, theme, and color scheme.
+    public convenience init(image: NSImage?, theme: NimbusTheming, colorScheme: ColorScheme) {
+        self.init(theme: theme, colorScheme: colorScheme)
+        let t = BezelImageView()
+        t.image = image
+        self.contentView = t // doesn't trigger .didset
+        if let n = self.contentView { // replace .didset
+            self.effectView.addSubview(n)
+            let padding = self.theme.bezelContentPadding
+            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
+        }
+    }
+    
+    /// Creates a new unqueued bezel with an image, text, theme, and color scheme.
+    public convenience init(image: NSImage?, text: String?, theme: NimbusTheming, colorScheme: ColorScheme) {
+        self.init(theme: theme, colorScheme: colorScheme)
+        let t = BezelImageTextView()
+        t.image = image
+        t.text = text
+        self.contentView = t // doesn't trigger .didset
+        if let n = self.contentView { // replace .didset
+            self.effectView.addSubview(n)
+            let padding = self.theme.bezelContentPadding
+            n.frame = self.effectView.bounds.insetBy(dx: padding, dy: padding)
         }
     }
     
@@ -200,7 +300,7 @@ public class NimbusBezel: Hashable, Equatable {
         self.window.orderFront(nil)
 
         NSAnimationContext.runAnimationGroup({
-            $0.duration = 0.33
+            $0.duration = theme.bezelShowAnimationDuration
             self.window.animator().alphaValue = 1.0
         }, completionHandler: handler)
     }
@@ -209,7 +309,7 @@ public class NimbusBezel: Hashable, Equatable {
     private func _hide(_ handler: @escaping () -> () = {}) {
         self.window.alphaValue = 1.0
         NSAnimationContext.runAnimationGroup({
-            $0.duration = 0.66
+            $0.duration = theme.bezelHideAnimationDuration
             self.window.animator().alphaValue = 0.0
         }, completionHandler: {
             self.window.close()
@@ -250,6 +350,42 @@ public class NimbusBezel: Hashable, Equatable {
     
     public static func ==(_ lhs: NimbusBezel, _ rhs: NimbusBezel) -> Bool {
         return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    }
+}
+
+// MARK: - Static Convenience API
+
+public extension NimbusBezel {
+    /// Shows a bezel with an image using the default theme
+    /// Perfect for menubar apps that need system-level notifications
+    @discardableResult
+    static func show(image: NSImage?) -> NimbusBezel {
+        let bezel = NimbusBezel(image: image)
+        return bezel.show()
+    }
+    
+    /// Shows a bezel with an image and text using the default theme
+    /// Perfect for menubar apps that need system-level notifications
+    @discardableResult
+    static func show(image: NSImage?, text: String?) -> NimbusBezel {
+        let bezel = NimbusBezel(image: image, text: text)
+        return bezel.show()
+    }
+    
+    /// Shows a bezel with an image using a custom theme
+    /// Perfect for menubar apps that need system-level notifications with custom styling
+    @discardableResult
+    static func show(image: NSImage?, theme: NimbusTheming) -> NimbusBezel {
+        let bezel = NimbusBezel(image: image, theme: theme)
+        return bezel.show()
+    }
+    
+    /// Shows a bezel with an image and text using a custom theme
+    /// Perfect for menubar apps that need system-level notifications with custom styling
+    @discardableResult
+    static func show(image: NSImage?, text: String?, theme: NimbusTheming) -> NimbusBezel {
+        let bezel = NimbusBezel(image: image, text: text, theme: theme)
+        return bezel.show()
     }
 }
 
