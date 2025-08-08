@@ -33,6 +33,7 @@
   - [Scroll Components](#scroll-components)
   - [Notification System](#notification-system)
   - [Onboarding System](#onboarding-system)
+  - [Bezel System](#bezel-system)
 - [🎨 Theme System](#-theme-system)
   - [Available Themes](#available-themes)
   - [Theme Complexity Levels](#theme-complexity-levels)
@@ -70,6 +71,7 @@
 - Customizable list items with hover states
 - Custom scroll components with theming
 - Notification system with semantic types
+- System-level bezel notifications with 7 positioning options
 
 </td>
 <td width="50%">
@@ -123,7 +125,8 @@ targets: [
             .product(name: "NimbusCore", package: "NimbusUI"),
             .product(name: "NimbusComponents", package: "NimbusUI"),
             .product(name: "NimbusNotifications", package: "NimbusUI"),
-            .product(name: "NimbusOnboarding", package: "NimbusUI")
+            .product(name: "NimbusOnboarding", package: "NimbusUI"),
+            .product(name: "NimbusBezel", package: "NimbusUI")
         ]
     )
 ]
@@ -138,6 +141,7 @@ import NimbusCore         // Core theming, modifiers, and utilities
 import NimbusComponents   // Buttons, checkboxes, toggles, lists, etc.
 import NimbusNotifications// Notification system
 import NimbusOnboarding   // Onboarding flow
+import NimbusBezel        // System-level bezel notifications
 import NimbusUI           // Includes all of the above
 ```
 
@@ -1334,6 +1338,191 @@ OnboardingView(features: [
 
 ---
 
+### Bezel System
+
+System-level notification bezels with flexible positioning, perfect for menubar apps and macOS system-style notifications.
+
+<details>
+<summary><strong>Basic Bezel Usage</strong></summary>
+
+Create system-wide bezels that float above all applications:
+
+```swift
+import NimbusBezel
+
+// Simple image bezel with auto-dismiss
+NimbusBezel.show(image: NSImage(named: NSImage.networkName))
+    .hide(after: .seconds(2))
+
+// Bezel with image and text
+NimbusBezel.show(
+    image: NSImage(named: NSImage.statusAvailableName),
+    text: "Connected"
+).hide(after: .seconds(3))
+
+// Custom theme bezel
+NimbusBezel.show(
+    image: NSImage(named: NSImage.bluetoothTemplateName),
+    theme: MaritimeTheme()
+).hide(after: .seconds(2))
+```
+
+</details>
+
+<details>
+<summary><strong>Bezel Positioning</strong></summary>
+
+Control exactly where bezels appear on screen with 7 positioning options:
+
+```swift
+// Bottom position (default)
+NimbusBezel.show(image: image, position: .bottom)
+    .hide(after: .seconds(2))
+
+// Center of screen
+NimbusBezel.show(image: image, position: .center)
+    .hide(after: .seconds(2))
+
+// Top of screen
+NimbusBezel.show(image: image, position: .top)
+    .hide(after: .seconds(2))
+
+// Corner positions
+NimbusBezel.show(image: image, position: .topLeading)    // Top-left
+NimbusBezel.show(image: image, position: .topTrailing)   // Top-right
+NimbusBezel.show(image: image, position: .bottomLeading) // Bottom-left
+NimbusBezel.show(image: image, position: .bottomTrailing) // Bottom-right
+```
+
+**Available Positions:**
+- `.bottom` - Center horizontally, positioned from bottom edge (default)
+- `.center` - Perfect center of screen
+- `.top` - Center horizontally, positioned from top edge  
+- `.topLeading` - Top-left corner with offset from edges
+- `.topTrailing` - Top-right corner with offset from edges
+- `.bottomLeading` - Bottom-left corner with offset from edges
+- `.bottomTrailing` - Bottom-right corner with offset from edges
+
+</details>
+
+<details>
+<summary><strong>Direct Instantiation API</strong></summary>
+
+Create bezels directly for more control over configuration:
+
+```swift
+// Basic bezel
+let bezel = NimbusBezel(
+    image: NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName),
+    position: .bottomTrailing
+)
+bezel.show().hide(after: .seconds(2))
+
+// Bezel with text
+let notificationBezel = NimbusBezel(
+    image: NSImage(named: NSImage.cautionName),
+    text: "Network disconnected",
+    position: .top
+)
+notificationBezel.show().hide(after: .seconds(4))
+
+// Custom theme and appearance
+let customBezel = NimbusBezel(
+    image: NSImage(named: NSImage.statusPartiallyAvailableName),
+    theme: CustomWarmTheme(),
+    position: .center
+)
+customBezel
+    .appearance(NSAppearance(named: .darkAqua))
+    .show()
+    .hide(after: .seconds(3))
+```
+
+</details>
+
+<details>
+<summary><strong>Theme Integration & Customization</strong></summary>
+
+Customize bezel positioning and appearance through themes:
+
+```swift
+// Custom theme with bezel positioning
+struct MyTheme: NimbusTheming {
+    // ... 17 required core properties
+    
+    // Customize bezel positioning
+    var bezelDefaultPosition: BezelPosition { .topTrailing }  // Change default
+    var bezelTopOffset: CGFloat { 80.0 }        // More space from top
+    var bezelBottomOffset: CGFloat { 40.0 }     // Less space from bottom  
+    var bezelHorizontalOffset: CGFloat { 100.0 } // More space from sides
+    
+    // Customize bezel appearance
+    var bezelSize: CGSize { CGSize(width: 220, height: 220) }
+    var bezelCornerRadius: CGFloat { 24.0 }
+    var bezelBlurMaterial: NSVisualEffectView.Material { .hudWindow }
+}
+
+// Use custom theme
+NimbusBezel.show(
+    image: image,
+    theme: MyTheme()
+    // Position uses theme default (.topTrailing) unless overridden
+).hide(after: .seconds(2))
+```
+
+</details>
+
+<details>
+<summary><strong>Advanced Features</strong></summary>
+
+System-level features and queue management:
+
+```swift
+// Multiple bezels queue automatically
+NimbusBezel.show(image: image1, text: "First").hide(after: .seconds(2))
+NimbusBezel.show(image: image2, text: "Second").hide(after: .seconds(2))
+NimbusBezel.show(image: image3, text: "Third").hide(after: .seconds(2))
+
+// Manual control without auto-hide
+let persistentBezel = NimbusBezel.show(image: image, text: "Manual dismiss")
+// Later: persistentBezel.hide()
+
+// Custom appearance for light/dark mode
+let bezel = NimbusBezel(image: image, position: .center)
+bezel.appearance(NSAppearance(named: .aqua))  // Force light mode
+bezel.show().hide(after: .seconds(3))
+
+// Perfect for menubar applications
+func showVolumeBezel(level: Float) {
+    let volumeIcon = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
+    NimbusBezel.show(
+        image: volumeIcon,
+        text: "Volume: \(Int(level * 100))%",
+        position: .bottomTrailing
+    ).hide(after: .seconds(1.5))
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Bezel Features</strong></summary>
+
+- 🖥️ **System-Level Display**: Floats above all applications, never becomes key window
+- 📍 **7 Position Options**: Complete screen positioning control with theme-aware offsets  
+- 🎭 **Theme Integration**: Full theming support with customizable appearance and positioning
+- ⏱️ **Auto-Hide Timing**: Flexible timing control with queue management for multiple bezels
+- 🎨 **Visual Effects**: NSVisualEffectView blur materials with rounded corners and animations
+- 🌗 **Appearance Control**: Light/dark mode support with automatic system detection
+- 📱 **Perfect for Menubar Apps**: Ideal for system notifications and status indicators
+- 🔄 **Queue Management**: Automatic sequential display of multiple bezels
+- ⚡ **Programmatic API**: Both static convenience methods and direct instantiation patterns
+- 🎬 **Smooth Animations**: Theme-aware show/hide transitions with CAMediaTimingFunction support
+
+</details>
+
+---
+
 ## 🎨 Theme System
 
 NimbusUI features a sophisticated theme system that provides both consistency and flexibility.
@@ -1575,9 +1764,12 @@ Sources/
 │   ├── Components/
 │   │   └── Notification/    # Views, modifiers, gestures, animations
 │   └── Extensions/          # Notification convenience methods
-└── NimbusOnboarding/        # Onboarding flow with FluidGradient
-    └── Components/
-        └── Onboarding/      # Feature pages, navigation, animations
+├── NimbusOnboarding/        # Onboarding flow with FluidGradient
+│   └── Components/
+│       └── Onboarding/      # Feature pages, navigation, animations
+└── NimbusBezel/             # System-level bezel notifications
+    ├── NimbusBezel.swift    # Core bezel implementation
+    └── Preview/             # Bezel positioning examples
 ```
 
 </details>

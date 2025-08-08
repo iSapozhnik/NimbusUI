@@ -332,7 +332,7 @@ public class NimbusBezel: Hashable, Equatable {
         
         switch position {
         case .center:
-            // Center horizontally, offset vertically using bezelCenterOffset
+            // Center horizontally and vertically
             newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
             newFrame.origin.y = (screenFrame.height - bezelSize.height) / 2
             
@@ -498,6 +498,7 @@ class BezelImageTextView: NSView {
         super.init(frame: frameRect)
         setup()
     }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
