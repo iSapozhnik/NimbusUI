@@ -2,7 +2,7 @@
 //  NimbusTextField.swift
 //  NimbusUI
 //
-//  Created by AI Assistant on 07.08.25.
+//  Created by Ivan Sapozhnik on 07.08.25.
 //
 
 import SwiftUI
