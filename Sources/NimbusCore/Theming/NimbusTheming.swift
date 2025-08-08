@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppKit
 
 // https://freiwald.dev/posts/custom-environment-colors/
 // https://alexanderweiss.dev/blog/2025-01-19-effortless-swiftui-theming
@@ -351,6 +352,40 @@ public extension NimbusTheming {
     var notificationHandleOpacityVisible: Double { 0.3 }
     var notificationHandleOpacityHidden: Double { 0.0 }
     var notificationHandleFadeAnimation: Animation { .easeInOut(duration: 0.2) }
+}
+
+// MARK: - Bezel Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// Bezel size configuration
+    var bezelSize: CGSize { CGSize(width: 200, height: 200) }
+    
+    /// Bezel corner radius configuration
+    var bezelCornerRadius: CGFloat { 19.0 }
+    
+    /// Bezel content padding (inset from edge)
+    var bezelContentPadding: CGFloat { 20.0 }
+    
+    /// Bezel background blur material (NSVisualEffectView.Material)
+    var bezelBlurMaterial: NSVisualEffectView.Material { .hudWindow }
+    
+    /// Bezel position offset from center (y-axis)
+    var bezelPositionOffset: CGFloat { 140.0 }
+    
+    /// Bezel offset from top edge for top positions
+    var bezelTopOffset: CGFloat { 60.0 }
+    
+    /// Bezel offset from bottom edge for bottom positions  
+    var bezelBottomOffset: CGFloat { 60.0 }
+    
+    /// Bezel offset from leading/trailing edges for corner positions
+    var bezelHorizontalOffset: CGFloat { 60.0 }
+    
+    /// Animation timing for show transition
+    var bezelShowAnimationDuration: TimeInterval { 0.33 }
+    
+    /// Animation timing for hide transition
+    var bezelHideAnimationDuration: TimeInterval { 0.66 }
 }
 
 // MARK: - Convenience Methods

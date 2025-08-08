@@ -21,6 +21,7 @@ swift test --filter NimbusCoreTests
 swift test --filter NimbusComponentsTests  
 swift test --filter NimbusNotificationsTests
 swift test --filter NimbusOnboardingTests
+swift test --filter NimbusBezelsTests
 
 # Clean build artifacts
 swift package clean
@@ -33,12 +34,13 @@ swift test -Xswiftc -DUPDATE_SNAPSHOTS
 ```
 
 ### Modular Library Structure
-NimbusUI is organized into four distinct libraries for selective importing:
+NimbusUI is organized into five distinct libraries for selective importing:
 
 - **`NimbusCore`**: Core theming system, modifiers, utilities, and AppKit integrations
 - **`NimbusComponents`**: Main UI components (buttons, checkboxes, toggles, lists, scrollers)
 - **`NimbusNotifications`**: Complete notification system with semantic types and animations
 - **`NimbusOnboarding`**: Onboarding flows with FluidGradient and SmoothGradient animations
+- **`NimbusBezel`**: System-level bezel notifications with positioning and theming
 - **`NimbusUI`**: Convenience umbrella library that includes all of the above
 
 ## Architecture
@@ -137,6 +139,8 @@ When developing new components, evaluate styling needs with these questions:
 **Notification System** (`Sources/NimbusNotifications/Components/Notification/`): Complete notification system with `NimbusNotificationView` component, view modifier presentation (`.nimbusNotification()`), 4 semantic types (info, success, warning, error), auto-dismiss timing, icon alignment options, and enhanced color hierarchy using theme semantic colors.
 
 **Onboarding System** (`Sources/NimbusOnboarding/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
+
+**Bezel System** (`Sources/NimbusBezel/NimbusBezel.swift`): System-level notification bezels for menubar apps and macOS system-style notifications. Features 7 positioning options (center, top, bottom, topLeading, topTrailing, bottomLeading, bottomTrailing), theme integration with customizable offsets, programmatic API with static convenience methods and direct instantiation, auto-hide timing with queue management, NSVisualEffectView blur materials, automatic light/dark mode detection, and smooth show/hide animations. Perfect for volume controls, status indicators, and system-level notifications that float above all applications.
 
 ### Modular Project Structure
 ```
@@ -275,6 +279,14 @@ Button("Custom") { }
 import NimbusNotifications
 ContentView()
     .nimbusNotification(isPresented: $showAlert, type: .success, message: "Success!")
+
+// Bezel system for system-level notifications
+import NimbusBezel
+NimbusBezel.show(
+    image: NSImage(named: NSImage.networkName), 
+    text: "Connected",
+    position: .bottomTrailing
+).hide(after: .seconds(2))
 ```
 
 ### Button Customization with Convenience Methods
@@ -668,6 +680,191 @@ The modifier automatically uses `ControlSizeUtility.height(for:theme:override:)`
 - **ControlSize Aware**: Seamlessly integrates with the controlSize system
 - **Theme Compatible**: Works with all themes and theme overrides
 - **Performance Optimized**: Only adds constraints when aspect ratio is specified
+
+## Bezel System
+
+### Overview
+The NimbusBezel system provides system-level notification bezels that float above all applications, perfect for menubar applications and macOS system-style notifications. The system features comprehensive positioning control, theme integration, and a programmatic API designed for standalone usage.
+
+### Core Features
+- **System-Level Display**: NSWindow-based implementation that floats above all applications but never becomes key
+- **7 Position Options**: Complete screen positioning with theme-aware offset controls
+- **Theme Integration**: Full theming support with customizable appearance and positioning offsets
+- **Queue Management**: Automatic sequential display of multiple bezels with timing control
+- **Programmatic API**: Both static convenience methods and direct instantiation patterns
+
+### Position System
+```swift
+public enum BezelPosition: CaseIterable {
+    case center         // Perfect mathematical center of screen (no theme offsets)
+    case top           // Center horizontally, positioned from top using bezelTopOffset
+    case bottom        // Center horizontally, positioned from bottom using bezelBottomOffset (default)
+    case topLeading    // Top-left corner using bezelTopOffset + bezelHorizontalOffset
+    case topTrailing   // Top-right corner using bezelTopOffset + bezelHorizontalOffset
+    case bottomLeading // Bottom-left corner using bezelBottomOffset + bezelHorizontalOffset
+    case bottomTrailing// Bottom-right corner using bezelBottomOffset + bezelHorizontalOffset
+}
+```
+
+### API Patterns
+
+#### Static Convenience API (Recommended)
+```swift
+// Basic usage with positioning
+NimbusBezel.show(
+    image: NSImage(named: NSImage.networkName),
+    position: .bottomTrailing
+).hide(after: .seconds(2))
+
+// With text and custom theme
+NimbusBezel.show(
+    image: NSImage(named: NSImage.statusAvailableName),
+    text: "Connected",
+    theme: MaritimeTheme(),
+    position: .top
+).hide(after: .seconds(3))
+
+// Multiple bezels queue automatically
+NimbusBezel.show(image: image1, text: "First").hide(after: .seconds(2))
+NimbusBezel.show(image: image2, text: "Second").hide(after: .seconds(2))
+NimbusBezel.show(image: image3, text: "Third").hide(after: .seconds(2))
+```
+
+#### Direct Instantiation API
+```swift
+// Advanced control over configuration
+let bezel = NimbusBezel(
+    image: NSImage(named: NSImage.cautionName),
+    text: "Network disconnected",
+    theme: CustomWarmTheme(),
+    colorScheme: .dark,
+    position: .center
+)
+
+bezel.appearance(NSAppearance(named: .darkAqua))
+bezel.show().hide(after: .seconds(4))
+
+// Manual dismiss control
+let persistentBezel = NimbusBezel.show(image: image, text: "Manual dismiss")
+// Later: persistentBezel.hide()
+```
+
+### Theme Integration
+Bezel positioning and appearance can be customized through theme tokens:
+
+```swift
+extension CustomTheme {
+    // Positioning offset control
+    var bezelTopOffset: CGFloat { 80.0 }        // Distance from top edge
+    var bezelBottomOffset: CGFloat { 40.0 }     // Distance from bottom edge
+    var bezelHorizontalOffset: CGFloat { 100.0 } // Distance from side edges
+    
+    // Visual appearance
+    var bezelSize: CGSize { CGSize(width: 220, height: 220) }
+    var bezelCornerRadius: CGFloat { 24.0 }
+    var bezelContentPadding: CGFloat { 24.0 }
+    var bezelBlurMaterial: NSVisualEffectView.Material { .hudWindow }
+    
+    // Animation timing
+    var bezelShowAnimationDuration: TimeInterval { 0.4 }
+    var bezelHideAnimationDuration: TimeInterval { 0.6 }
+}
+```
+
+### Implementation Details
+
+#### Positioning Logic
+The `positionBezel()` method uses screen coordinates and theme offsets:
+
+```swift
+switch position {
+case .center:
+    // Perfect mathematical center (no theme offset)
+    newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
+    newFrame.origin.y = (screenFrame.height - bezelSize.height) / 2
+    
+case .top:
+    // Center horizontally, offset from top using theme
+    newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
+    newFrame.origin.y = screenFrame.height - bezelSize.height - theme.bezelTopOffset
+    
+case .bottomTrailing:
+    // Corner position using both horizontal and bottom offsets
+    newFrame.origin.x = screenFrame.width - bezelSize.width - theme.bezelHorizontalOffset
+    newFrame.origin.y = theme.bezelBottomOffset
+    
+// ... other positions with theme-aware calculations
+}
+```
+
+#### System Integration
+- Uses `NSWindow.Level.cursorWindow` for proper layering above all applications
+- Uses `NSScreen.current` for accurate screen detection and positioning
+- Automatic system appearance detection and theme application
+- NSVisualEffectView integration for proper blur materials and vibrancy
+- CAMediaTimingFunction support for smooth show/hide animations
+
+### Development Patterns
+
+#### Menubar Application Usage
+Perfect for system-level status indicators and notifications:
+
+```swift
+// Volume control bezel
+func showVolumeBezel(level: Float) {
+    let volumeIcon = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
+    NimbusBezel.show(
+        image: volumeIcon,
+        text: "Volume: \(Int(level * 100))%",
+        position: .bottomTrailing
+    ).hide(after: .seconds(1.5))
+}
+
+// Network status notification
+func showNetworkStatus(connected: Bool) {
+    let icon = NSImage(named: connected ? NSImage.networkName : NSImage.cautionName)
+    let message = connected ? "Network connected" : "Network disconnected"
+    
+    NimbusBezel.show(
+        image: icon,
+        text: message,
+        position: .top
+    ).hide(after: .seconds(2))
+}
+```
+
+#### Theme-Aware Development
+```swift
+// Bezels use explicit positioning with theme-aware offsets
+let bezel = NimbusBezel(image: image, theme: myTheme, position: .bottomTrailing)
+let centered = NimbusBezel(image: image, theme: myTheme, position: .center) // Mathematical center
+
+// Theme positioning offsets can be customized per-theme
+struct MenubarTheme: NimbusTheming {
+    // ... 17 required core properties
+    
+    // Custom offsets for menubar app positioning
+    var bezelBottomOffset: CGFloat { 20 }       // Closer to screen bottom
+    var bezelHorizontalOffset: CGFloat { 20 }   // Closer to screen edge
+    var bezelTopOffset: CGFloat { 40 }          // Less space from top
+}
+
+// Usage with custom theme
+NimbusBezel.show(
+    image: volumeIcon,
+    text: "Volume: 75%",
+    theme: MenubarTheme(),
+    position: .bottomTrailing  // Uses custom offsets from theme
+).hide(after: .seconds(1.5))
+```
+
+### Architecture Benefits
+- **System-Level Integration**: Proper NSWindow configuration for floating above all applications
+- **Theme Consistency**: All positioning and appearance controlled through theme system
+- **Queue Management**: Automatic handling of multiple bezels with sequential display
+- **Memory Efficient**: Bezels are properly cleaned up after hide animations complete
+- **Accessibility**: Bezels don't interfere with VoiceOver or keyboard navigation
+- **Multi-Screen Aware**: Automatically positions relative to current screen
 
 ## Known Issues & Workarounds
 

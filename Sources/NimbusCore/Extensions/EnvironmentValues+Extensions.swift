@@ -205,3 +205,14 @@ public extension EnvironmentValues {
     @Entry var nimbusTextFieldIconAlignment: HorizontalAlignment? = nil
     @Entry var nimbusTextFieldIconSpacing: CGFloat? = nil
 }
+
+// MARK: Bezel
+// Internal APIs for convenience methods - not for direct consumer use
+
+public extension EnvironmentValues {
+    @Entry var nimbusBezelsCornerRadius: CGFloat? = nil
+    @Entry var nimbusBezelsSize: CGSize? = nil
+    @Entry var nimbusBezelsBlurMaterial: Material? = nil
+    @Entry var nimbusBezelsContentPadding: CGFloat? = nil
+    @Entry var nimbusBezelsAnimationDuration: TimeInterval? = nil
+}
