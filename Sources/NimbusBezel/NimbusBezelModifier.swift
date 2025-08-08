@@ -9,6 +9,27 @@ import SwiftUI
 import AppKit
 import NimbusCore
 
+// MARK: - DispatchTimeInterval Extension
+
+extension DispatchTimeInterval {
+    var timeInterval: TimeInterval {
+        switch self {
+        case .nanoseconds(let value):
+            return TimeInterval(value) / TimeInterval(NSEC_PER_SEC)
+        case .microseconds(let value):
+            return TimeInterval(value) / TimeInterval(USEC_PER_SEC)
+        case .milliseconds(let value):
+            return TimeInterval(value) / 1000.0
+        case .seconds(let value):
+            return TimeInterval(value)
+        case .never:
+            return .infinity
+        @unknown default:
+            return 0
+        }
+    }
+}
+
 struct NimbusBezelModifier: ViewModifier {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.colorScheme) private var colorScheme
@@ -21,6 +42,7 @@ struct NimbusBezelModifier: ViewModifier {
     
     // Internal state
     @State private var bezel: NimbusBezel?
+    @State private var dismissTimer: Timer?
     
     func body(content: Content) -> some View {
         content
@@ -39,8 +61,9 @@ struct NimbusBezelModifier: ViewModifier {
     }
     
     private func showBezel() {
-        // Dismiss any existing bezel first
-        dismissBezel()
+        // Cancel any existing timer
+        dismissTimer?.invalidate()
+        dismissTimer = nil
         
         // Create new bezel with current theme and color scheme
         let newBezel: NimbusBezel
@@ -50,23 +73,31 @@ struct NimbusBezelModifier: ViewModifier {
             newBezel = NimbusBezel(image: image, theme: theme, colorScheme: colorScheme)
         }
         
-        // Show the bezel
+        // Show the bezel - let it manage its own queue
         newBezel.show()
         
-        // Set up auto-dismiss if specified
-        if let dismissInterval = autoDismissAfter {
-            newBezel.hide(after: dismissInterval)
-        }
-        
         self.bezel = newBezel
+        
+        // Set up our own auto-dismiss timer if specified
+        if let dismissInterval = autoDismissAfter {
+            let timeInterval = dismissInterval.timeInterval
+            dismissTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { _ in
+                dismissBezel()
+            }
+        }
     }
     
     private func dismissBezel() {
+        // Cancel any existing timer
+        dismissTimer?.invalidate()
+        dismissTimer = nil
+        
+        // Hide the bezel immediately (user dismissed)
         bezel?.hide()
         bezel = nil
         
-        // Update the binding if needed
-        if isPresented {
+        // Reset the binding after a brief delay to avoid feedback loop
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             isPresented = false
         }
     }

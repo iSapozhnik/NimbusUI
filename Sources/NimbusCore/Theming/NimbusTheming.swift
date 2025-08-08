@@ -367,7 +367,7 @@ public extension NimbusTheming {
     var bezelContentPadding: CGFloat { 20.0 }
     
     /// Bezel background blur material (NSVisualEffectView.Material)
-    var bezelBlurMaterial: NSVisualEffectView.Material { .contentBackground }
+    var bezelBlurMaterial: NSVisualEffectView.Material { .underWindowBackground }
     
     /// Bezel position offset from center (y-axis)
     var bezelPositionOffset: CGFloat { 140.0 }
