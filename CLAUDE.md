@@ -696,13 +696,13 @@ The NimbusBezel system provides system-level notification bezels that float abov
 ### Position System
 ```swift
 public enum BezelPosition: CaseIterable {
-    case center         // Perfect center of screen
-    case top           // Center horizontally, positioned from top edge
-    case bottom        // Center horizontally, positioned from bottom edge (default)
-    case topLeading    // Top-left corner with theme-aware offsets
-    case topTrailing   // Top-right corner with theme-aware offsets  
-    case bottomLeading // Bottom-left corner with theme-aware offsets
-    case bottomTrailing// Bottom-right corner with theme-aware offsets
+    case center         // Perfect mathematical center of screen (no theme offsets)
+    case top           // Center horizontally, positioned from top using bezelTopOffset
+    case bottom        // Center horizontally, positioned from bottom using bezelBottomOffset (default)
+    case topLeading    // Top-left corner using bezelTopOffset + bezelHorizontalOffset
+    case topTrailing   // Top-right corner using bezelTopOffset + bezelHorizontalOffset
+    case bottomLeading // Bottom-left corner using bezelBottomOffset + bezelHorizontalOffset
+    case bottomTrailing// Bottom-right corner using bezelBottomOffset + bezelHorizontalOffset
 }
 ```
 
@@ -754,8 +754,7 @@ Bezel positioning and appearance can be customized through theme tokens:
 
 ```swift
 extension CustomTheme {
-    // Positioning control
-    var bezelDefaultPosition: BezelPosition { .topTrailing }
+    // Positioning offset control
     var bezelTopOffset: CGFloat { 80.0 }        // Distance from top edge
     var bezelBottomOffset: CGFloat { 40.0 }     // Distance from bottom edge
     var bezelHorizontalOffset: CGFloat { 100.0 } // Distance from side edges
@@ -780,10 +779,17 @@ The `positionBezel()` method uses screen coordinates and theme offsets:
 ```swift
 switch position {
 case .center:
+    // Perfect mathematical center (no theme offset)
     newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
     newFrame.origin.y = (screenFrame.height - bezelSize.height) / 2
     
+case .top:
+    // Center horizontally, offset from top using theme
+    newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
+    newFrame.origin.y = screenFrame.height - bezelSize.height - theme.bezelTopOffset
+    
 case .bottomTrailing:
+    // Corner position using both horizontal and bottom offsets
     newFrame.origin.x = screenFrame.width - bezelSize.width - theme.bezelHorizontalOffset
     newFrame.origin.y = theme.bezelBottomOffset
     
@@ -793,6 +799,7 @@ case .bottomTrailing:
 
 #### System Integration
 - Uses `NSWindow.Level.cursorWindow` for proper layering above all applications
+- Uses `NSScreen.current` for accurate screen detection and positioning
 - Automatic system appearance detection and theme application
 - NSVisualEffectView integration for proper blur materials and vibrancy
 - CAMediaTimingFunction support for smooth show/hide animations
@@ -828,15 +835,27 @@ func showNetworkStatus(connected: Bool) {
 
 #### Theme-Aware Development
 ```swift
-// Bezel automatically uses theme defaults unless position overridden
-let bezel = NimbusBezel(image: image, theme: myTheme) // Uses myTheme.bezelDefaultPosition
-let positioned = NimbusBezel(image: image, theme: myTheme, position: .center) // Overrides theme default
+// Bezels use explicit positioning with theme-aware offsets
+let bezel = NimbusBezel(image: image, theme: myTheme, position: .bottomTrailing)
+let centered = NimbusBezel(image: image, theme: myTheme, position: .center) // Mathematical center
 
-// Theme positioning can be customized per-theme
+// Theme positioning offsets can be customized per-theme
 struct MenubarTheme: NimbusTheming {
-    var bezelDefaultPosition: BezelPosition { .bottomTrailing } // Perfect for menubar apps
-    var bezelHorizontalOffset: CGFloat { 20 } // Closer to screen edge
+    // ... 17 required core properties
+    
+    // Custom offsets for menubar app positioning
+    var bezelBottomOffset: CGFloat { 20 }       // Closer to screen bottom
+    var bezelHorizontalOffset: CGFloat { 20 }   // Closer to screen edge
+    var bezelTopOffset: CGFloat { 40 }          // Less space from top
 }
+
+// Usage with custom theme
+NimbusBezel.show(
+    image: volumeIcon,
+    text: "Volume: 75%",
+    theme: MenubarTheme(),
+    position: .bottomTrailing  // Uses custom offsets from theme
+).hide(after: .seconds(1.5))
 ```
 
 ### Architecture Benefits

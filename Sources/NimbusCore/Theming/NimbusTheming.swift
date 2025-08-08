@@ -369,7 +369,7 @@ public extension NimbusTheming {
     /// Bezel background blur material (NSVisualEffectView.Material)
     var bezelBlurMaterial: NSVisualEffectView.Material { .hudWindow }
     
-    /// Bezel position offset from center (y-axis) - deprecated, use bezelCenterOffset
+    /// Bezel position offset from center (y-axis)
     var bezelPositionOffset: CGFloat { 140.0 }
     
     /// Bezel offset from top edge for top positions

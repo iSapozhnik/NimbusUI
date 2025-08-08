@@ -1395,13 +1395,13 @@ NimbusBezel.show(image: image, position: .bottomTrailing) // Bottom-right
 ```
 
 **Available Positions:**
-- `.bottom` - Center horizontally, positioned from bottom edge (default)
-- `.center` - Perfect center of screen
-- `.top` - Center horizontally, positioned from top edge  
-- `.topLeading` - Top-left corner with offset from edges
-- `.topTrailing` - Top-right corner with offset from edges
-- `.bottomLeading` - Bottom-left corner with offset from edges
-- `.bottomTrailing` - Bottom-right corner with offset from edges
+- `.bottom` - Center horizontally, positioned from bottom edge using `bezelBottomOffset` (default)
+- `.center` - Perfect mathematical center of screen (no theme offset used)
+- `.top` - Center horizontally, positioned from top edge using `bezelTopOffset`
+- `.topLeading` - Top-left corner with `bezelTopOffset` and `bezelHorizontalOffset`
+- `.topTrailing` - Top-right corner with `bezelTopOffset` and `bezelHorizontalOffset`
+- `.bottomLeading` - Bottom-left corner with `bezelBottomOffset` and `bezelHorizontalOffset`
+- `.bottomTrailing` - Bottom-right corner with `bezelBottomOffset` and `bezelHorizontalOffset`
 
 </details>
 
@@ -1450,8 +1450,7 @@ Customize bezel positioning and appearance through themes:
 struct MyTheme: NimbusTheming {
     // ... 17 required core properties
     
-    // Customize bezel positioning
-    var bezelDefaultPosition: BezelPosition { .topTrailing }  // Change default
+    // Customize bezel positioning offsets
     var bezelTopOffset: CGFloat { 80.0 }        // More space from top
     var bezelBottomOffset: CGFloat { 40.0 }     // Less space from bottom  
     var bezelHorizontalOffset: CGFloat { 100.0 } // More space from sides
@@ -1462,11 +1461,11 @@ struct MyTheme: NimbusTheming {
     var bezelBlurMaterial: NSVisualEffectView.Material { .hudWindow }
 }
 
-// Use custom theme
+// Use custom theme with explicit positioning
 NimbusBezel.show(
     image: image,
-    theme: MyTheme()
-    // Position uses theme default (.topTrailing) unless overridden
+    theme: MyTheme(),
+    position: .topTrailing  // Must specify desired position
 ).hide(after: .seconds(2))
 ```
 
