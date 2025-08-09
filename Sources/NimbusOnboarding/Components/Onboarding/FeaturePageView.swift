@@ -67,8 +67,7 @@ public struct AnyFeaturePageView: View {
                         isHovered = hovering
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .frame(height: 200)
+                .frame(maxWidth:. infinity, maxHeight: .infinity, alignment: .center)
                 .modifier(ConditionalMaskModifier(
                     isActive: isHovered,
                     mask: LinearGradient(
@@ -91,8 +90,9 @@ public struct AnyFeaturePageView: View {
                     .font(.system(size: 18, weight: .light))
                     .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.leading)
+                Spacer()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxHeight: .infinity, alignment: .center)
         }
     }
 }

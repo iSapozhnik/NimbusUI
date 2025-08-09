@@ -94,8 +94,8 @@ public struct OnboardingView: View {
             VStack(alignment: .leading, spacing: 24) {
                 AnyFeaturePageView(feature: features[currentIndex])
                 
-                Spacer()
                 PageControlView(currentIndex: currentIndex, total: features.count)
+
                 HStack {
                     Spacer()
                     Button(action: {
