@@ -32,20 +32,17 @@ public class OnboardingWindowController: NSWindowController {
         
         let onboardingView = OnboardingView(features: features)
             .environment(\.nimbusTheme, theme)
-            .ignoresSafeArea()
         
         let hostingController = NSHostingController(rootView: onboardingView)
-        
-        let contentSize = hostingController.view.fittingSize
-        
-        window.setContentSize(contentSize)
         window.contentViewController = hostingController
     }
     
     /// Shows the onboarding window
     public func show() {
         window?.makeKeyAndOrderFront(nil)
-        window?.center()
+        DispatchQueue.main.async {
+            self.window?.center()
+        }
     }
     
     /// Closes the onboarding window

@@ -146,6 +146,7 @@ public struct OnboardingView: View {
                 .padding(.bottom, 16)
             }
         }
+        .ignoresSafeArea()
         .frame(width: 600, height: 560)
     }
 }

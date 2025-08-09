@@ -1,7 +1,6 @@
 import AppKit
 
 /// A specialized NSWindow for displaying onboarding content.
-/// Features a clean, borderless design with full content view and only a close button.
 public class OnboardingWindow: NSWindow {
     
     public override init(
