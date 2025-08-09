@@ -48,7 +48,7 @@ public struct OnboardingView: View {
         ZStack {
             FluidGradient(blobs: [.red, .green, .blue],
                           highlights: [.yellow, .orange, .purple],
-                          speed: 1,
+                          speed: 0.1,
                           blur: 0.75)
             .overlay(
                 LinearGradient(
