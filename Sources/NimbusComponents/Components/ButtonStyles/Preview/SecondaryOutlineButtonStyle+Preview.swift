@@ -81,8 +81,19 @@ import SwiftUI
                 .environment(\.nimbusButtonIconAlignment, .trailing)
             }
         }
+        
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Icon only")
+                .font(.headline)
+            
+            Button {} label: {
+                Image(systemName: "arrow.backward")
+            }
+            .buttonStyle(.secondaryOutline)
+        }
     }
     .padding()
+    .fixedSize()
     .environment(\.nimbusTheme, NimbusTheme.default)
 }
 

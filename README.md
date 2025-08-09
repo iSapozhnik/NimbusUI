@@ -71,16 +71,17 @@
 - Customizable list items with hover states
 - Custom scroll components with theming
 - Notification system with semantic types
+- Onboarding flows with generic content system and navigation controls
 - System-level bezel notifications with 7 positioning options
 
 </td>
 <td width="50%">
 
 ### 🌊 **Stunning Visual Effects**
-- FluidGradient onboarding backgrounds
-- Smooth animations and transitions
-- Hover states and micro-interactions
-- Material blur effects
+- FluidGradient + SmoothGradient onboarding backgrounds with overlay masking
+- Smooth animations and transitions with built-in content effects
+- Hover states and micro-interactions with conditional visual masking
+- Material blur effects and levitating animations
 
 ### ⚡ **Developer Experience**
 - Swift 5.9+ with modern concurrency
@@ -1298,41 +1299,225 @@ Additional capabilities for enhanced user interactions:
 
 ### Onboarding System
 
-Beautiful onboarding flows with FluidGradient animations and smooth page navigation:
+Beautiful onboarding flows with FluidGradient and SmoothGradient animations, navigation controls, and flexible content system:
 
 <details>
-<summary><strong>Basic Setup</strong></summary>
+<summary><strong>Basic Setup with Image Features</strong></summary>
+
+Create onboarding flows with pre-styled image and icon content:
 
 ```swift
-OnboardingView(features: [
-    OnboardingView.Feature(
-        title: "Welcome",
-        description: "Get started with our amazing app",
-        icon: "star.fill"
+import NimbusOnboarding
+
+let features: [AnyFeature] = [
+    // Image feature with standard styling
+    AnyFeature.imageFeature(
+        title: "Welcome to Your App",
+        description: "Get started with our amazing platform and discover all its capabilities",
+        image: Image(systemName: "sparkles"),
+        imageSize: 120
     ),
-    OnboardingView.Feature(
-        title: "Powerful Features",
-        description: "Discover all the capabilities of our platform",
-        icon: "bolt.fill"
+    
+    // Icon feature with SF Symbols
+    AnyFeature.iconFeature(
+        title: "Quick Search",
+        description: "Find and launch any app instantly with powerful search capabilities",
+        systemName: "magnifyingglass",
+        iconSize: 80
     ),
-    OnboardingView.Feature(
-        title: "Get Started",
-        description: "You're ready to begin your journey",
-        icon: "checkmark.circle.fill"
+    
+    // Another image feature
+    AnyFeature.imageFeature(
+        title: "Stay Organized",
+        description: "Keep your workspace tidy with smart organization tools",
+        image: Image(systemName: "folder"),
+        imageSize: 100
     )
-])
+]
+
+OnboardingView(features: features)
+    .environment(\.nimbusTheme, NimbusTheme.default)
 ```
 
 </details>
 
 <details>
-<summary><strong>Features</strong></summary>
+<summary><strong>Custom Content Features</strong></summary>
 
-- 🌊 **FluidGradient Backgrounds**: Smooth, animated gradient backgrounds
-- 📏 **Fixed Dimensions**: Consistent 600x560 window size
-- 🎯 **Page Navigation**: Built-in page controls and smooth transitions
-- 🎨 **Icon Support**: SF Symbols integration for feature icons
-- 🎭 **Theme Integration**: Automatically adapts to your chosen theme
+Create onboarding pages with completely custom content using SwiftUI views:
+
+```swift
+let customFeatures: [AnyFeature] = [
+    // Custom gradient content
+    AnyFeature(
+        title: "Beautiful Design",
+        description: "Experience stunning interfaces with smooth gradients and modern animations"
+    ) {
+        RoundedRectangle(cornerRadius: 20)
+            .fill(
+                LinearGradient(
+                    colors: [.blue, .purple, .pink],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .frame(width: 120, height: 120)
+            .levitatingFeatureContent()  // Built-in animation effect
+    },
+    
+    // Complex custom view with multiple elements
+    AnyFeature(
+        title: "Advanced Features",
+        description: "Unlock powerful capabilities designed for productivity"
+    ) {
+        VStack(spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: "gear").foregroundColor(.blue)
+                Image(systemName: "heart").foregroundColor(.red)
+                Image(systemName: "star").foregroundColor(.yellow)
+            }
+            .font(.title)
+            
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.secondary.opacity(0.3))
+                .frame(width: 80, height: 40)
+                .overlay(
+                    Text("Pro")
+                        .font(.caption)
+                        .bold()
+                )
+        }
+        .levitatingFeatureContent()
+    },
+    
+    // Animated content with built-in effects
+    AnyFeature(
+        title: "Smooth Animations",
+        description: "Enjoy fluid transitions and delightful micro-interactions"
+    ) {
+        Circle()
+            .fill(Color.green.gradient)
+            .frame(width: 80, height: 80)
+            .scaleFeatureContent(scale: 1.2, duration: 3.5)  // Automatic scaling animation
+    }
+]
+
+OnboardingView(features: customFeatures)
+```
+
+</details>
+
+<details>
+<summary><strong>Mixed Content Arrays</strong></summary>
+
+Combine different content types in a single onboarding flow:
+
+```swift
+let mixedFeatures: [AnyFeature] = [
+    // Start with an image feature
+    AnyFeature.imageFeature(
+        title: "Welcome",
+        description: "Get started with our platform",
+        image: Image(systemName: "sparkles"),
+        imageSize: 100
+    ),
+    
+    // Add a custom interactive form
+    AnyFeature(
+        title: "Setup Your Account",
+        description: "Configure your preferences to get started"
+    ) {
+        VStack(spacing: 16) {
+            NimbusToggleItem(
+                "Enable notifications",
+                subtitle: "Get alerts for important updates",
+                isOn: .constant(true),
+                togglePosition: .leading
+            )
+            .controlSize(.small)
+            .toggleShape(.roundedRect(3))
+        }
+        .padding(20)
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(12)
+    },
+    
+    // Finish with an icon feature  
+    AnyFeature.iconFeature(
+        title: "You're Ready!",
+        description: "Start exploring all the amazing features",
+        systemName: "checkmark.circle.fill",
+        iconSize: 90
+    )
+]
+
+OnboardingView(features: mixedFeatures)
+```
+
+</details>
+
+<details>
+<summary><strong>Content Styling Extensions</strong></summary>
+
+Use built-in modifiers to enhance your custom content:
+
+```swift
+// Content with levitating animation
+MyCustomView()
+    .levitatingFeatureContent()
+
+// Content with scaling animation
+Circle()
+    .fill(Color.blue)
+    .frame(width: 60, height: 60)
+    .scaleFeatureContent(scale: 1.3, duration: 2.0)
+
+// Centered content with size constraints
+VStack { /* content */ }
+    .centeredFeatureContent()
+    .fixedFeatureContentSize(width: 200, height: 150)
+
+// Content with fade-in effect
+Image(systemName: "star.fill")
+    .font(.system(size: 50))
+    .fadeInFeatureContent(delay: 0.5)
+```
+
+</details>
+
+<details>
+<summary><strong>Navigation & Footer Features</strong></summary>
+
+OnboardingView includes built-in navigation controls and footer links:
+
+```swift
+// Navigation features:
+// - Automatic "Continue" → "Finish" button text progression
+// - Back button appears after first page with smooth transitions
+// - Page control dots showing current progress
+
+// Footer features:
+// - Privacy Policy and Terms & Conditions links
+// - Uses .nimbusLink button style for semantic styling
+// - Centered alignment with divider separator
+
+// All navigation uses theme-aware fast animations
+// and respects the environment override system
+```
+
+</details>
+
+<details>
+<summary><strong>Advanced Features</strong></summary>
+
+- 🌊 **FluidGradient + SmoothGradient**: Animated gradient backgrounds with smooth overlays
+- 📏 **Fixed Dimensions**: Consistent 600×560 window size optimized for onboarding
+- 🎯 **Navigation Controls**: Back/forward buttons with conditional visibility and smooth transitions
+- 🎨 **Generic Content System**: Type-safe `Feature<Content>` and flexible `AnyFeature` support
+- ✨ **Content Animations**: Built-in hover effects, levitating animations, and scaling effects
+- 🔗 **Footer Links**: Privacy Policy and Terms & Conditions with semantic link styling
+- 🎭 **Full Theme Integration**: Automatic adaptation to themes with environment override support
+- 📱 **Hover Effects**: Conditional masking with SmoothGradient for enhanced interactivity
 
 </details>
 

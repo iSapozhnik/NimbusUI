@@ -115,7 +115,7 @@ public struct NimbusHoverableModifier: ViewModifier {
                 isHovering: isHovering, isPressed: isPressed,
                 fill: fill, hovering: hovering, pressed: pressed
             ))
-            .modifier(NimbusBorderedModifier(isHovering: isHovering))
+            .modifier(NimbusBorderedModifier(isHovering: isHovering, borderColor: .quaternary))
             .onHover { isHovering in
                 withAnimation(animationFast) {
                     self.isHovering = isHovering

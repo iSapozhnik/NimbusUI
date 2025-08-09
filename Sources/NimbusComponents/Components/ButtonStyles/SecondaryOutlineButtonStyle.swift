@@ -92,7 +92,7 @@ public struct SecondaryOutlineButtonStyle: ButtonStyle {
                     pressed: .quaternary
                 )
             )
-            .modifier(NimbusBorderedModifier(isHovering: isHovering))
+            .modifier(NimbusBorderedModifier(isHovering: isHovering, borderColor: .quaternary))
             .onHover { isHovering in
                 self.isHovering = isHovering
             }
