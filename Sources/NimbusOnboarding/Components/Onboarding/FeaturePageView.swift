@@ -40,6 +40,18 @@ public struct AnyFeaturePageView: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             feature.content
+                .mask(
+                    LinearGradient(
+                        gradient: .smooth(
+                            from: Color.black.opacity(1),
+                            to: Color.black.opacity(0.1),
+                            curve: .easeInOut,
+                            steps: 2
+                        ),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
                 .frame(maxWidth: .infinity, alignment: .center)
                 .frame(height: 200)
             

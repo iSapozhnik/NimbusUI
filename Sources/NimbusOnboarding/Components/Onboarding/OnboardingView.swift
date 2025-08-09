@@ -99,11 +99,15 @@ public struct OnboardingView: View {
                     PageControlView(currentIndex: currentIndex, total: features.count)
                     HStack {
                         if currentIndex > 0 {
-                            Button("Back", systemImage: "arrow.backward") {
-                                currentIndex -= 1
+                            Button { 
+                                withAnimation(fastAnimation) {
+                                    currentIndex -= 1
+                                }
+                            } label: {
+                                Image(systemName: "arrow.backward")
                             }
                             .buttonStyle(.secondaryOutline)
-                            .contentPadding(.zero)
+                            .transition(.opacity.combined(with: .scale(scale: 0.8)))
                         }
                         Button(action: {
                             withAnimation(fastAnimation) {

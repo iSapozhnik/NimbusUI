@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import NimbusComponents
 
 // MARK: - Previews
 
@@ -91,6 +92,14 @@ import SwiftUI
             systemName: "command",
             iconSize: 70
         ),
+        
+        // Custom form feature with NimbusUI components
+        AnyFeature(
+            title: "Setup Your Account",
+            description: "Complete your profile to personalize your experience and unlock all features."
+        ) {
+            FormContentView()
+        },
         
         // Final feature with custom content
         AnyFeature(
@@ -178,4 +187,61 @@ import SwiftUI
     return OnboardingView(features: customFeatures)
         .environment(\.nimbusTheme, NimbusTheme())
 }
+
+// MARK: - Custom Form Content View
+
+private struct FormContentView: View {
+    @State private var fullName = ""
+    @State private var email = ""
+    @State private var company = ""
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            // Header section
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Create Your Profile")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                Text("Enter your details to get started")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            // Input fields section
+            VStack(spacing: 14) {
+                NimbusTextField("Full Name", text: $fullName)
+                    .controlSize(.regular)
+            }
+            
+            // Action buttons section
+            HStack(spacing: 12) {
+                Button("Reset", role: .destructive) {}
+                .buttonStyle(.accent)
+                .controlSize(.small)
+                
+                Spacer()
+                
+                Button("Continue") {}
+                .buttonStyle(.accent)
+                .controlSize(.small)
+            }
+        }
+        .padding(24)
+        .background(Color.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .strokeBorder(Color.black.opacity(0.1), lineWidth: 1)
+        )
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.white)
+                .shadow(color: Color.black.opacity(0.1), radius: 12, x: 0, y: 4)
+        )
+        .allowsHitTesting(false)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .frame(width: 320)
+    }
+}
+
 #endif
