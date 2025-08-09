@@ -138,7 +138,7 @@ When developing new components, evaluate styling needs with these questions:
 
 **Notification System** (`Sources/NimbusNotifications/Components/Notification/`): Complete notification system with `NimbusNotificationView` component, view modifier presentation (`.nimbusNotification()`), 4 semantic types (info, success, warning, error), auto-dismiss timing, icon alignment options, and enhanced color hierarchy using theme semantic colors.
 
-**Onboarding System** (`Sources/NimbusOnboarding/Components/Onboarding/`): Complete onboarding flow with FluidGradient animations, fixed dimensions (600x560), and page navigation.
+**Onboarding System** (`Sources/NimbusOnboarding/Components/Onboarding/`): Complete onboarding flow with FluidGradient + SmoothGradient animations, generic content system supporting `Feature<Content>` and `AnyFeature`, navigation controls with back/forward buttons, footer links with semantic styling, hover effects with conditional masking, and fixed dimensions (600x560). Features convenience static methods (`AnyFeature.imageFeature()`, `AnyFeature.iconFeature()`), content styling extensions (`.levitatingFeatureContent()`, `.scaleFeatureContent()`, etc.), and full theme integration.
 
 **Bezel System** (`Sources/NimbusBezel/NimbusBezel.swift`): System-level notification bezels for menubar apps and macOS system-style notifications. Features 7 positioning options (center, top, bottom, topLeading, topTrailing, bottomLeading, bottomTrailing), theme integration with customizable offsets, programmatic API with static convenience methods and direct instantiation, auto-hide timing with queue management, NSVisualEffectView blur materials, automatic light/dark mode detection, and smooth show/hide animations. Perfect for volume controls, status indicators, and system-level notifications that float above all applications.
 
@@ -206,12 +206,14 @@ Sources/
 │   └── Extensions/          # Notification convenience methods
 ├── NimbusOnboarding/        # Onboarding system library
 │   ├── NimbusOnboarding.swift # Library entry point
-│   └── Components/
-│       └── Onboarding/      # Onboarding flow components
-│           ├── FeaturePageView.swift
-│           ├── OnboardingView.swift
-│           ├── PageControlView.swift
-│           └── Preview/
+│   ├── Components/
+│   │   └── Onboarding/      # Onboarding flow components
+│   │       ├── FeaturePageView.swift      # Generic Feature<Content> and AnyFeature page views
+│   │       ├── OnboardingView.swift       # Main onboarding view with navigation controls
+│   │       ├── PageControlView.swift      # Page control dots indicator
+│   │       └── Preview/                   # Comprehensive preview examples
+│   └── Extensions/          # Onboarding convenience methods
+│       └── Feature+Extensions.swift       # AnyFeature static methods and content styling
 └── NimbusUI/               # Umbrella library (convenience import)
 ```
 
@@ -500,6 +502,85 @@ ContentView()
         iconAlignment: .top,
         dismissBehavior: .temporary(5.0)
     )
+```
+
+### Onboarding System Usage
+The onboarding system provides a flexible, generic content system for creating beautiful onboarding flows:
+
+```swift
+import NimbusOnboarding
+
+// Basic usage with pre-styled content
+let features: [AnyFeature] = [
+    // Image feature with automatic styling
+    AnyFeature.imageFeature(
+        title: "Welcome to Your App",
+        description: "Get started with our powerful platform",
+        image: Image(systemName: "sparkles"),
+        imageSize: 120
+    ),
+    
+    // Icon feature with SF Symbols
+    AnyFeature.iconFeature(
+        title: "Quick Actions",
+        description: "Access powerful features instantly",
+        systemName: "bolt.fill",
+        iconSize: 80
+    )
+]
+
+OnboardingView(features: features)
+    .environment(\.nimbusTheme, NimbusTheme.default)
+
+// Advanced usage with custom content
+let customFeatures: [AnyFeature] = [
+    // Custom ViewBuilder content
+    AnyFeature(
+        title: "Custom Interface",
+        description: "Experience beautiful custom designs"
+    ) {
+        RoundedRectangle(cornerRadius: 20)
+            .fill(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+            .frame(width: 120, height: 120)
+            .levitatingFeatureContent()  // Built-in animation effect
+    },
+    
+    // Interactive NimbusUI components
+    AnyFeature(
+        title: "Configure Settings",
+        description: "Set up your preferences"
+    ) {
+        VStack(spacing: 16) {
+            NimbusToggleItem(
+                "Enable notifications",
+                subtitle: "Stay updated with important alerts", 
+                isOn: .constant(true),
+                togglePosition: .leading
+            )
+            .controlSize(.small)
+            .toggleShape(.roundedRect(3))
+        }
+        .padding(20)
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(12)
+    }
+]
+
+OnboardingView(features: customFeatures)
+
+// Content styling extensions
+MyCustomView()
+    .levitatingFeatureContent()           // Adds floating animation effect
+    .scaleFeatureContent(scale: 1.2)      // Adds scaling animation  
+    .centeredFeatureContent()             // Centers within available space
+    .fadeInFeatureContent(delay: 0.5)     // Adds fade-in effect with delay
+
+// Navigation and footer features:
+// - Automatic "Continue" → "Finish" button progression
+// - Back button appears conditionally with smooth transitions  
+// - Page control dots showing current progress
+// - Footer with Privacy Policy and Terms & Conditions using .nimbusLink style
+// - All animations respect theme.animationFast with environment override support
 ```
 
 ### Theme System Architecture

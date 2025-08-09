@@ -204,11 +204,7 @@ private struct FormContentView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Launch on login")
                     .font(.headline)
-                    .fontWeight(.semibold)
-                Text("Launch the app together with the system")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
+                    .fontWeight(.semibold)            }
             .frame(maxWidth: .infinity, alignment: .leading)
             
             // Input fields section
