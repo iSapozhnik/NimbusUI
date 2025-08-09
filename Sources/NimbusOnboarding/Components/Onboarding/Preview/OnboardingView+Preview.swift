@@ -191,18 +191,21 @@ import NimbusComponents
 // MARK: - Custom Form Content View
 
 private struct FormContentView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.nimbusTheme) private var theme
     @State private var fullName = ""
     @State private var email = ""
     @State private var company = ""
+    @State private var launchOnLogin = false
     
     var body: some View {
         VStack(spacing: 12) {
             // Header section
             VStack(alignment: .leading, spacing: 6) {
-                Text("Create Your Profile")
+                Text("Launch on login")
                     .font(.headline)
                     .fontWeight(.semibold)
-                Text("Enter your details to get started")
+                Text("Launch the app together with the system")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -210,35 +213,21 @@ private struct FormContentView: View {
             
             // Input fields section
             VStack(spacing: 14) {
-                NimbusTextField("Full Name", text: $fullName)
-                    .controlSize(.regular)
-            }
-            
-            // Action buttons section
-            HStack(spacing: 12) {
-                Button("Reset", role: .destructive) {}
-                .buttonStyle(.accent)
-                .controlSize(.small)
-                
-                Spacer()
-                
-                Button("Continue") {}
-                .buttonStyle(.accent)
+                NimbusToggleItem(
+                    "Launch the app together with the system",
+                    isOn: $launchOnLogin,
+                    togglePosition: .leading
+                )
+                .toggleShape(.roundedRect(3))
                 .controlSize(.small)
             }
         }
         .padding(24)
-        .background(Color.white)
+        .background(theme.backgroundColor(for: colorScheme))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .strokeBorder(Color.black.opacity(0.1), lineWidth: 1)
         )
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.1), radius: 12, x: 0, y: 4)
-        )
-        .allowsHitTesting(false)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .frame(width: 320)
     }

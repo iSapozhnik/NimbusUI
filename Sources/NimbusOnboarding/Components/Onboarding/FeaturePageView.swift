@@ -1,6 +1,20 @@
 import SwiftUI
 import NimbusCore
 
+/// A view modifier that conditionally applies a mask based on a boolean state.
+private struct ConditionalMaskModifier<Mask: View>: ViewModifier {
+    let isActive: Bool
+    let mask: Mask
+    
+    func body(content: Content) -> some View {
+        if isActive {
+            content
+        } else {
+            content.mask(mask)
+        }
+    }
+}
+
 /// Displays a single onboarding feature page with generic content.
 public struct FeaturePageView<Content: View>: View where Content: View {
     public let feature: Feature<Content>
@@ -32,6 +46,14 @@ public struct FeaturePageView<Content: View>: View where Content: View {
 /// Convenience version for AnyFeature (type-erased)
 public struct AnyFeaturePageView: View {
     public let feature: AnyFeature
+    @State private var isHovered: Bool = false
+    
+    @Environment(\.nimbusTheme) private var theme
+    @Environment(\.nimbusAnimationFast) private var overrideAnimationFast
+    
+    private var animationFast: Animation {
+        overrideAnimationFast ?? theme.animationFast
+    }
     
     public init(feature: AnyFeature) {
         self.feature = feature
@@ -40,8 +62,9 @@ public struct AnyFeaturePageView: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             feature.content
-                .mask(
-                    LinearGradient(
+                .modifier(ConditionalMaskModifier(
+                    isActive: isHovered,
+                    mask: LinearGradient(
                         gradient: .smooth(
                             from: Color.black.opacity(1),
                             to: Color.black.opacity(0.1),
@@ -51,7 +74,12 @@ public struct AnyFeaturePageView: View {
                         startPoint: .top,
                         endPoint: .bottom
                     )
-                )
+                ))
+                .onHover { hovering in
+                    withAnimation(animationFast) {
+                        isHovered = hovering
+                    }
+                }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .frame(height: 200)
             
