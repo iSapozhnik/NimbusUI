@@ -96,7 +96,7 @@ public struct OnboardingView: View {
                 
                 Spacer()
                 PageControlView(currentIndex: currentIndex, total: features.count)
-                HStack(alignment: .center) {
+                HStack {
                     Spacer()
                     Button(action: {
                         withAnimation(fastAnimation) {

@@ -62,6 +62,13 @@ public struct AnyFeaturePageView: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             feature.content
+                .onHover { hovering in
+                    withAnimation(animationFast) {
+                        isHovered = hovering
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .frame(height: 200)
                 .modifier(ConditionalMaskModifier(
                     isActive: isHovered,
                     mask: LinearGradient(
@@ -75,13 +82,6 @@ public struct AnyFeaturePageView: View {
                         endPoint: .bottom
                     )
                 ))
-                .onHover { hovering in
-                    withAnimation(animationFast) {
-                        isHovered = hovering
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .frame(height: 200)
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(feature.title)

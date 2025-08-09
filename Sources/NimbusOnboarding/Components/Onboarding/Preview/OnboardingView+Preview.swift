@@ -82,7 +82,7 @@ import NimbusComponents
             Circle()
                 .fill(Color.green.gradient)
                 .frame(width: 80, height: 80)
-                .scaleFeatureContent(scale: 1.2, duration: 1.5)
+                .scaleFeatureContent(scale: 1.2, duration: 3.5)
         },
         
         // Simple icon feature
@@ -96,7 +96,7 @@ import NimbusComponents
         // Custom form feature with NimbusUI components
         AnyFeature(
             title: "Setup Your Account",
-            description: "Complete your profile to personalize your experience and unlock all features."
+            description: "Complete your profile to"
         ) {
             FormContentView()
         },
@@ -233,4 +233,23 @@ private struct FormContentView: View {
     }
 }
 
+#Preview("TEST")
+{
+    VStack {
+        Text("This is a short string.")
+            .padding()
+            .frame(maxHeight: .infinity)
+            .background(.red)
+
+        VStack {
+            Text("This is a very long string with lots and lots of text that will definitely run across multiple lines because it's just so long.")
+                .padding()
+//                .frame(maxHeight: .infinity)
+                .background(.green)
+            Spacer()
+        }
+    }
+//    .fixedSize(horizontal: false, vertical: false)
+    .frame(maxWidth: 200)
+}
 #endif
