@@ -73,7 +73,6 @@ public struct PrimaryOutlineButtonStyle: ButtonStyle {
         let finalCornerRadii = envCornerRadii ?? theme.buttonCornerRadii
         let finalHorizontalPadding = ControlSizeUtility.horizontalPadding(for: controlSize, theme: theme, override: envHorizontalPadding)
         let fontSize = ControlSizeUtility.fontSize(for: controlSize, theme: theme)
-        let finalBorderWidth = envButtonBorderWidth ?? theme.buttonBorderWidth
         
         // Auto-apply NimbusDividerLabelStyle to Labels when environment values are set
         let finalHasDivider = envHasDivider
@@ -103,11 +102,13 @@ public struct PrimaryOutlineButtonStyle: ButtonStyle {
                     pressed: AnyShapeStyle(defaultAppearance.press)
                 )
             )
-            .overlay {
-                UnevenRoundedRectangle(cornerRadii: finalCornerRadii)
-                    .stroke(tint(configuration: configuration), lineWidth: finalBorderWidth)
-            }
-            .clipShape(.rect(cornerRadii: finalCornerRadii))
+            .modifier(
+                NimbusBorderedModifier(
+                    isHovering: isHovering,
+                    borderColor: tint(configuration: configuration),
+                    cornerRadii: finalCornerRadii
+                )
+            )
             .onHover { isHovering in
                 self.isHovering = isHovering
             }

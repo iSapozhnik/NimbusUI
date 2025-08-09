@@ -86,9 +86,6 @@ import SwiftUI
             Text("Icon only")
                 .font(.headline)
             
-            Button("", systemImage: "arrow.backward") {}
-                .buttonStyle(.secondaryOutline)
-            
             Button {} label: {
                 Image(systemName: "arrow.backward")
             }

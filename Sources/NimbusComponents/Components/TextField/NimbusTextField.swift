@@ -81,7 +81,7 @@ public struct NimbusTextField<Label>: View where Label: View {
             
             textFieldWithIconLayout
                 .modifier(NimbusFilledModifier(isHovering: isHovering, isPressed: isFocused))
-                .modifier(NimbusBorderedModifier(isHovering: isHovering, cornerRadii: effectiveCornerRadii))
+                .modifier(NimbusBorderedModifier(isHovering: isHovering, borderColor: .quaternary, cornerRadii: effectiveCornerRadii))
                 .clipShape(RoundedRectangle(cornerRadius: effectiveCornerRadii.topLeading, style: .continuous))
                 .focused($isFocused)
                 .onHover { hovering in
@@ -236,7 +236,7 @@ public struct NimbusTextField<Label>: View where Label: View {
     private var iconColor: Color {
         if isEnabled {
             if isFocused {
-                return theme.primaryColor(for: colorScheme)
+                return theme.accentColor(for: colorScheme)
             } else {
                 return theme.secondaryTextColor(for: colorScheme)
             }

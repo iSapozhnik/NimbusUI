@@ -33,25 +33,13 @@ public struct NimbusBorderedModifier: ViewModifier {
 
     public init(
         isHovering: Bool = false,
-        cascading: some ShapeStyle,
+        borderColor: some ShapeStyle,
         cornerRadii: RectangleCornerRadii? = nil
     ) {
         self.init(
             isHovering: isHovering,
-            fill: cascading.opacity(0.7),
-            hovering: cascading,
-            cornerRadii: cornerRadii
-        )
-    }
-
-    public init(
-        isHovering: Bool = false,
-        hovering: some ShapeStyle,
-        cornerRadii: RectangleCornerRadii? = nil
-    ) {
-        self.init(
-            isHovering: isHovering,
-            fill: .clear, hovering: hovering,
+            fill: borderColor.opacity(0.7),
+            hovering: borderColor,
             cornerRadii: cornerRadii
         )
     }
@@ -62,7 +50,7 @@ public struct NimbusBorderedModifier: ViewModifier {
     ) {
         self.init(
             isHovering: isHovering,
-            cascading: .quaternary,
+            borderColor: .quaternary,
             cornerRadii: cornerRadii
         )
     }
