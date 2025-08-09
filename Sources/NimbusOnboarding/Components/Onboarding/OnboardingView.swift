@@ -75,64 +75,75 @@ public struct OnboardingView: View {
         let contentPadding = overrideContentPadding ?? theme.labelContentSpacing
         let fastAnimation = overrideFastAnimation ?? theme.animationFast
         
-        ZStack {
-            FluidGradient(blobs: [.red, .green, .blue],
-                          highlights: [.yellow, .orange, .purple],
-                          speed: 0.1,
-                          blur: 0.75)
-            .overlay(
-                LinearGradient(
-                    gradient: .smooth(
-                        from: theme.backgroundColor(for: colorScheme).opacity(0),
-                        to: theme.backgroundColor(for: colorScheme),
-                        curve: .easeInOut
-                    ),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+        FluidGradient(blobs: [.red, .blue],
+                      highlights: [.yellow, .orange, .purple],
+                      speed: 0.1,
+                      blur: 0.75)
+        .overlay(
+            LinearGradient(
+                gradient: .smooth(
+                    from: theme.backgroundColor(for: colorScheme).opacity(0),
+                    to: theme.backgroundColor(for: colorScheme),
+                    curve: .easeInOut
+                ),
+                startPoint: .top,
+                endPoint: .bottom
             )
-            .overlay(alignment: .bottom) {
-                VStack(alignment: .leading, spacing: 24) {
-                    AnyFeaturePageView(feature: features[currentIndex])
-                        
+        )
+        .overlay(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: 24) {
+                AnyFeaturePageView(feature: features[currentIndex])
+                
+                Spacer()
+                PageControlView(currentIndex: currentIndex, total: features.count)
+                HStack(alignment: .center) {
                     Spacer()
-                    PageControlView(currentIndex: currentIndex, total: features.count)
-                    HStack {
-                        if currentIndex > 0 {
-                            Button { 
-                                withAnimation(fastAnimation) {
-                                    currentIndex -= 1
-                                }
-                            } label: {
-                                Image(systemName: "arrow.backward")
+                    Button(action: {
+                        withAnimation(fastAnimation) {
+                            if currentIndex < features.count - 1 {
+                                currentIndex += 1
                             }
-                            .buttonStyle(.secondaryOutline)
-                            .transition(.opacity.combined(with: .scale(scale: 0.8)))
                         }
-                        Button(action: {
-                            withAnimation(fastAnimation) {
-                                if currentIndex < features.count - 1 {
-                                    currentIndex += 1
-                                }
-                            }
-                        }) {
-                            let isLast = currentIndex == features.count - 1
-                            Label(isLast ? "Finish" : "Continue", systemImage: isLast ? "checkmark" : "arrow.right")
-                                .labelStyle(
-                                    NimbusDividerLabelStyle(
-                                        hasDivider: true,
-                                        iconAlignment: .trailing,
-                                        contentHorizontalPadding: contentPadding
-                                    )
+                    }) {
+                        let isLast = currentIndex == features.count - 1
+                        Label(isLast ? "Finish" : "Continue", systemImage: isLast ? "checkmark" : "arrow.right")
+                            .labelStyle(
+                                NimbusDividerLabelStyle(
+                                    hasDivider: true,
+                                    iconAlignment: .trailing,
+                                    contentHorizontalPadding: contentPadding
                                 )
+                            )
+                    }
+                    .buttonStyle(.accent)
+                    Spacer()
+                }
+                .overlay(alignment: .leading) {
+                    if currentIndex > 0 {
+                        Button {
+                            withAnimation(fastAnimation) {
+                                currentIndex -= 1
+                            }
+                        } label: {
+                            Image(systemName: "arrow.backward")
                         }
-                        .buttonStyle(.accent)
-                        .frame(height: 40)
-                        .modifier(NimbusAspectRatioModifier())
-                        Spacer()
+                        .buttonStyle(.primaryOutline)
+                        .transition(.opacity.combined(with: .scale(scale: 0.8)))
                     }
                 }
-                .padding(80)
+            }
+            .padding(80)
+            .overlay(alignment: .bottom) {
+                HStack {
+                    Button("Privacy Policy") {}
+                        .buttonStyle(.nimbusLink)
+                    Divider()
+                        .frame(height: 20)
+                    Button("Terms and Conditions") {}
+                        .buttonStyle(.nimbusLink)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.bottom, 16)
             }
         }
         .frame(width: 600, height: 560)
