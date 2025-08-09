@@ -105,7 +105,7 @@ public struct PrimaryOutlineButtonStyle: ButtonStyle {
             )
             .overlay {
                 UnevenRoundedRectangle(cornerRadii: finalCornerRadii)
-                    .strokeBorder(tint(configuration: configuration), lineWidth: finalBorderWidth)
+                    .stroke(tint(configuration: configuration), lineWidth: finalBorderWidth)
             }
             .clipShape(.rect(cornerRadii: finalCornerRadii))
             .onHover { isHovering in
