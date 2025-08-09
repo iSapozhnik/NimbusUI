@@ -9,21 +9,47 @@ import SwiftUI
 import FluidGradient
 import SmoothGradient
 
-/// A model representing a single onboarding feature page.
-public struct Feature: Identifiable {
+/// A model representing a single onboarding feature page with generic content.
+public struct Feature<Content: View>: Identifiable where Content: View {
     public let id = UUID()
     public let title: String
     public let description: String
-    public let image: Image
+    public let content: Content
     
     public init(
         title: String,
         description: String,
-        image: Image
+        @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.description = description
-        self.image = image
+        self.content = content()
+    }
+}
+
+/// Type-erased wrapper for Feature to support mixed content types in arrays.
+public struct AnyFeature: Identifiable {
+    public let id: UUID
+    public let title: String
+    public let description: String
+    public let content: AnyView
+    
+    public init<Content: View>(_ feature: Feature<Content>) {
+        self.id = feature.id
+        self.title = feature.title
+        self.description = feature.description
+        self.content = AnyView(feature.content)
+    }
+    
+    public init(
+        title: String,
+        description: String,
+        @ViewBuilder content: () -> some View
+    ) {
+        self.id = UUID()
+        self.title = title
+        self.description = description
+        self.content = AnyView(content())
     }
 }
 
@@ -34,11 +60,15 @@ public struct OnboardingView: View {
     @Environment(\.nimbusLabelContentHorizontalMediumPadding) private var overrideContentPadding
     @Environment(\.nimbusAnimationFast) private var overrideFastAnimation
     
-    public let features: [Feature]
+    public let features: [AnyFeature]
     @State private var currentIndex: Int = 0
     
-    public init(features: [Feature]) {
+    public init(features: [AnyFeature]) {
         self.features = features
+    }
+    
+    public init<Content: View>(features: [Feature<Content>]) {
+        self.features = features.map { AnyFeature($0) }
     }
     
     public var body: some View {
@@ -52,18 +82,29 @@ public struct OnboardingView: View {
                           blur: 0.75)
             .overlay(
                 LinearGradient(
-                    gradient: .smooth(from: theme.backgroundColor(for: colorScheme).opacity(0), to: theme.backgroundColor(for: colorScheme), curve: .easeInOut), // ⬅️
-                            startPoint: .top,
-                            endPoint: .bottom
-                    )
+                    gradient: .smooth(
+                        from: theme.backgroundColor(for: colorScheme).opacity(0),
+                        to: theme.backgroundColor(for: colorScheme),
+                        curve: .easeInOut
+                    ),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
             )
             .overlay(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 24) {
-                    FeaturePageView(feature: features[currentIndex])
+                    AnyFeaturePageView(feature: features[currentIndex])
                         
                     Spacer()
                     PageControlView(currentIndex: currentIndex, total: features.count)
                     HStack {
+                        if currentIndex > 0 {
+                            Button("Back", systemImage: "arrow.backward") {
+                                currentIndex -= 1
+                            }
+                            .buttonStyle(.secondaryOutline)
+                            .contentPadding(.zero)
+                        }
                         Button(action: {
                             withAnimation(fastAnimation) {
                                 if currentIndex < features.count - 1 {
