@@ -71,7 +71,7 @@ public struct NimbusAlert: View {
                 }
             }
             .padding(.horizontal, 24)
-//            .padding(.vertical, 20)
+            .padding(.vertical, 20)
             
             // Actions
             if !actions.isEmpty {
@@ -100,7 +100,7 @@ public struct NimbusAlert: View {
                     }
                 }
                 .padding(.horizontal, 24)
-//                .padding(.bottom, 20)
+                .padding(.bottom, 20)
             }
         }
         .frame(width: 400)
@@ -110,8 +110,8 @@ public struct NimbusAlert: View {
                 blendingMode: .behindWindow
             )
         )
-//        .clipShape(.rect(cornerRadius: 12))
-//        .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 8)
+        .clipShape(.rect(cornerRadius: 12))
+        .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 8)
     }
 }
 
