@@ -34,6 +34,7 @@ public final class NimbusAlertWindow: NSWindow {
         hasShadow = false
         level = .modalPanel
         titlebarAppearsTransparent = true
+        ignoresMouseEvents = false
         titleVisibility = .hidden
         animationBehavior = .alertPanel
         collectionBehavior.insert(.fullScreenAuxiliary)
@@ -44,10 +45,21 @@ public final class NimbusAlertWindow: NSWindow {
             self?.closeWithResponse(response)
         }
         
+        let view = NSView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+
         let hostingView = NSHostingView(rootView: alertContainer)
-//        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(hostingView)
+        NSLayoutConstraint.activate([
+            hostingView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            hostingView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            hostingView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+            hostingView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
+        ])
         
-        contentView = hostingView
+        contentView = view
 
         DispatchQueue.main.async {
             self.sizeToContent()
@@ -108,20 +120,11 @@ private struct NimbusAlertContainer: View {
     let onResponse: (NSApplication.ModalResponse) -> Void
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Semi-transparent background overlay
-            Color.clear
-                .onTapGesture {
-                    // Prevent dismissal by clicking background
-                }
-            
-            alert
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.opacity(0.3))
-        .onKeyDown { event in
-            handleKeyDown(event)
-        }
+        alert
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onKeyDown { event in
+                handleKeyDown(event)
+            }
     }
     
     private func handleKeyDown(_ event: NSEvent) {

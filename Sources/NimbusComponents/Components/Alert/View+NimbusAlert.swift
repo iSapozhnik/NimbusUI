@@ -17,7 +17,7 @@ public extension View {
         onChange(of: isPresented.wrappedValue) { _, isShowing in
             if isShowing {
                 let alertInstance = alert()
-                NimbusAlertWindow.show(alert: alertInstance) { _ in
+                NimbusAlertWindow.showModal(alert: alertInstance) { _ in
                     isPresented.wrappedValue = false
                 }
             }
@@ -27,8 +27,8 @@ public extension View {
     func nimbusAlert(
         isPresented: Binding<Bool>,
         style: NimbusAlertStyle,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         actions: [NimbusAlertAction] = []
     ) -> some View {
         nimbusAlert(isPresented: isPresented) {
@@ -43,8 +43,8 @@ public extension View {
     
     func nimbusConfirmationAlert(
         isPresented: Binding<Bool>,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         confirmTitle: String = "Confirm",
         cancelTitle: String = "Cancel",
         onConfirm: @escaping () -> Void,
@@ -70,8 +70,8 @@ public extension View {
     
     func nimbusDestructiveAlert(
         isPresented: Binding<Bool>,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         destructiveTitle: String = "Delete",
         cancelTitle: String = "Cancel",
         onDestroy: @escaping () -> Void,
@@ -97,8 +97,8 @@ public extension View {
     
     func nimbusInfoAlert(
         isPresented: Binding<Bool>,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> some View {
@@ -118,8 +118,8 @@ public extension View {
     
     func nimbusSuccessAlert(
         isPresented: Binding<Bool>,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> some View {
@@ -139,8 +139,8 @@ public extension View {
     
     func nimbusWarningAlert(
         isPresented: Binding<Bool>,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> some View {
@@ -160,8 +160,8 @@ public extension View {
     
     func nimbusErrorAlert(
         isPresented: Binding<Bool>,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> some View {
@@ -201,8 +201,8 @@ public extension NimbusAlert {
     
     @discardableResult
     static func showConfirmModal(
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         confirmTitle: String = "Confirm",
         cancelTitle: String = "Cancel",
         onConfirm: @escaping () -> Void = {},
@@ -221,8 +221,8 @@ public extension NimbusAlert {
     
     @discardableResult
     static func showDestructiveModal(
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         destructiveTitle: String = "Delete",
         cancelTitle: String = "Cancel",
         onDestroy: @escaping () -> Void = {},
@@ -241,8 +241,8 @@ public extension NimbusAlert {
     
     @discardableResult
     static func showInfoModal(
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> NSApplication.ModalResponse {
@@ -258,8 +258,8 @@ public extension NimbusAlert {
     
     @discardableResult
     static func showSuccessModal(
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> NSApplication.ModalResponse {
@@ -275,8 +275,8 @@ public extension NimbusAlert {
     
     @discardableResult
     static func showWarningModal(
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> NSApplication.ModalResponse {
@@ -292,8 +292,8 @@ public extension NimbusAlert {
     
     @discardableResult
     static func showErrorModal(
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         okTitle: String = "OK",
         onOK: @escaping () -> Void = {}
     ) -> NSApplication.ModalResponse {

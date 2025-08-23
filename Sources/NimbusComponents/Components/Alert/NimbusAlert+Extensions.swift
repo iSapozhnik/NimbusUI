@@ -49,8 +49,8 @@ public struct NimbusAlertActionBuilder {
 public extension NimbusAlert {
     init(
         style: NimbusAlertStyle,
-        title: String,
-        message: String? = nil,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         @NimbusAlertActionBuilder actions: () -> [NimbusAlertAction],
         @ViewBuilder customContent: () -> some View = { EmptyView() }
     ) {

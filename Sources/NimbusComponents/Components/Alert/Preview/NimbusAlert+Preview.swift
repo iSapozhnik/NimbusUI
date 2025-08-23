@@ -165,7 +165,7 @@ import NimbusCore
     NimbusAlert.warning(
         title: "Long Content",
         message: """
-        This is a very long message that contains multiple sentences and should wrap properly within the alert container. It tests how the alert handles extensive content while maintaining proper spacing and readability. The alert should resize appropriately to accommodate this content without breaking the overall layout or becoming unusable.
+        This is a very long message that contains multiple sentences and should wrap properly within the alert container. It tests how the alert handles extensive content while maintaining proper spacing and readability. The alert should resize appropriately to [accommodate](https://google.com) this content without breaking the overall layout or becoming unusable.
         
         This is a second paragraph to test multi-paragraph content handling.
         """,
