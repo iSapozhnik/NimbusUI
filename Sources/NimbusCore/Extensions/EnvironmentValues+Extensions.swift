@@ -157,6 +157,13 @@ public extension EnvironmentValues {
     @Entry var nimbusBadgeContentPadding: EdgeInsets? = nil
 }
 
+// MARK: Alert
+// Internal APIs for convenience methods - not for direct consumer use
+
+public extension EnvironmentValues {
+    @Entry var nimbusAlertCornerRadii: RectangleCornerRadii? = nil
+}
+
 // MARK: Notification Handle
 // Internal APIs for convenience methods - not for direct consumer use
 

@@ -324,6 +324,13 @@ public extension NimbusTheming {
     var textFieldIconSpacing: CGFloat { 8 }
 }
 
+// MARK: - Alert Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// Alert corner radii configuration
+    var alertCornerRadii: RectangleCornerRadii { RectangleCornerRadii(16) }
+}
+
 // MARK: - Notification Component Tokens (Optional with Defaults)
 
 public extension NimbusTheming {

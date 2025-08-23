@@ -11,6 +11,7 @@ import NimbusCore
 public struct NimbusAlert: View {
     @Environment(\.nimbusTheme) private var theme
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.nimbusAlertCornerRadii) private var cornerRadii
     
     private let style: NimbusAlertStyle
     private let title: String
@@ -36,6 +37,10 @@ public struct NimbusAlert: View {
         } else {
             self.customContent = AnyView(content)
         }
+    }
+    
+    private var effectiveCornerRadii: RectangleCornerRadii {
+        cornerRadii ?? theme.alertCornerRadii
     }
     
     public var body: some View {
@@ -110,7 +115,7 @@ public struct NimbusAlert: View {
                 blendingMode: .behindWindow
             )
         )
-        .clipShape(.rect(cornerRadius: 12))
+        .clipShape(.rect(cornerRadii: effectiveCornerRadii))
         .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 8)
     }
 }

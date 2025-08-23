@@ -11,6 +11,11 @@ import NimbusCore
 // MARK: - Alert Configuration Extensions
 
 public extension NimbusAlert {
+    /// Sets the alert corner radii
+    func cornerRadii(_ radii: RectangleCornerRadii) -> some View {
+        environment(\.nimbusAlertCornerRadii, radii)
+    }
+    
     func withWidth(_ width: CGFloat) -> NimbusAlert {
         var alert = self
         alert.preferredWidth = width
