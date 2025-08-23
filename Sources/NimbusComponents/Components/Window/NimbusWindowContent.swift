@@ -29,7 +29,6 @@ struct NimbusWindowContent<Content>: View where Content: View {
                 content()
 //                windowBorder()
             }
-//            .buttonStyle(.luminare)
             .fixedSize()
             .onGeometryChange(for: CGSize.self, of: \.size, action: window.setSize(_:))
             .frame(minWidth: 12, minHeight: 12, alignment: .top)

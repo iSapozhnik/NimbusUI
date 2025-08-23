@@ -12,6 +12,7 @@ import SwiftUI
 // - Button styles with full theming support
 // - Checkbox components with flexible positioning
 // - Toggle components with interactive knob and drag support
+// - Alert components with modal behavior and theme integration
 // - List components with hover states
 // - Scroll components with custom theming
 // - Clean convenience method APIs
