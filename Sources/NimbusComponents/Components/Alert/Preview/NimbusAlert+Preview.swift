@@ -140,7 +140,7 @@ import NimbusCore
     AlertPreviewContainer(
         alertType: .warning,
         title: "Warm Theme",
-        message: "This alert uses a custom warm theme.",
+        message: "This alert uses a *custom warm* theme.",
         theme: CustomWarmTheme()
     )
 }
@@ -156,8 +156,8 @@ struct AlertPreviewContainer: View {
     }
     
     let alertType: AlertType
-    let title: String
-    let message: String
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
     let theme: NimbusTheming
     
     @State private var showAlert = false
@@ -165,8 +165,8 @@ struct AlertPreviewContainer: View {
     
     init(
         alertType: AlertType,
-        title: String,
-        message: String = "",
+        title: LocalizedStringKey,
+        message: LocalizedStringKey = "",
         theme: NimbusTheming = NimbusTheme.default
     ) {
         self.alertType = alertType
@@ -204,7 +204,7 @@ struct AlertPreviewContainer: View {
         case .info:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     style: .info,
                     actions: [
@@ -218,7 +218,7 @@ struct AlertPreviewContainer: View {
         case .success:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     style: .success,
                     actions: [
@@ -232,7 +232,7 @@ struct AlertPreviewContainer: View {
         case .warning:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     style: .warning,
                     actions: [
@@ -247,7 +247,7 @@ struct AlertPreviewContainer: View {
         case .error:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     style: .error,
                     actions: [
@@ -262,7 +262,7 @@ struct AlertPreviewContainer: View {
         case .singleButton:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.ok { alertResult = "Single button pressed" }
@@ -275,7 +275,7 @@ struct AlertPreviewContainer: View {
         case .twoButtons:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
@@ -289,7 +289,7 @@ struct AlertPreviewContainer: View {
         case .threeButtons:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.custom("Later") { alertResult = "Later chosen" },
@@ -304,7 +304,7 @@ struct AlertPreviewContainer: View {
         case .destructive:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     style: .warning,
                     actions: [
@@ -319,7 +319,7 @@ struct AlertPreviewContainer: View {
         case .customContent:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     style: .info,
                     actions: [
@@ -346,7 +346,7 @@ struct AlertPreviewContainer: View {
         case .longContent:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
@@ -360,7 +360,7 @@ struct AlertPreviewContainer: View {
         case .modalPresentation:
             Color.clear
                 .nimbusAlert(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     presentationMode: .modal,
                     actions: [
@@ -374,7 +374,7 @@ struct AlertPreviewContainer: View {
         case .confirmationDialog:
             Color.clear
                 .nimbusConfirmationDialog(
-                    LocalizedStringKey(title),
+                    title,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.destructive("Don't Save") { alertResult = "Not saved" },
