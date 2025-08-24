@@ -153,7 +153,7 @@ private struct NimbusAlertModifier: ViewModifier {
             customContent: customContent
         )
         
-        let window = NimbusAlertWindow(alert: alert) { _ in
+        let window = NimbusAlertWindow(alert: alert) {
             DispatchQueue.main.async {
                 self.isShowingAlert = false
                 self.isPresented = false
@@ -168,7 +168,7 @@ private struct NimbusAlertModifier: ViewModifier {
         case .modal:
             // Run modal on main thread but don't block current execution
             DispatchQueue.main.async {
-                _ = window.runModal()
+                window.runModal()
             }
         }
     }

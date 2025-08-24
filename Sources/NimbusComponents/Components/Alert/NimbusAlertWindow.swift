@@ -9,10 +9,10 @@ import SwiftUI
 import NimbusCore
 
 public final class NimbusAlertWindow: NSWindow {
-    private var completion: ((NSApplication.ModalResponse) -> Void)?
+    private var completion: (() -> Void)?
     private var isModal: Bool = false
     
-    public init(alert: NimbusAlert, completion: ((NSApplication.ModalResponse) -> Void)? = nil) {
+    public init(alert: NimbusAlert, completion: (() -> Void)? = nil) {
         self.completion = completion
         
         super.init(
@@ -45,8 +45,8 @@ public final class NimbusAlertWindow: NSWindow {
     }
     
     private func setupContent(alert: NimbusAlert) {
-        let alertContainer = NimbusAlertContainer(alert: alert) { [weak self] response in
-            self?.closeWithResponse(response)
+        let alertContainer = NimbusAlertContainer(alert: alert) { [weak self] in
+            self?.closeWindow()
         }
         
         let view = NSView()
@@ -95,22 +95,20 @@ public final class NimbusAlertWindow: NSWindow {
         }
     }
     
-    private func closeWithResponse(_ response: NSApplication.ModalResponse) {
+    private func closeWindow() {
         if isModal {
-            NSApp.stopModal(withCode: response)
+            NSApp.stopModal(withCode: .OK)
         }
         
         close()
-        completion?(response)
+        completion?()
     }
     
-    @discardableResult
-    public func runModal() -> NSApplication.ModalResponse {
+    public func runModal() {
         isModal = true
         DispatchQueue.main.async {
             NSApp.runModal(for: self)
         }
-        return .OK
     }
     
     public func show() {
@@ -120,7 +118,7 @@ public final class NimbusAlertWindow: NSWindow {
     
     /// Properly dismisses the alert, handling modal state cleanup
     public func dismissProperly() {
-        closeWithResponse(.OK)
+        closeWindow()
     }
 }
 
@@ -128,7 +126,7 @@ public final class NimbusAlertWindow: NSWindow {
 
 private struct NimbusAlertContainer: View {
     let alert: NimbusAlert
-    let onResponse: (NSApplication.ModalResponse) -> Void
+    let onDismiss: () -> Void
     
     var body: some View {
         // Just display the alert directly - it already has all content
@@ -141,10 +139,8 @@ private struct NimbusAlertContainer: View {
     
     private func handleKeyDown(_ event: NSEvent) {
         switch event.keyCode {
-        case 53: // Escape key
-            onResponse(.cancel)
-        case 36: // Return key
-            onResponse(.OK)
+        case 53, 36: // Escape key or Return key
+            onDismiss()
         default:
             break
         }
@@ -185,18 +181,17 @@ private class KeyHandlerNSView: NSView {
 // MARK: - Static Presentation Methods
 
 public extension NimbusAlertWindow {
-    @discardableResult
     static func showModal(
         alert: NimbusAlert,
-        completion: ((NSApplication.ModalResponse) -> Void)? = nil
-    ) -> NSApplication.ModalResponse {
+        completion: (() -> Void)? = nil
+    ) {
         let window = NimbusAlertWindow(alert: alert, completion: completion)
-        return window.runModal()
+        window.runModal()
     }
     
     static func show(
         alert: NimbusAlert,
-        completion: ((NSApplication.ModalResponse) -> Void)? = nil
+        completion: (() -> Void)? = nil
     ) {
         let window = NimbusAlertWindow(alert: alert, completion: completion)
         window.show()
