@@ -58,26 +58,33 @@ public extension View {
         self
             .onChange(of: isPresented.wrappedValue) { _, isShowing in
                 if isShowing {
+                    var alertWindow: NimbusAlertWindow?
+                    
                     let alert = NimbusAlert(
                         style: style,
                         title: title,
                         message: message,
                         actions: actions,
-                        onDismiss: { isPresented.wrappedValue = false },
+                        presentationMode: presentationMode,
+                        onDismiss: { 
+                            alertWindow?.close()
+                        },
                         customContent: customContent
                     )
                     
                     switch presentationMode {
                     case .normal:
-                        // TODO: Implement normal presentation using overlay
-                        // For now, fall back to modal
-                        NimbusAlertWindow.showModal(alert: alert) { _ in
+                        let window = NimbusAlertWindow(alert: alert) { _ in
                             isPresented.wrappedValue = false
                         }
+                        alertWindow = window
+                        window.show()
                     case .modal:
-                        NimbusAlertWindow.showModal(alert: alert) { _ in
+                        let window = NimbusAlertWindow(alert: alert) { _ in
                             isPresented.wrappedValue = false
                         }
+                        alertWindow = window
+                        window.runModal()
                     }
                 }
             }

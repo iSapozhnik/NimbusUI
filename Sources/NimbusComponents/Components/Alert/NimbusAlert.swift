@@ -18,6 +18,7 @@ public struct NimbusAlert: View {
     internal let message: LocalizedStringKey?
     internal let actions: [NimbusAlertButton]
     internal let customContent: AnyView?
+    internal let presentationMode: NimbusAlertPresentationMode
     private let onDismiss: () -> Void
     
     public init(
@@ -25,6 +26,7 @@ public struct NimbusAlert: View {
         title: LocalizedStringKey,
         message: LocalizedStringKey? = nil,
         actions: [NimbusAlertButton] = [],
+        presentationMode: NimbusAlertPresentationMode = .modal,
         onDismiss: @escaping () -> Void = {},
         @ViewBuilder customContent: () -> some View = { EmptyView() }
     ) {
@@ -32,6 +34,7 @@ public struct NimbusAlert: View {
         self.title = title
         self.message = message
         self.actions = actions
+        self.presentationMode = presentationMode
         self.onDismiss = onDismiss
         
         let content = customContent()
@@ -135,8 +138,8 @@ private struct AlertButton: View {
     let onDismiss: () -> Void
     
     var body: some View {
-
         let isPrimaryAction = index == totalActions - 1
+        
         Group {
             if isPrimaryAction {
                 Button {
