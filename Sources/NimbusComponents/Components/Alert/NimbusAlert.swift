@@ -48,24 +48,19 @@ public struct NimbusAlert: View {
     
     public var body: some View {
         ZStack {
-            VStack(spacing: 0) {
-                // Content Area
+            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                Image(systemName: style.icon)
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundStyle(style.iconColor(for: theme, colorScheme: colorScheme))
+                    .frame(width: 24, height: 24)
+                
                 VStack(spacing: 16) {
-                    // Icon and Title
-                    HStack(spacing: 12) {
-                        Image(systemName: style.icon)
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundStyle(style.iconColor(for: theme, colorScheme: colorScheme))
-                            .frame(width: 24, height: 24)
-                        
-                        Text(title)
-                            .font(.headline)
-                            .foregroundStyle(theme.primaryTextColor(for: colorScheme))
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    Text(title)
+                        .font(.headline)
+                        .foregroundStyle(theme.primaryTextColor(for: colorScheme))
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // Message
                     if let message = message {
                         Text(message)
                             .font(.body)
@@ -74,47 +69,44 @@ public struct NimbusAlert: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
-                    // Custom Content
                     if let customContent = customContent {
                         customContent
                     }
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 20)
-                
-                // Actions
-                if !actions.isEmpty {
-                    HStack(spacing: 12) {
-                        ForEach(Array(actions.enumerated()), id: \.offset) { index, action in
-                            Group {
-                                switch action.style {
-                                case .default:
-                                    Button(action.title) {
-                                        action.action()
-                                        onResponse?(.cancel)
+                    
+                    if !actions.isEmpty {
+                        HStack(spacing: 12) {
+                            ForEach(Array(actions.enumerated()), id: \.offset) { index, action in
+                                Group {
+                                    switch action.style {
+                                    case .default:
+                                        Button(action.title) {
+                                            action.action()
+                                            onResponse?(.cancel)
+                                        }
+                                        .buttonStyle(.secondaryOutline)
+                                    case .primary:
+                                        Button(action.title) {
+                                            action.action()
+                                            onResponse?(.OK)
+                                        }
+                                        .buttonStyle(.primaryOutline)
+                                    case .destructive:
+                                        Button(action.title, role: .destructive) {
+                                            action.action()
+                                            onResponse?(.cancel)
+                                        }
+                                        .buttonStyle(.secondaryOutline)
                                     }
-                                    .buttonStyle(.secondary)
-                                case .primary:
-                                    Button(action.title) {
-                                        action.action()
-                                        onResponse?(.OK)
-                                    }
-                                    .buttonStyle(.accent)
-                                case .destructive:
-                                    Button(action.title, role: .destructive) {
-                                        action.action()
-                                        onResponse?(.cancel)
-                                    }
-                                    .buttonStyle(.primary)
                                 }
+                                .controlSize(.mini)
                             }
-                            .controlSize(.mini)
+                            Spacer()
                         }
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 20)
                 }
             }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 20)
             .modifier(
                 NimbusBackgroundEffectModifier(
                     material: .menu,
