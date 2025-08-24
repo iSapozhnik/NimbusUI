@@ -117,6 +117,11 @@ public final class NimbusAlertWindow: NSWindow {
         isModal = false
         makeKeyAndOrderFront(nil)
     }
+    
+    /// Properly dismisses the alert, handling modal state cleanup
+    public func dismissProperly() {
+        closeWithResponse(.OK)
+    }
 }
 
 // MARK: - Alert Container

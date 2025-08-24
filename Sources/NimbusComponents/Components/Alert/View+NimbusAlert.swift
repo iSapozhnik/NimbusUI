@@ -55,39 +55,17 @@ public extension View {
         actions: [NimbusAlertButton],
         @ViewBuilder customContent: @escaping () -> some View = { EmptyView() }
     ) -> some View {
-        self
-            .onChange(of: isPresented.wrappedValue) { _, isShowing in
-                if isShowing {
-                    var alertWindow: NimbusAlertWindow?
-                    
-                    let alert = NimbusAlert(
-                        style: style,
-                        title: title,
-                        message: message,
-                        actions: actions,
-                        presentationMode: presentationMode,
-                        onDismiss: { 
-                            alertWindow?.close()
-                        },
-                        customContent: customContent
-                    )
-                    
-                    switch presentationMode {
-                    case .normal:
-                        let window = NimbusAlertWindow(alert: alert) { _ in
-                            isPresented.wrappedValue = false
-                        }
-                        alertWindow = window
-                        window.show()
-                    case .modal:
-                        let window = NimbusAlertWindow(alert: alert) { _ in
-                            isPresented.wrappedValue = false
-                        }
-                        alertWindow = window
-                        window.runModal()
-                    }
-                }
-            }
+        self.modifier(
+            NimbusAlertModifier(
+                title: title,
+                message: message,
+                isPresented: isPresented,
+                presentationMode: presentationMode,
+                style: style,
+                actions: actions,
+                customContent: customContent
+            )
+        )
     }
     
     /// Confirmation dialog equivalent
@@ -107,6 +85,102 @@ public extension View {
             actions: actions,
             customContent: { EmptyView() }
         )
+    }
+}
+
+// MARK: - Alert Modifier
+
+private struct NimbusAlertModifier: ViewModifier {
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey?
+    @Binding var isPresented: Bool
+    let presentationMode: NimbusAlertPresentationMode
+    let style: NimbusAlertStyle
+    let actions: [NimbusAlertButton]
+    let customContent: () -> AnyView
+    
+    @State private var alertWindow: NimbusAlertWindow?
+    @State private var isShowingAlert = false
+    
+    init(
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
+        isPresented: Binding<Bool>,
+        presentationMode: NimbusAlertPresentationMode = .normal,
+        style: NimbusAlertStyle = .info,
+        actions: [NimbusAlertButton],
+        @ViewBuilder customContent: @escaping () -> some View = { EmptyView() }
+    ) {
+        self.title = title
+        self.message = message
+        self._isPresented = isPresented
+        self.presentationMode = presentationMode
+        self.style = style
+        self.actions = actions
+        
+        let content = customContent()
+        if content is EmptyView {
+            self.customContent = { AnyView(EmptyView()) }
+        } else {
+            self.customContent = { AnyView(content) }
+        }
+    }
+    
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented) { _, isShowing in
+                if isShowing && !isShowingAlert {
+                    showAlert()
+                }
+            }
+    }
+    
+    private func showAlert() {
+        // Prevent multiple alerts
+        guard !isShowingAlert else { return }
+        isShowingAlert = true
+        
+        var windowRef: NimbusAlertWindow?
+        
+        let alert = NimbusAlert(
+            style: style,
+            title: title,
+            message: message,
+            actions: actions,
+            presentationMode: presentationMode,
+            onDismiss: {
+                windowRef?.dismissProperly()
+            },
+            customContent: customContent
+        )
+        
+        let window = NimbusAlertWindow(alert: alert) { _ in
+            DispatchQueue.main.async {
+                self.isShowingAlert = false
+                self.alertWindow = nil
+                self.isPresented = false
+            }
+        }
+        
+        windowRef = window
+        
+        alertWindow = window
+        
+        switch presentationMode {
+        case .normal:
+            window.show()
+        case .modal:
+            // Run modal on main thread but don't block current execution
+            DispatchQueue.main.async {
+                _ = window.runModal()
+            }
+        }
+    }
+    
+    private func hideAlert() {
+        alertWindow?.dismissProperly()
+        alertWindow = nil
+        isShowingAlert = false
     }
 }
 
