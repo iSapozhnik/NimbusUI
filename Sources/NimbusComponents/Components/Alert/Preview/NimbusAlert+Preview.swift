@@ -11,272 +11,385 @@ import NimbusCore
 // MARK: - Basic Alert Previews
 
 #Preview("Info Alert") {
-    NimbusAlert.info(
-        title: "This is modal title",
-        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus ipsum vel hendrerit commodo.",
-        actions: [
-            .cancel("Cancel"),
-            .primary("Accept") { print("Accept tapped") }
-        ]
+    AlertPreviewContainer(
+        alertType: .info,
+        title: "Information",
+        message: "This is an informational alert using the new API."
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
 #Preview("Success Alert") {
-    NimbusAlert.success(
-        title: "This is modal title",
-        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus ipsum vel hendrerit commodo.",
-        actions: [
-            .ok("Accept") { print("Accept tapped") },
-            .cancel("Cancel")
-        ]
+    AlertPreviewContainer(
+        alertType: .success,
+        title: "Success!",
+        message: "Your operation completed successfully."
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
 #Preview("Warning Alert") {
-    NimbusAlert.warning(
-        title: "Destructive Action",
-        message: "This action cannot be undone. Are you sure you want to continue?",
-        actions: [
-            .cancel("Cancel"),
-            .destructive("Delete") { print("Delete tapped") }
-        ]
+    AlertPreviewContainer(
+        alertType: .warning,
+        title: "Warning",
+        message: "Please review your settings before continuing."
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
 #Preview("Error Alert") {
-    NimbusAlert.error(
-        title: "Something went wrong",
-        message: "An unexpected error occurred. Please try again later.",
-        actions: [
-            .ok("OK") { print("OK tapped") }
-        ]
+    AlertPreviewContainer(
+        alertType: .error,
+        title: "Error Occurred",
+        message: "An unexpected error occurred. Please try again."
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
-// MARK: - Convenience Method Previews
+// MARK: - Action Variations
 
-#Preview("Confirm Dialog") {
-    NimbusAlert.confirmDialog(
-        title: "Save changes?",
-        message: "Your changes will be saved to the document.",
-        confirmTitle: "Save",
-        cancelTitle: "Don't Save",
-        onConfirm: { print("Save confirmed") },
-        onCancel: { print("Save cancelled") }
+#Preview("Single Button Alert") {
+    AlertPreviewContainer(
+        alertType: .singleButton,
+        title: "Simple Alert",
+        message: "This alert has only one action button."
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
-#Preview("Destructive Dialog") {
-    NimbusAlert.destructiveDialog(
-        title: "Delete Project",
-        message: "This will permanently delete the project and all its files. This action cannot be undone.",
-        destructiveTitle: "Delete",
-        cancelTitle: "Cancel",
-        onDestroy: { print("Project deleted") },
-        onCancel: { print("Deletion cancelled") }
+#Preview("Two Button Alert") {
+    AlertPreviewContainer(
+        alertType: .twoButtons,
+        title: "Confirmation",
+        message: "Do you want to save your changes?"
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
-#Preview("OK Dialog") {
-    NimbusAlert.okDialog(
-        title: "Update Available",
-        message: "A new version of the app is available for download.",
-        style: .info,
-        okTitle: "Got it",
-        onOK: { print("OK tapped") }
+#Preview("Three Button Alert") {
+    AlertPreviewContainer(
+        alertType: .threeButtons,
+        title: "Multiple Options",
+        message: "Choose one of the available actions."
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
-// MARK: - Custom Content Preview
+#Preview("Destructive Alert") {
+    AlertPreviewContainer(
+        alertType: .destructive,
+        title: "Delete Item",
+        message: "This action cannot be undone."
+    )
+}
+
+// MARK: - Custom Content
 
 #Preview("Alert with Custom Content") {
-    NimbusAlert(
-        style: .info,
+    AlertPreviewContainer(
+        alertType: .customContent,
         title: "Custom Alert",
-        message: "This alert contains custom content below:",
-        actions: [
-            .cancel("Cancel"),
-            .primary("Continue") { print("Continue tapped") }
-        ],
-        customContent: {
-            VStack(spacing: 12) {
-            Rectangle()
-                .fill(.blue.gradient)
-                .frame(height: 80)
-                .cornerRadius(8)
-            
-            Text("Custom content area")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .padding(.horizontal)
-        }
+        message: "This alert contains custom content."
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
-// MARK: - Multiple Button Configurations
-
-#Preview("Single Button") {
-    NimbusAlert.info(
-        title: "Single Action",
-        message: "This alert has only one action button.",
-        actions: [
-            .primary("OK") { print("OK tapped") }
-        ]
-    )
-    .environment(\.nimbusTheme, NimbusTheme.default)
-}
-
-#Preview("Three Buttons") {
-    NimbusAlert.warning(
-        title: "Multiple Actions",
-        message: "Choose one of the available actions:",
-        actions: [
-            .default("Later") { print("Later tapped") },
-            .cancel("Cancel"),
-            .primary("Save") { print("Save tapped") }
-        ]
-    )
-    .environment(\.nimbusTheme, NimbusTheme.default)
-}
-
-// MARK: - Long Content Previews
-
-#Preview("Long Title") {
-    NimbusAlert.info(
-        title: "This is a very long title that might wrap to multiple lines to test the layout behavior",
-        message: "Short message.",
-        actions: [
-            .cancel("Cancel"),
-            .primary("OK") { print("OK tapped") }
-        ]
-    )
-    .environment(\.nimbusTheme, NimbusTheme.default)
-}
-
-#Preview("Long Message") {
-    NimbusAlert.warning(
-        title: "Long Content",
+#Preview("Alert with Long Content") {
+    AlertPreviewContainer(
+        alertType: .longContent,
+        title: "Long Content Alert",
         message: """
-        This is a very long message that contains multiple sentences and should wrap properly within the alert container. It tests how the alert handles extensive content while maintaining proper spacing and readability. The alert should resize appropriately to [accommodate](https://google.com) this content without breaking the overall layout or becoming unusable.
+        This is a very long message that contains multiple sentences and should wrap properly within the alert container. It tests how the alert handles extensive content while maintaining proper spacing and readability.
         
         This is a second paragraph to test multi-paragraph content handling.
-        """,
-        actions: [
-            .cancel("Cancel"),
-            .primary("Continue") { print("Continue tapped") }
-        ]
+        """
     )
-    .environment(\.nimbusTheme, NimbusTheme.default)
+}
+
+// MARK: - Presentation Modes
+
+#Preview("Modal Presentation") {
+    AlertPreviewContainer(
+        alertType: .modalPresentation,
+        title: "Modal Alert",
+        message: "This alert uses modal presentation."
+    )
+}
+
+#Preview("Confirmation Dialog") {
+    AlertPreviewContainer(
+        alertType: .confirmationDialog,
+        title: "Save Changes?",
+        message: "Your changes will be saved to the document."
+    )
 }
 
 // MARK: - Theme Variations
 
+#Preview("Default Theme") {
+    AlertPreviewContainer(
+        alertType: .info,
+        title: "Default Theme",
+        message: "This alert uses the default theme.",
+        theme: NimbusTheme.default
+    )
+}
+
 #Preview("Maritime Theme") {
-    VStack(spacing: 20) {
-        NimbusAlert.info(
-            title: "Maritime Theme",
-            message: "This alert uses the Maritime theme.",
-            actions: [
-                .cancel("Cancel"),
-                .primary("Accept") { print("Accept tapped") }
-            ]
-        )
-        .environment(\.nimbusTheme, MaritimeTheme())
-    }
+    AlertPreviewContainer(
+        alertType: .success,
+        title: "Maritime Theme",
+        message: "This alert uses the maritime theme.",
+        theme: MaritimeTheme()
+    )
 }
 
 #Preview("Custom Warm Theme") {
-    NimbusAlert.success(
+    AlertPreviewContainer(
+        alertType: .warning,
         title: "Warm Theme",
-        message: "This alert demonstrates the custom warm theme.",
-        actions: [
-            .ok("Great") { print("Great tapped") }
-        ]
+        message: "This alert uses a custom warm theme.",
+        theme: CustomWarmTheme()
     )
-    .environment(\.nimbusTheme, CustomWarmTheme())
 }
 
-// MARK: - Action Builder Syntax Preview
-
-#Preview("Action Builder Syntax") {
-    NimbusAlert(
-        style: .info,
-        title: "Action Builder",
-        message: "This alert uses the action builder syntax."
-    ) {
-        NimbusAlertAction.cancel("Not now")
-        NimbusAlertAction.default("Maybe later") { print("Maybe later") }
-        NimbusAlertAction.primary("Yes, please") { print("Yes tapped") }
-    }
-    .environment(\.nimbusTheme, NimbusTheme.default)
-}
-
-// MARK: - Preview Container for Testing Modal Presentation
+// MARK: - Preview Container
 
 struct AlertPreviewContainer: View {
-    @State private var showInfo = false
-    @State private var showSuccess = false
-    @State private var showWarning = false
-    @State private var showError = false
-    @State private var showConfirm = false
+    enum AlertType {
+        case info, success, warning, error
+        case singleButton, twoButtons, threeButtons, destructive
+        case customContent, longContent
+        case modalPresentation, confirmationDialog
+    }
+    
+    let alertType: AlertType
+    let title: String
+    let message: String
+    let theme: NimbusTheming
+    
+    @State private var showAlert = false
+    @State private var alertResult = ""
+    
+    init(
+        alertType: AlertType,
+        title: String,
+        message: String = "",
+        theme: NimbusTheming = NimbusTheme.default
+    ) {
+        self.alertType = alertType
+        self.title = title
+        self.message = message
+        self.theme = theme
+    }
     
     var body: some View {
-        VStack(spacing: 16) {
-            Button("Show Info Alert") { showInfo = true }
-                .buttonStyle(.primary)
+        VStack(spacing: 20) {
+            Text("NimbusAlert Preview")
+                .font(.title2)
             
-            Button("Show Success Alert") { showSuccess = true }
-                .buttonStyle(.accent)
+            if !alertResult.isEmpty {
+                Text(alertResult)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
+                    .multilineTextAlignment(.center)
+            }
             
-            Button("Show Warning Alert") { showWarning = true }
-                .buttonStyle(.secondary)
-            
-            Button("Show Error Alert") { showError = true }
-                .buttonStyle(.primaryOutline)
-            
-            Button("Show Confirmation") { showConfirm = true }
-                .buttonStyle(.secondaryOutline)
+            Button("Show Alert") {
+                showAlert = true
+            }
+            .buttonStyle(.primary)
         }
         .padding()
-        .nimbusInfoAlert(
-            isPresented: $showInfo,
-            title: "Information",
-            message: "This is an informational alert."
-        )
-        .nimbusSuccessAlert(
-            isPresented: $showSuccess,
-            title: "Success",
-            message: "Operation completed successfully."
-        )
-        .nimbusWarningAlert(
-            isPresented: $showWarning,
-            title: "Warning",
-            message: "Please review your settings."
-        )
-        .nimbusErrorAlert(
-            isPresented: $showError,
-            title: "Error",
-            message: "Something went wrong."
-        )
-        .nimbusConfirmationAlert(
-            isPresented: $showConfirm,
-            title: "Confirm Action",
-            message: "Are you sure you want to proceed?",
-            onConfirm: { print("Confirmed") }
-        )
+        .frame(width: 320, height: 200)
+        .environment(\.nimbusTheme, theme)
+        .background(alertModifier)
+    }
+    
+    @ViewBuilder
+    private var alertModifier: some View {
+        switch alertType {
+        case .info:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    style: .info,
+                    actions: [
+                        NimbusAlertButton.ok { alertResult = "OK pressed" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .success:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    style: .success,
+                    actions: [
+                        NimbusAlertButton.ok { alertResult = "Success acknowledged" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .warning:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    style: .warning,
+                    actions: [
+                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
+                        NimbusAlertButton.custom("Proceed") { alertResult = "Proceeding..." }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .error:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    style: .error,
+                    actions: [
+                        NimbusAlertButton.custom("Retry") { alertResult = "Retrying..." },
+                        NimbusAlertButton.ok { alertResult = "OK pressed" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .singleButton:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    actions: [
+                        NimbusAlertButton.ok { alertResult = "Single button pressed" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .twoButtons:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    actions: [
+                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
+                        NimbusAlertButton.custom("Save") { alertResult = "Saved!" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .threeButtons:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    actions: [
+                        NimbusAlertButton.custom("Later") { alertResult = "Later chosen" },
+                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
+                        NimbusAlertButton.custom("Save") { alertResult = "Saved!" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .destructive:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    style: .warning,
+                    actions: [
+                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
+                        NimbusAlertButton.destructive("Delete") { alertResult = "Deleted!" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .customContent:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    style: .info,
+                    actions: [
+                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
+                        NimbusAlertButton.custom("Continue") { alertResult = "Continuing with custom content..." }
+                    ],
+                    content: {
+                        VStack(spacing: 12) {
+                            Rectangle()
+                                .fill(.blue.gradient)
+                                .frame(height: 60)
+                                .cornerRadius(8)
+                            
+                            Text("Custom content area")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    },
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .longContent:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    actions: [
+                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
+                        NimbusAlertButton.custom("Continue") { alertResult = "Continuing with long content..." }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .modalPresentation:
+            Color.clear
+                .nimbusAlert(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    presentationMode: .modal,
+                    actions: [
+                        NimbusAlertButton.ok { alertResult = "Modal alert dismissed" }
+                    ],
+                    message: {
+                        Text(message)
+                    }
+                )
+            
+        case .confirmationDialog:
+            Color.clear
+                .nimbusConfirmationDialog(
+                    LocalizedStringKey(title),
+                    isPresented: $showAlert,
+                    actions: [
+                        NimbusAlertButton.destructive("Don't Save") { alertResult = "Not saved" },
+                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
+                        NimbusAlertButton.custom("Save") { alertResult = "Saved!" }
+                    ]
+                )
+        }
     }
 }
 
-#Preview("Modal Presentation Test") {
-    AlertPreviewContainer()
-        .environment(\.nimbusTheme, NimbusTheme.default)
+// MARK: - Helper Types
+
+struct EmptyModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+    }
 }

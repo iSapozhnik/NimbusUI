@@ -41,20 +41,24 @@ public enum NimbusAlertStyle {
     }
 }
 
-public struct NimbusAlertAction {
-    public let title: String
-    public let style: NimbusAlertActionStyle
+public enum NimbusAlertPresentationMode {
+    case normal
+    case modal
+}
+
+public struct NimbusAlertButton {
+    public let title: LocalizedStringKey
+    public let role: ButtonRole?
     public let action: () -> Void
     
-    public init(title: String, style: NimbusAlertActionStyle = .default, action: @escaping () -> Void) {
+    public init(
+        _ title: LocalizedStringKey,
+        role: ButtonRole? = nil,
+        action: @escaping () -> Void = {}
+    ) {
         self.title = title
-        self.style = style
+        self.role = role
         self.action = action
     }
 }
 
-public enum NimbusAlertActionStyle {
-    case `default`
-    case primary
-    case destructive
-}

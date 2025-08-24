@@ -7,303 +7,121 @@
 
 import SwiftUI
 
-// MARK: - SwiftUI View Modifiers
+// MARK: - Core Alert Modifiers
 
 public extension View {
+    /// Basic alert with title and actions (using button array)
     func nimbusAlert(
+        _ title: LocalizedStringKey,
         isPresented: Binding<Bool>,
-        alert: @escaping () -> NimbusAlert
+        actions: [NimbusAlertButton]
     ) -> some View {
-        onChange(of: isPresented.wrappedValue) { _, isShowing in
-            if isShowing {
-                let alertInstance = alert()
-                NimbusAlertWindow.showModal(alert: alertInstance) { _ in
-                    isPresented.wrappedValue = false
+        nimbusAlert(
+            title,
+            isPresented: isPresented,
+            presentationMode: .normal,
+            style: .info,
+            actions: actions,
+            content: { EmptyView() },
+            message: { EmptyView() }
+        )
+    }
+    
+    /// Alert with title, actions, and message (using button array)
+    func nimbusAlert(
+        _ title: LocalizedStringKey,
+        isPresented: Binding<Bool>,
+        actions: [NimbusAlertButton],
+        @ViewBuilder message: @escaping () -> some View
+    ) -> some View {
+        nimbusAlert(
+            title,
+            isPresented: isPresented,
+            presentationMode: .normal,
+            style: .info,
+            actions: actions,
+            content: { EmptyView() },
+            message: message
+        )
+    }
+    
+    /// Full-featured alert with all customization options (using button array)
+    func nimbusAlert(
+        _ title: LocalizedStringKey,
+        isPresented: Binding<Bool>,
+        presentationMode: NimbusAlertPresentationMode = .normal,
+        style: NimbusAlertStyle = .info,
+        actions: [NimbusAlertButton],
+        @ViewBuilder content: @escaping () -> some View = { EmptyView() },
+        @ViewBuilder message: @escaping () -> some View = { EmptyView() }
+    ) -> some View {
+        self
+            .onChange(of: isPresented.wrappedValue) { _, isShowing in
+                if isShowing {
+                    let alert = NimbusAlert(
+                        style: style,
+                        title: title,
+                        actions: actions,
+                        onDismiss: { isPresented.wrappedValue = false },
+                        messageContent: message,
+                        customContent: content
+                    )
+                    
+                    switch presentationMode {
+                    case .normal:
+                        // TODO: Implement normal presentation using overlay
+                        // For now, fall back to modal
+                        NimbusAlertWindow.showModal(alert: alert) { _ in
+                            isPresented.wrappedValue = false
+                        }
+                    case .modal:
+                        NimbusAlertWindow.showModal(alert: alert) { _ in
+                            isPresented.wrappedValue = false
+                        }
+                    }
                 }
             }
-        }
     }
     
-    func nimbusAlert(
+    /// Confirmation dialog equivalent
+    func nimbusConfirmationDialog(
+        _ title: LocalizedStringKey,
         isPresented: Binding<Bool>,
-        style: NimbusAlertStyle,
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        actions: [NimbusAlertAction] = []
+        presentationMode: NimbusAlertPresentationMode = .modal,
+        actions: [NimbusAlertButton]
     ) -> some View {
-        nimbusAlert(isPresented: isPresented) {
-            NimbusAlert(
-                style: style,
-                title: title,
-                message: message,
-                actions: actions
-            )
-        }
-    }
-    
-    func nimbusConfirmationAlert(
-        isPresented: Binding<Bool>,
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        confirmTitle: String = "Confirm",
-        cancelTitle: String = "Cancel",
-        onConfirm: @escaping () -> Void,
-        onCancel: @escaping () -> Void = {}
-    ) -> some View {
-        nimbusAlert(isPresented: isPresented) {
-            NimbusAlert.confirmDialog(
-                title: title,
-                message: message,
-                confirmTitle: confirmTitle,
-                cancelTitle: cancelTitle,
-                onConfirm: {
-                    onConfirm()
-                    isPresented.wrappedValue = false
-                },
-                onCancel: {
-                    onCancel()
-                    isPresented.wrappedValue = false
-                }
-            )
-        }
-    }
-    
-    func nimbusDestructiveAlert(
-        isPresented: Binding<Bool>,
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        destructiveTitle: String = "Delete",
-        cancelTitle: String = "Cancel",
-        onDestroy: @escaping () -> Void,
-        onCancel: @escaping () -> Void = {}
-    ) -> some View {
-        nimbusAlert(isPresented: isPresented) {
-            NimbusAlert.destructiveDialog(
-                title: title,
-                message: message,
-                destructiveTitle: destructiveTitle,
-                cancelTitle: cancelTitle,
-                onDestroy: {
-                    onDestroy()
-                    isPresented.wrappedValue = false
-                },
-                onCancel: {
-                    onCancel()
-                    isPresented.wrappedValue = false
-                }
-            )
-        }
-    }
-    
-    func nimbusInfoAlert(
-        isPresented: Binding<Bool>,
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> some View {
-        nimbusAlert(isPresented: isPresented) {
-            NimbusAlert.okDialog(
-                title: title,
-                message: message,
-                style: .info,
-                okTitle: okTitle,
-                onOK: {
-                    onOK()
-                    isPresented.wrappedValue = false
-                }
-            )
-        }
-    }
-    
-    func nimbusSuccessAlert(
-        isPresented: Binding<Bool>,
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> some View {
-        nimbusAlert(isPresented: isPresented) {
-            NimbusAlert.okDialog(
-                title: title,
-                message: message,
-                style: .success,
-                okTitle: okTitle,
-                onOK: {
-                    onOK()
-                    isPresented.wrappedValue = false
-                }
-            )
-        }
-    }
-    
-    func nimbusWarningAlert(
-        isPresented: Binding<Bool>,
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> some View {
-        nimbusAlert(isPresented: isPresented) {
-            NimbusAlert.okDialog(
-                title: title,
-                message: message,
-                style: .warning,
-                okTitle: okTitle,
-                onOK: {
-                    onOK()
-                    isPresented.wrappedValue = false
-                }
-            )
-        }
-    }
-    
-    func nimbusErrorAlert(
-        isPresented: Binding<Bool>,
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> some View {
-        nimbusAlert(isPresented: isPresented) {
-            NimbusAlert.okDialog(
-                title: title,
-                message: message,
-                style: .error,
-                okTitle: okTitle,
-                onOK: {
-                    onOK()
-                    isPresented.wrappedValue = false
-                }
-            )
-        }
+        nimbusAlert(
+            title,
+            isPresented: isPresented,
+            presentationMode: presentationMode,
+            style: .info,
+            actions: actions,
+            content: { EmptyView() },
+            message: { EmptyView() }
+        )
     }
 }
 
-// MARK: - Static Presentation Methods
+// MARK: - Convenience Extensions
 
-public extension NimbusAlert {
-    static func showModal(
-        _ alert: NimbusAlert,
-        completion: ((NSApplication.ModalResponse) -> Void)? = nil
-    ) -> NSApplication.ModalResponse {
-        return NimbusAlertWindow.showModal(alert: alert, completion: completion)
+public extension NimbusAlertButton {
+    /// Create a standard OK button
+    static func ok(action: @escaping () -> Void = {}) -> NimbusAlertButton {
+        NimbusAlertButton("OK", role: nil, action: action)
     }
     
-    static func show(
-        _ alert: NimbusAlert,
-        completion: ((NSApplication.ModalResponse) -> Void)? = nil
-    ) {
-        NimbusAlertWindow.show(alert: alert, completion: completion)
+    /// Create a cancel button
+    static func cancel(action: @escaping () -> Void = {}) -> NimbusAlertButton {
+        NimbusAlertButton("Cancel", role: .cancel, action: action)
     }
     
-    // MARK: - Quick Static Methods
-    
-    @discardableResult
-    static func showConfirmModal(
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        confirmTitle: String = "Confirm",
-        cancelTitle: String = "Cancel",
-        onConfirm: @escaping () -> Void = {},
-        onCancel: @escaping () -> Void = {}
-    ) -> NSApplication.ModalResponse {
-        let alert = NimbusAlert.confirmDialog(
-            title: title,
-            message: message,
-            confirmTitle: confirmTitle,
-            cancelTitle: cancelTitle,
-            onConfirm: onConfirm,
-            onCancel: onCancel
-        )
-        return showModal(alert)
+    /// Create a destructive button
+    static func destructive(_ title: LocalizedStringKey, action: @escaping () -> Void = {}) -> NimbusAlertButton {
+        NimbusAlertButton(title, role: .destructive, action: action)
     }
     
-    @discardableResult
-    static func showDestructiveModal(
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        destructiveTitle: String = "Delete",
-        cancelTitle: String = "Cancel",
-        onDestroy: @escaping () -> Void = {},
-        onCancel: @escaping () -> Void = {}
-    ) -> NSApplication.ModalResponse {
-        let alert = NimbusAlert.destructiveDialog(
-            title: title,
-            message: message,
-            destructiveTitle: destructiveTitle,
-            cancelTitle: cancelTitle,
-            onDestroy: onDestroy,
-            onCancel: onCancel
-        )
-        return showModal(alert)
-    }
-    
-    @discardableResult
-    static func showInfoModal(
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> NSApplication.ModalResponse {
-        let alert = NimbusAlert.okDialog(
-            title: title,
-            message: message,
-            style: .info,
-            okTitle: okTitle,
-            onOK: onOK
-        )
-        return showModal(alert)
-    }
-    
-    @discardableResult
-    static func showSuccessModal(
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> NSApplication.ModalResponse {
-        let alert = NimbusAlert.okDialog(
-            title: title,
-            message: message,
-            style: .success,
-            okTitle: okTitle,
-            onOK: onOK
-        )
-        return showModal(alert)
-    }
-    
-    @discardableResult
-    static func showWarningModal(
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> NSApplication.ModalResponse {
-        let alert = NimbusAlert.okDialog(
-            title: title,
-            message: message,
-            style: .warning,
-            okTitle: okTitle,
-            onOK: onOK
-        )
-        return showModal(alert)
-    }
-    
-    @discardableResult
-    static func showErrorModal(
-        title: LocalizedStringKey,
-        message: LocalizedStringKey? = nil,
-        okTitle: String = "OK",
-        onOK: @escaping () -> Void = {}
-    ) -> NSApplication.ModalResponse {
-        let alert = NimbusAlert.okDialog(
-            title: title,
-            message: message,
-            style: .error,
-            okTitle: okTitle,
-            onOK: onOK
-        )
-        return showModal(alert)
+    /// Create a custom button with title
+    static func custom(_ title: LocalizedStringKey, role: ButtonRole? = nil, action: @escaping () -> Void = {}) -> NimbusAlertButton {
+        NimbusAlertButton(title, role: role, action: action)
     }
 }

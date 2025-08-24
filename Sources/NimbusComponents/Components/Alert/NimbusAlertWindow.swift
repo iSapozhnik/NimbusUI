@@ -126,25 +126,12 @@ private struct NimbusAlertContainer: View {
     let onResponse: (NSApplication.ModalResponse) -> Void
     
     var body: some View {
-        // Create new alert instance with onResponse callback
-        NimbusAlert(
-            style: alert.style,
-            title: alert.title,
-            message: alert.message,
-            actions: alert.actions,
-            onResponse: onResponse
-        ) {
-            // Pass custom content if available
-            if let customContent = alert.customContent {
-                customContent
-            } else {
-                EmptyView()
+        // Just display the alert directly - it already has all content
+        alert
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onKeyDown { event in
+                handleKeyDown(event)
             }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onKeyDown { event in
-            handleKeyDown(event)
-        }
     }
     
     private func handleKeyDown(_ event: NSEvent) {
