@@ -205,128 +205,113 @@ struct AlertPreviewContainer: View {
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     style: .info,
                     actions: [
                         NimbusAlertButton.ok { alertResult = "OK pressed" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .success:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     style: .success,
                     actions: [
                         NimbusAlertButton.ok { alertResult = "Success acknowledged" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .warning:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     style: .warning,
                     actions: [
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
                         NimbusAlertButton.custom("Proceed") { alertResult = "Proceeding..." }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .error:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     style: .error,
                     actions: [
                         NimbusAlertButton.custom("Retry") { alertResult = "Retrying..." },
                         NimbusAlertButton.ok { alertResult = "OK pressed" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .singleButton:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.ok { alertResult = "Single button pressed" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .twoButtons:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
                         NimbusAlertButton.custom("Save") { alertResult = "Saved!" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .threeButtons:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.custom("Later") { alertResult = "Later chosen" },
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
                         NimbusAlertButton.custom("Save") { alertResult = "Saved!" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .destructive:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     style: .warning,
                     actions: [
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
                         NimbusAlertButton.destructive("Delete") { alertResult = "Deleted!" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .customContent:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     style: .info,
                     actions: [
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
                         NimbusAlertButton.custom("Continue") { alertResult = "Continuing with custom content..." }
                     ],
-                    content: {
+                    customContent: {
                         VStack(spacing: 12) {
                             Rectangle()
                                 .fill(.blue.gradient)
@@ -337,9 +322,6 @@ struct AlertPreviewContainer: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-                    },
-                    message: {
-                        Text(message)
                     }
                 )
             
@@ -347,28 +329,24 @@ struct AlertPreviewContainer: View {
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     actions: [
                         NimbusAlertButton.cancel { alertResult = "Cancelled" },
                         NimbusAlertButton.custom("Continue") { alertResult = "Continuing with long content..." }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .modalPresentation:
             Color.clear
                 .nimbusAlert(
                     title,
+                    message: message,
                     isPresented: $showAlert,
                     presentationMode: .modal,
                     actions: [
                         NimbusAlertButton.ok { alertResult = "Modal alert dismissed" }
-                    ],
-                    message: {
-                        Text(message)
-                    }
+                    ]
                 )
             
         case .confirmationDialog:

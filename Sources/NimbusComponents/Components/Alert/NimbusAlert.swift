@@ -15,30 +15,24 @@ public struct NimbusAlert: View {
     
     internal let style: NimbusAlertStyle
     internal let title: LocalizedStringKey
+    internal let message: LocalizedStringKey?
     internal let actions: [NimbusAlertButton]
-    internal let messageContent: AnyView?
     internal let customContent: AnyView?
     private let onDismiss: () -> Void
     
     public init(
         style: NimbusAlertStyle = .info,
         title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         actions: [NimbusAlertButton] = [],
         onDismiss: @escaping () -> Void = {},
-        @ViewBuilder messageContent: () -> some View = { EmptyView() },
         @ViewBuilder customContent: () -> some View = { EmptyView() }
     ) {
         self.style = style
         self.title = title
+        self.message = message
         self.actions = actions
         self.onDismiss = onDismiss
-        
-        let message = messageContent()
-        if message is EmptyView {
-            self.messageContent = nil
-        } else {
-            self.messageContent = AnyView(message)
-        }
         
         let content = customContent()
         if content is EmptyView {
@@ -67,8 +61,12 @@ public struct NimbusAlert: View {
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    if let messageContent = messageContent {
-                        messageContent
+                    if let message = message {
+                        Text(message)
+                            .font(.body)
+                            .foregroundStyle(theme.secondaryTextColor(for: colorScheme))
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
                     if let customContent = customContent {

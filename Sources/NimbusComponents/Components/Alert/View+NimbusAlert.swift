@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Core Alert Modifiers
 
 public extension View {
-    /// Basic alert with title and actions (using button array)
+    /// Basic alert with title and actions
     func nimbusAlert(
         _ title: LocalizedStringKey,
         isPresented: Binding<Bool>,
@@ -18,42 +18,42 @@ public extension View {
     ) -> some View {
         nimbusAlert(
             title,
+            message: nil,
             isPresented: isPresented,
             presentationMode: .normal,
             style: .info,
             actions: actions,
-            content: { EmptyView() },
-            message: { EmptyView() }
+            customContent: { EmptyView() }
         )
     }
     
-    /// Alert with title, actions, and message (using button array)
+    /// Alert with title, message and actions
     func nimbusAlert(
         _ title: LocalizedStringKey,
+        message: LocalizedStringKey?,
         isPresented: Binding<Bool>,
-        actions: [NimbusAlertButton],
-        @ViewBuilder message: @escaping () -> some View
+        actions: [NimbusAlertButton]
     ) -> some View {
         nimbusAlert(
             title,
+            message: message,
             isPresented: isPresented,
             presentationMode: .normal,
             style: .info,
             actions: actions,
-            content: { EmptyView() },
-            message: message
+            customContent: { EmptyView() }
         )
     }
     
-    /// Full-featured alert with all customization options (using button array)
+    /// Full-featured alert with all customization options
     func nimbusAlert(
         _ title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         isPresented: Binding<Bool>,
         presentationMode: NimbusAlertPresentationMode = .normal,
         style: NimbusAlertStyle = .info,
         actions: [NimbusAlertButton],
-        @ViewBuilder content: @escaping () -> some View = { EmptyView() },
-        @ViewBuilder message: @escaping () -> some View = { EmptyView() }
+        @ViewBuilder customContent: @escaping () -> some View = { EmptyView() }
     ) -> some View {
         self
             .onChange(of: isPresented.wrappedValue) { _, isShowing in
@@ -61,10 +61,10 @@ public extension View {
                     let alert = NimbusAlert(
                         style: style,
                         title: title,
+                        message: message,
                         actions: actions,
                         onDismiss: { isPresented.wrappedValue = false },
-                        messageContent: message,
-                        customContent: content
+                        customContent: customContent
                     )
                     
                     switch presentationMode {
@@ -86,18 +86,19 @@ public extension View {
     /// Confirmation dialog equivalent
     func nimbusConfirmationDialog(
         _ title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
         isPresented: Binding<Bool>,
         presentationMode: NimbusAlertPresentationMode = .modal,
         actions: [NimbusAlertButton]
     ) -> some View {
         nimbusAlert(
             title,
+            message: message,
             isPresented: isPresented,
             presentationMode: presentationMode,
             style: .info,
             actions: actions,
-            content: { EmptyView() },
-            message: { EmptyView() }
+            customContent: { EmptyView() }
         )
     }
 }
