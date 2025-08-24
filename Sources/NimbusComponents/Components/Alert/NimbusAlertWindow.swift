@@ -60,14 +60,13 @@ public final class NimbusAlertWindow: NSWindow {
             hostingView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
             hostingView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
             hostingView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
-            hostingView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
+            hostingView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            hostingView.widthAnchor.constraint(lessThanOrEqualToConstant: 400)
         ])
         
         contentView = view
 
-        DispatchQueue.main.async {
-            self.sizeToContent()
-        }
+        sizeToContent()
     }
     
     private func sizeToContent() {
@@ -95,9 +94,9 @@ public final class NimbusAlertWindow: NSWindow {
         }
     }
     
-    private func closeWindow() {
+    public func closeWindow() {
         if isModal {
-            NSApp.stopModal(withCode: .OK)
+            NSApp.stopModal()
         }
         
         close()
@@ -115,11 +114,6 @@ public final class NimbusAlertWindow: NSWindow {
         isModal = false
         makeKeyAndOrderFront(nil)
     }
-    
-    /// Properly dismisses the alert, handling modal state cleanup
-    public func dismissProperly() {
-        closeWindow()
-    }
 }
 
 // MARK: - Alert Container
@@ -129,7 +123,6 @@ private struct NimbusAlertContainer: View {
     let onDismiss: () -> Void
     
     var body: some View {
-        // Just display the alert directly - it already has all content
         alert
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onKeyDown { event in

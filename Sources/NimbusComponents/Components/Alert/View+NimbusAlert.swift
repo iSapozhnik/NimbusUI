@@ -148,7 +148,7 @@ private struct NimbusAlertModifier: ViewModifier {
             actions: actions,
             presentationMode: presentationMode,
             onDismiss: {
-                windowRef?.dismissProperly()
+                windowRef?.closeWindow()
             },
             customContent: customContent
         )
