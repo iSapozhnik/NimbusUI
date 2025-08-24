@@ -233,8 +233,8 @@ struct AlertPreviewContainer: View {
                     isPresented: $showAlert,
                     style: .warning,
                     actions: [
-                        NimbusAlertButton.cancel { alertResult = "Cancelled" },
-                        NimbusAlertButton.custom("Proceed") { alertResult = "Proceeding..." }
+                        .cancel { alertResult = "Cancelled" },
+                        .custom("Proceed") { alertResult = "Proceeding..." }
                     ]
                 )
             
