@@ -13,23 +13,26 @@ public struct NimbusAlert: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.nimbusAlertCornerRadii) private var cornerRadii
     
-    private let style: NimbusAlertStyle
-    private let title: LocalizedStringKey
-    private let message: LocalizedStringKey?
-    private let actions: [NimbusAlertAction]
-    private let customContent: AnyView?
+    internal let style: NimbusAlertStyle
+    internal let title: LocalizedStringKey
+    internal let message: LocalizedStringKey?
+    internal let actions: [NimbusAlertAction]
+    internal let customContent: AnyView?
+    private let onResponse: ((NSApplication.ModalResponse) -> Void)?
     
     public init(
         style: NimbusAlertStyle,
         title: LocalizedStringKey,
         message: LocalizedStringKey? = nil,
         actions: [NimbusAlertAction] = [],
+        onResponse: ((NSApplication.ModalResponse) -> Void)? = nil,
         @ViewBuilder customContent: () -> some View = { EmptyView() }
     ) {
         self.style = style
         self.title = title
         self.message = message
         self.actions = actions
+        self.onResponse = onResponse
         
         let content = customContent()
         if content is EmptyView {
@@ -88,16 +91,19 @@ public struct NimbusAlert: View {
                                 case .default:
                                     Button(action.title) {
                                         action.action()
+                                        onResponse?(.cancel)
                                     }
                                     .buttonStyle(.secondary)
                                 case .primary:
                                     Button(action.title) {
                                         action.action()
+                                        onResponse?(.OK)
                                     }
                                     .buttonStyle(.accent)
                                 case .destructive:
                                     Button(action.title, role: .destructive) {
                                         action.action()
+                                        onResponse?(.cancel)
                                     }
                                     .buttonStyle(.primary)
                                 }

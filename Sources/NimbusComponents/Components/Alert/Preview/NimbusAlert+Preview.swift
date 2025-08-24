@@ -104,9 +104,9 @@ import NimbusCore
         actions: [
             .cancel("Cancel"),
             .primary("Continue") { print("Continue tapped") }
-        ]
-    ) {
-        VStack(spacing: 12) {
+        ],
+        customContent: {
+            VStack(spacing: 12) {
             Rectangle()
                 .fill(.blue.gradient)
                 .frame(height: 80)
@@ -117,7 +117,8 @@ import NimbusCore
                 .foregroundStyle(.secondary)
         }
         .padding(.horizontal)
-    }
+        }
+    )
     .environment(\.nimbusTheme, NimbusTheme.default)
 }
 
