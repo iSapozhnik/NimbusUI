@@ -108,7 +108,7 @@ public struct NimbusAlert: View {
                                     .buttonStyle(.primary)
                                 }
                             }
-                            .controlSize(.small)
+                            .controlSize(.mini)
                         }
                     }
                     .padding(.horizontal, 24)

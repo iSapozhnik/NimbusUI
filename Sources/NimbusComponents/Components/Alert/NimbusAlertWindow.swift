@@ -27,6 +27,9 @@ public final class NimbusAlertWindow: NSWindow {
         centerOnScreen()
     }
     
+    public override var canBecomeKey: Bool { true }
+    public override var canBecomeMain: Bool { true }
+    
     private func setupWindow() {
         isMovableByWindowBackground = true
         backgroundColor = .clear
@@ -34,6 +37,7 @@ public final class NimbusAlertWindow: NSWindow {
         hasShadow = false
         level = .modalPanel
         titlebarAppearsTransparent = true
+        isReleasedWhenClosed = false
         ignoresMouseEvents = false
         titleVisibility = .hidden
         animationBehavior = .alertPanel
@@ -103,8 +107,10 @@ public final class NimbusAlertWindow: NSWindow {
     @discardableResult
     public func runModal() -> NSApplication.ModalResponse {
         isModal = true
-        makeKeyAndOrderFront(nil)
-        return NSApp.runModal(for: self)
+        DispatchQueue.main.async {
+            NSApp.runModal(for: self)
+        }
+        return .OK
     }
     
     public func show() {
