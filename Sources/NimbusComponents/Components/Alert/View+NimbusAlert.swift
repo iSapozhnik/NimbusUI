@@ -99,7 +99,6 @@ private struct NimbusAlertModifier: ViewModifier {
     let actions: [NimbusAlertButton]
     let customContent: () -> AnyView
     
-    @State private var alertWindow: NimbusAlertWindow?
     @State private var isShowingAlert = false
     
     init(
@@ -157,14 +156,11 @@ private struct NimbusAlertModifier: ViewModifier {
         let window = NimbusAlertWindow(alert: alert) { _ in
             DispatchQueue.main.async {
                 self.isShowingAlert = false
-                self.alertWindow = nil
                 self.isPresented = false
             }
         }
         
         windowRef = window
-        
-        alertWindow = window
         
         switch presentationMode {
         case .normal:
@@ -177,11 +173,6 @@ private struct NimbusAlertModifier: ViewModifier {
         }
     }
     
-    private func hideAlert() {
-        alertWindow?.dismissProperly()
-        alertWindow = nil
-        isShowingAlert = false
-    }
 }
 
 // MARK: - Convenience Extensions
