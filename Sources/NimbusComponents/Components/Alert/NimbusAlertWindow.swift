@@ -83,27 +83,61 @@ public final class NimbusAlertWindow: NSWindow {
     }
     
     private func centerOnScreen() {
-        if let screen = NSScreen.current {
-            let screenRect = screen.visibleFrame
-            let windowRect = frame
-            let newOrigin = NSPoint(
-                x: screenRect.midX - windowRect.width / 2,
-                y: screenRect.midY - windowRect.height / 2
-            )
-            setFrameOrigin(newOrigin)
+        // Get the best available screen - prefer main screen as fallback
+        guard let screen = NSScreen.current ?? NSScreen.main else {
+            NSLog("Alert: No screen available for positioning")
+            return
         }
+        
+        let screenRect = screen.visibleFrame
+        let windowRect = frame
+        
+        // Calculate centered position
+        var newOrigin = NSPoint(
+            x: screenRect.midX - windowRect.width / 2,
+            y: screenRect.midY - windowRect.height / 2
+        )
+        
+        let padding: CGFloat = 20
+        
+        // Horizontal bounds checking
+        let minX = screenRect.minX + padding
+        let maxX = screenRect.maxX - windowRect.width - padding
+        newOrigin.x = min(maxX, max(minX, newOrigin.x))
+        
+        // Vertical bounds checking
+        let minY = screenRect.minY + padding
+        let maxY = screenRect.maxY - windowRect.height - padding
+        newOrigin.y = min(maxY, max(minY, newOrigin.y))
+        
+        // Account for menu bar and dock by ensuring we're in the visible frame
+        if newOrigin.y + windowRect.height > screenRect.maxY {
+            newOrigin.y = screenRect.maxY - windowRect.height - padding
+        }
+        
+        setFrameOrigin(newOrigin)
     }
     
     public func closeWindow() {
-        if isModal {
-            NSApp.stopModal()
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.2
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            self.animator().alphaValue = 0.0
+        }) {
+            if self.isModal {
+                NSApp.stopModal()
+            }
+
+            self.close()
+            self.completion?()
         }
-        
-        close()
-        completion?()
     }
     
     public func runModal() {
+        guard !isModal else {
+            return
+        }
+        
         isModal = true
         DispatchQueue.main.async {
             NSApp.runModal(for: self)
@@ -125,49 +159,52 @@ private struct NimbusAlertContainer: View {
     var body: some View {
         alert
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onKeyDown { event in
-                handleKeyDown(event)
-            }
-    }
-    
-    private func handleKeyDown(_ event: NSEvent) {
-        switch event.keyCode {
-        case 53, 36: // Escape key or Return key
-            onDismiss()
-        default:
-            break
-        }
+            .background(AlertKeyHandlerView(onDismiss: onDismiss))
     }
 }
 
-// MARK: - Key Handling Extension
+// MARK: - Consolidated Key Handling
 
-private extension View {
-    func onKeyDown(perform action: @escaping (NSEvent) -> Void) -> some View {
-        background(KeyEventHandlingView(onKeyDown: action))
-    }
-}
-
-private struct KeyEventHandlingView: NSViewRepresentable {
-    let onKeyDown: (NSEvent) -> Void
+private struct AlertKeyHandlerView: NSViewRepresentable {
+    let onDismiss: () -> Void
     
-    func makeNSView(context: Context) -> NSView {
-        let view = KeyHandlerNSView()
-        view.onKeyDown = onKeyDown
+    func makeNSView(context: Context) -> AlertKeyHandlerNSView {
+        let view = AlertKeyHandlerNSView()
+        view.onDismiss = onDismiss
         return view
     }
     
-    func updateNSView(_ nsView: NSView, context: Context) {}
+    func updateNSView(_ nsView: AlertKeyHandlerNSView, context: Context) {
+        nsView.onDismiss = onDismiss
+    }
 }
 
-private class KeyHandlerNSView: NSView {
-    var onKeyDown: ((NSEvent) -> Void)?
+private final class AlertKeyHandlerNSView: NSView {
+    private enum KeyCode: UInt16 {
+        case escape = 53
+        case `return` = 36
+    }
+    
+    var onDismiss: (() -> Void)?
     
     override var acceptsFirstResponder: Bool { true }
+    override var canBecomeKeyView: Bool { true }
     
     override func keyDown(with event: NSEvent) {
-        onKeyDown?(event)
-        super.keyDown(with: event)
+        guard handleKeyEvent(event) else {
+            super.keyDown(with: event)
+            return
+        }
+    }
+    
+    private func handleKeyEvent(_ event: NSEvent) -> Bool {
+        switch event.keyCode {
+        case Self.KeyCode.escape.rawValue, Self.KeyCode.return.rawValue:
+            onDismiss?()
+            return true
+        default:
+            return false
+        }
     }
 }
 
