@@ -19,7 +19,7 @@ public struct NimbusAlert: View {
     internal let actions: [NimbusAlertButton]
     internal let customContent: AnyView?
     internal let presentationMode: NimbusAlertPresentationMode
-    private let onDismiss: () -> Void
+    internal let onDismiss: () -> Void
     
     public init(
         style: NimbusAlertStyle = .info,
@@ -50,60 +50,60 @@ public struct NimbusAlert: View {
     }
     
     public var body: some View {
-        ZStack {
-            HStack(alignment: .firstTextBaseline, spacing: 12) {
-                Image(systemName: style.icon)
-                    .font(.system(size: 20, weight: .medium))
-                    .foregroundStyle(style.iconColor(for: theme, colorScheme: colorScheme))
-                    .frame(width: 24, height: 24)
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            Image(systemName: style.icon)
+                .font(.system(size: 20, weight: .medium))
+                .foregroundStyle(style.iconColor(for: theme, colorScheme: colorScheme))
+                .frame(width: 24, height: 24)
+            
+            VStack(spacing: 16) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(theme.primaryTextColor(for: colorScheme))
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
-                VStack(spacing: 16) {
-                    Text(title)
-                        .font(.headline)
-                        .foregroundStyle(theme.primaryTextColor(for: colorScheme))
+                if let message = message {
+                    Text(message)
+                        .font(.body)
+                        .foregroundStyle(theme.secondaryTextColor(for: colorScheme))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    if let message = message {
-                        Text(message)
-                            .font(.body)
-                            .foregroundStyle(theme.secondaryTextColor(for: colorScheme))
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    
-                    if let customContent = customContent {
-                        customContent
-                    }
-                    
-                    if !actions.isEmpty {
-                        HStack(spacing: 12) {
-                            ForEach(Array(actions.enumerated()), id: \.offset) { index, action in
-                                AlertButton(
-                                    action: action,
-                                    index: index,
-                                    totalActions: actions.count,
-                                    onDismiss: onDismiss
-                                )
-                            }
-                            Spacer()
+                }
+                
+                if let customContent = customContent {
+                    customContent
+                }
+                
+                if !actions.isEmpty {
+                    HStack(spacing: 12) {
+                        ForEach(Array(actions.enumerated()), id: \.offset) { index, action in
+                            AlertButton(
+                                action: action,
+                                index: index,
+                                totalActions: actions.count,
+                                onDismiss: onDismiss
+                            )
                         }
+                        Spacer()
                     }
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 20)
-            .modifier(
-                NimbusBackgroundEffectModifier(
-                    material: .menu,
-                    blendingMode: .behindWindow
-                )
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 20)
+        .modifier(
+            NimbusBackgroundEffectModifier(
+                material: .menu,
+                blendingMode: presentationMode == .modal ? .withinWindow : .behindWindow
             )
-            .clipShape(.rect(cornerRadii: effectiveCornerRadii))
-            .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 8)
-            
+        )
+        .clipShape(.rect(cornerRadii: effectiveCornerRadii))
+        .overlay {
             windowBorder()
         }
+        .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     func windowBorder() -> some View {

@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import NimbusCore
 
-// MARK: - Core Alert Modifiers
+// MARK: - Global Window Alert Modifiers (Original System)
 
 public extension View {
-    /// Basic alert with title and actions
+    /// Basic global alert with title and actions
     func nimbusAlert(
         _ title: LocalizedStringKey,
         isPresented: Binding<Bool>,
@@ -27,7 +28,7 @@ public extension View {
         )
     }
     
-    /// Alert with title, message and actions
+    /// Global alert with title, message and actions
     func nimbusAlert(
         _ title: LocalizedStringKey,
         message: LocalizedStringKey?,
@@ -45,7 +46,7 @@ public extension View {
         )
     }
     
-    /// Full-featured alert with all customization options
+    /// Full-featured global alert with all customization options
     func nimbusAlert(
         _ title: LocalizedStringKey,
         message: LocalizedStringKey? = nil,
@@ -68,7 +69,7 @@ public extension View {
         )
     }
     
-    /// Confirmation dialog equivalent
+    /// Confirmation dialog equivalent (global window)
     func nimbusConfirmationDialog(
         _ title: LocalizedStringKey,
         message: LocalizedStringKey? = nil,
@@ -88,7 +89,103 @@ public extension View {
     }
 }
 
-// MARK: - Alert Modifier
+// MARK: - In-App Modal Alert Modifiers (New System)
+
+public extension View {
+    /// Presents a modal alert within the app window with a dimmed background.
+    /// The alert blocks interaction with content underneath until dismissed.
+    ///
+    /// - Parameters:
+    ///   - isPresented: A binding that controls whether the alert is presented
+    ///   - style: The visual style of the alert (info, success, warning, error)
+    ///   - title: The main title text of the alert
+    ///   - message: Optional secondary message text
+    ///   - actions: Array of action buttons to display
+    ///   - onDismiss: Optional closure called when the alert is dismissed
+    ///   - customContent: Optional custom SwiftUI content to display in the alert
+    /// - Returns: A view modified to present modal alerts
+    func nimbusModalAlert(
+        isPresented: Binding<Bool>,
+        style: NimbusAlertStyle = .info,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
+        actions: [NimbusAlertButton] = [],
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder customContent: @escaping () -> some View = { EmptyView() }
+    ) -> some View {
+        let content = customContent()
+        let customContentView: AnyView? = content is EmptyView ? nil : AnyView(content)
+        
+        return self.modifier(
+            NimbusAlertModalModifier(
+                isPresented: isPresented,
+                style: style,
+                title: title,
+                message: message,
+                actions: actions,
+                customContent: customContentView,
+                onDismiss: onDismiss
+            )
+        )
+    }
+    
+    /// Presents a simple modal alert with just a title and message.
+    ///
+    /// - Parameters:
+    ///   - isPresented: A binding that controls whether the alert is presented
+    ///   - style: The visual style of the alert (info, success, warning, error)
+    ///   - title: The main title text of the alert
+    ///   - message: The secondary message text
+    ///   - onDismiss: Optional closure called when the alert is dismissed
+    /// - Returns: A view modified to present modal alerts
+    func nimbusModalAlert(
+        isPresented: Binding<Bool>,
+        style: NimbusAlertStyle = .info,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey,
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        self.nimbusModalAlert(
+            isPresented: isPresented,
+            style: style,
+            title: title,
+            message: message,
+            actions: [],
+            onDismiss: onDismiss
+        )
+    }
+    
+    /// Presents a modal alert with action buttons.
+    ///
+    /// - Parameters:
+    ///   - isPresented: A binding that controls whether the alert is presented
+    ///   - style: The visual style of the alert (info, success, warning, error)
+    ///   - title: The main title text of the alert
+    ///   - message: Optional secondary message text
+    ///   - actions: Array of action buttons to display
+    ///   - onDismiss: Optional closure called when the alert is dismissed
+    /// - Returns: A view modified to present modal alerts
+    func nimbusModalAlert(
+        isPresented: Binding<Bool>,
+        style: NimbusAlertStyle = .info,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey? = nil,
+        actions: [NimbusAlertButton],
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        self.nimbusModalAlert(
+            isPresented: isPresented,
+            style: style,
+            title: title,
+            message: message,
+            actions: actions,
+            onDismiss: onDismiss,
+            customContent: { EmptyView() }
+        )
+    }
+}
+
+// MARK: - Global Alert Modifier (Original System)
 
 private struct NimbusAlertModifier: ViewModifier {
     let title: LocalizedStringKey
@@ -166,13 +263,9 @@ private struct NimbusAlertModifier: ViewModifier {
         case .normal:
             window.show()
         case .modal:
-            // Run modal on main thread but don't block current execution
-            DispatchQueue.main.async {
-                window.runModal()
-            }
+            window.runModal()
         }
     }
-    
 }
 
 // MARK: - Convenience Extensions

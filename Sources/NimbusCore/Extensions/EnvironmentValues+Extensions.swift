@@ -162,6 +162,8 @@ public extension EnvironmentValues {
 
 public extension EnvironmentValues {
     @Entry var nimbusAlertCornerRadii: RectangleCornerRadii? = nil
+    @Entry var nimbusAlertDimOpacity: Double? = nil
+    @Entry var nimbusAlertAnimationDuration: Double? = nil
 }
 
 // MARK: Notification Handle

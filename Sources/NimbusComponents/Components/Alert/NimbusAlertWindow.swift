@@ -45,14 +45,32 @@ public final class NimbusAlertWindow: NSWindow {
     }
     
     private func setupContent(alert: NimbusAlert) {
-        let alertContainer = NimbusAlertContainer(alert: alert) { [weak self] in
-            self?.closeWindow()
-        }
+        // Create new alert with combined onDismiss callback
+        let windowAlert = NimbusAlert(
+            style: alert.style,
+            title: alert.title,
+            message: alert.message,
+            actions: alert.actions,
+            presentationMode: alert.presentationMode,
+            onDismiss: { [weak self] in
+                // Call original alert's onDismiss (preserves user's callback)
+                alert.onDismiss()
+                // Call window's closeWindow (dismisses the window)
+                self?.closeWindow()
+            },
+            customContent: {
+                if let customContent = alert.customContent {
+                    customContent
+                } else {
+                    EmptyView()
+                }
+            }
+        )
         
         let view = NSView()
         view.translatesAutoresizingMaskIntoConstraints = false
 
-        let hostingView = NSHostingView(rootView: alertContainer)
+        let hostingView = NSHostingView(rootView: windowAlert)
         hostingView.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(hostingView)
@@ -119,15 +137,18 @@ public final class NimbusAlertWindow: NSWindow {
     }
     
     public func closeWindow() {
+        // Stop modal immediately if needed - CRITICAL for unblocking app
+        if self.isModal {
+            NSApp.stopModal()
+            self.isModal = false
+        }
+        
+        // Then handle visual dismissal animation
         NSAnimationContext.runAnimationGroup({ context in
             context.duration = 0.2
             context.timingFunction = CAMediaTimingFunction(name: .easeIn)
             self.animator().alphaValue = 0.0
         }) {
-            if self.isModal {
-                NSApp.stopModal()
-            }
-
             self.close()
             self.completion?()
         }
@@ -147,18 +168,6 @@ public final class NimbusAlertWindow: NSWindow {
     public func show() {
         isModal = false
         makeKeyAndOrderFront(nil)
-    }
-}
-
-// MARK: - Alert Container
-
-private struct NimbusAlertContainer: View {
-    let alert: NimbusAlert
-    let onDismiss: () -> Void
-    
-    var body: some View {
-        alert
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
