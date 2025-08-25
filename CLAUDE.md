@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-NimbusUI is a modular SwiftUI component library for macOS 14.0+ applications, built with Swift Package Manager. It provides a comprehensive theming system, reusable UI components, and custom view modifiers through four main libraries that can be imported selectively or as a complete umbrella package.
+NimbusUI is a modular SwiftUI component library for macOS 14.0+ applications, built with Swift Package Manager. It provides a comprehensive theming system, reusable UI components, and custom view modifiers through six main libraries that can be imported selectively or as a complete umbrella package.
 
 ## Development Commands
 
@@ -22,6 +22,7 @@ swift test --filter NimbusComponentsTests
 swift test --filter NimbusNotificationsTests
 swift test --filter NimbusOnboardingTests
 swift test --filter NimbusBezelsTests
+swift test --filter NimbusAlertsTests
 
 # Clean build artifacts
 swift package clean
@@ -34,13 +35,14 @@ swift test -Xswiftc -DUPDATE_SNAPSHOTS
 ```
 
 ### Modular Library Structure
-NimbusUI is organized into five distinct libraries for selective importing:
+NimbusUI is organized into six distinct libraries for selective importing:
 
 - **`NimbusCore`**: Core theming system, modifiers, utilities, and AppKit integrations
 - **`NimbusComponents`**: Main UI components (buttons, checkboxes, toggles, lists, scrollers)
 - **`NimbusNotifications`**: Complete notification system with semantic types and animations
 - **`NimbusOnboarding`**: Onboarding flows with FluidGradient and SmoothGradient animations
 - **`NimbusBezel`**: System-level bezel notifications with positioning and theming
+- **`NimbusAlerts`**: Modal and global window alert system with semantic styles
 - **`NimbusUI`**: Convenience umbrella library that includes all of the above
 
 ## Architecture
@@ -214,6 +216,18 @@ Sources/
 │   │       └── Preview/                   # Comprehensive preview examples
 │   └── Extensions/          # Onboarding convenience methods
 │       └── Feature+Extensions.swift       # AnyFeature static methods and content styling
+├── NimbusAlerts/            # Alert system library
+│   ├── NimbusAlerts.swift   # Library entry point
+│   ├── Components/
+│   │   └── Alert/           # Complete alert system
+│   │       ├── NimbusAlert.swift               # Main alert component
+│   │       ├── NimbusAlertStyle.swift          # Alert semantic styles and button helpers
+│   │       ├── NimbusAlertWindow.swift         # Global window alert implementation
+│   │       ├── NimbusAlertModalModifier.swift  # In-app modal alert modifier
+│   │       ├── View+NimbusAlert.swift          # View extension APIs
+│   │       ├── NimbusAlert+Extensions.swift    # Alert convenience methods
+│   │       └── Preview/                        # Alert preview examples
+│   │           └── NimbusAlert+Preview.swift
 └── NimbusUI/               # Umbrella library (convenience import)
 ```
 
@@ -281,6 +295,17 @@ Button("Custom") { }
 import NimbusNotifications
 ContentView()
     .nimbusNotification(isPresented: $showAlert, type: .success, message: "Success!")
+
+// Alert system for modal and global alerts
+import NimbusAlerts
+ContentView()
+    .nimbusModalAlert(
+        isPresented: $showError,
+        style: .error,
+        title: "Connection Failed",
+        message: "Unable to connect to server",
+        actions: [.ok(), .cancel()]
+    )
 
 // Bezel system for system-level notifications
 import NimbusBezel
@@ -380,11 +405,44 @@ AnyFeature(title: "Custom", description: "Beautiful designs") {
 // Features: Auto navigation, page control, footer links, theme integration
 ```
 
+### Alert System Usage
+```swift
+// Modal alerts (in-app overlays)
+ContentView()
+    .nimbusModalAlert(
+        isPresented: $showSuccess,
+        style: .success,
+        title: "Upload Complete",
+        message: "Your file has been uploaded successfully.",
+        actions: [.ok()]
+    )
+
+// Global window alerts (system dialogs)
+ContentView()
+    .nimbusAlert(
+        "Confirm Delete",
+        message: "This action cannot be undone.",
+        isPresented: $showConfirmation,
+        actions: [
+            .destructive("Delete") { performDelete() },
+            .cancel()
+        ]
+    )
+
+// Alert styles and customization
+let actions: [NimbusAlertButton] = [
+    .ok(),
+    .cancel(),
+    .custom("Retry", role: nil) { retryAction() },
+    .destructive("Delete All") { deleteAll() }
+]
+```
+
 ### Theme System Architecture
 
 **Required Core Tokens (17):** Brand colors (4), semantic colors (4), background colors (3), text colors (3), border colors (2), core design (1)
 
-**Optional Component Tokens (35+):** Button, checkbox, toggle, notification, scroller, list, bezel tokens with sensible defaults
+**Optional Component Tokens (35+):** Button, checkbox, toggle, notification, scroller, list, bezel, alert tokens with sensible defaults
 
 **Benefits:** Minimal implementation (17 vs 45+ properties), selective customization, future-proof, better developer experience
 

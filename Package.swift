@@ -25,6 +25,9 @@ let package = Package(
         .library(
             name: "NimbusBezel",
             targets: ["NimbusBezel"]),
+        .library(
+            name: "NimbusAlerts",
+            targets: ["NimbusAlerts"]),
         // Convenience umbrella library
         .library(
             name: "NimbusUI",
@@ -33,7 +36,8 @@ let package = Package(
                 "NimbusComponents",
                 "NimbusNotifications",
                 "NimbusOnboarding",
-                "NimbusBezel"
+                "NimbusBezel",
+                "NimbusAlerts"
             ]
         ),
     ],
@@ -82,6 +86,12 @@ let package = Package(
             dependencies: ["NimbusCore"]
         ),
         
+        // Optional alert system
+        .target(
+            name: "NimbusAlerts",
+            dependencies: ["NimbusCore", "NimbusComponents"]
+        ),
+        
         // Test targets
         .testTarget(
             name: "NimbusCoreTests",
@@ -123,6 +133,14 @@ let package = Package(
             ],
         ),
         .testTarget(
+            name: "NimbusAlertsTests",
+            dependencies: [
+                "NimbusCore",
+                "NimbusAlerts",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
+        ),
+        .testTarget(
             name: "NimbusUITests",
             dependencies: [
                 "NimbusCore",
@@ -130,6 +148,7 @@ let package = Package(
                 "NimbusNotifications",
                 "NimbusOnboarding",
                 "NimbusBezel",
+                "NimbusAlerts",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
         ),

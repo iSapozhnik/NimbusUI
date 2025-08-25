@@ -7,6 +7,7 @@
 
 import SwiftUI
 import NimbusCore
+import NimbusComponents
 
 public struct NimbusAlert: View {
     @Environment(\.nimbusTheme) private var theme
