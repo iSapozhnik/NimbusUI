@@ -159,54 +159,9 @@ private struct NimbusAlertContainer: View {
     var body: some View {
         alert
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .background(AlertKeyHandlerView(onDismiss: onDismiss))
     }
 }
 
-// MARK: - Consolidated Key Handling
-
-private struct AlertKeyHandlerView: NSViewRepresentable {
-    let onDismiss: () -> Void
-    
-    func makeNSView(context: Context) -> AlertKeyHandlerNSView {
-        let view = AlertKeyHandlerNSView()
-        view.onDismiss = onDismiss
-        return view
-    }
-    
-    func updateNSView(_ nsView: AlertKeyHandlerNSView, context: Context) {
-        nsView.onDismiss = onDismiss
-    }
-}
-
-private final class AlertKeyHandlerNSView: NSView {
-    private enum KeyCode: UInt16 {
-        case escape = 53
-        case `return` = 36
-    }
-    
-    var onDismiss: (() -> Void)?
-    
-    override var acceptsFirstResponder: Bool { true }
-    override var canBecomeKeyView: Bool { true }
-    
-    override func keyDown(with event: NSEvent) {
-        guard handleKeyEvent(event) else {
-            super.keyDown(with: event)
-            return
-        }
-    }
-    
-    private func handleKeyEvent(_ event: NSEvent) -> Bool {
-        switch event.keyCode {
-        case Self.KeyCode.escape.rawValue, Self.KeyCode.return.rawValue:
-            onDismiss?()
-            return true
-        default:
-            return false
-        }
-    }
-}
 
 // MARK: - Static Presentation Methods
 

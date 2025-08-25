@@ -137,8 +137,23 @@ private struct AlertButton: View {
     let totalActions: Int
     let onDismiss: () -> Void
     
+    private var keyboardShortcut: KeyboardShortcut? {
+        // Cancel role always gets escape key
+        if action.role == .cancel {
+            return .cancelAction
+        }
+        // Last non-cancel button gets return key (primary action)
+        else if index == totalActions - 1 && action.role != .cancel {
+            return .defaultAction
+        }
+        // Other buttons get no keyboard shortcut
+        else {
+            return nil
+        }
+    }
+    
     var body: some View {
-        let isPrimaryAction = index == totalActions - 1
+        let isPrimaryAction = index == totalActions - 1 && action.role != .cancel
         
         Group {
             if isPrimaryAction {
@@ -150,7 +165,7 @@ private struct AlertButton: View {
                 }
                 .buttonStyle(.primaryOutline)
                 .controlSize(.mini)
-                .keyboardShortcut(.defaultAction)
+                .keyboardShortcut(keyboardShortcut)
             } else {
                 Button {
                     action.action()
@@ -160,7 +175,7 @@ private struct AlertButton: View {
                 }
                 .buttonStyle(.secondaryOutline)
                 .controlSize(.mini)
-                .keyboardShortcut(.cancelAction)
+                .keyboardShortcut(keyboardShortcut)
             }
         }
     }
