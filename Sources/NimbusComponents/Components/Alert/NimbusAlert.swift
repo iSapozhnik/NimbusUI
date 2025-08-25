@@ -150,6 +150,7 @@ private struct AlertButton: View {
                 }
                 .buttonStyle(.primaryOutline)
                 .controlSize(.mini)
+                .keyboardShortcut(.defaultAction)
             } else {
                 Button {
                     action.action()
@@ -159,6 +160,7 @@ private struct AlertButton: View {
                 }
                 .buttonStyle(.secondaryOutline)
                 .controlSize(.mini)
+                .keyboardShortcut(.cancelAction)
             }
         }
     }

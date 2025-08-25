@@ -159,7 +159,7 @@ private struct NimbusAlertContainer: View {
     var body: some View {
         alert
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(AlertKeyHandlerView(onDismiss: onDismiss))
+//            .background(AlertKeyHandlerView(onDismiss: onDismiss))
     }
 }
 
