@@ -77,6 +77,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "NimbusBezel"
+               BuildableName = "NimbusBezel"
+               BlueprintName = "NimbusBezel"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -143,6 +157,16 @@
                BlueprintIdentifier = "NimbusBezelsTests"
                BuildableName = "NimbusBezelsTests"
                BlueprintName = "NimbusBezelsTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "NimbusAlertsTests"
+               BuildableName = "NimbusAlertsTests"
+               BlueprintName = "NimbusAlertsTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

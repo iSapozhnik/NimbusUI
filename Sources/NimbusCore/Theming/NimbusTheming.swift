@@ -324,6 +324,19 @@ public extension NimbusTheming {
     var textFieldIconSpacing: CGFloat { 8 }
 }
 
+// MARK: - Alert Component Tokens (Optional with Defaults)
+
+public extension NimbusTheming {
+    /// Alert corner radii configuration
+    var alertCornerRadii: RectangleCornerRadii { RectangleCornerRadii(16) }
+    
+    /// Alert background dim opacity for modal presentation
+    func alertDimOpacity(for scheme: ColorScheme) -> Double { 0.4 }
+    
+    /// Alert animation duration for show/hide transitions
+    var alertAnimationDuration: Double { 0.3 }
+}
+
 // MARK: - Notification Component Tokens (Optional with Defaults)
 
 public extension NimbusTheming {

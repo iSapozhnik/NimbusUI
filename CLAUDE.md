@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-NimbusUI is a modular SwiftUI component library for macOS 14.0+ applications, built with Swift Package Manager. It provides a comprehensive theming system, reusable UI components, and custom view modifiers through four main libraries that can be imported selectively or as a complete umbrella package.
+NimbusUI is a modular SwiftUI component library for macOS 14.0+ applications, built with Swift Package Manager. It provides a comprehensive theming system, reusable UI components, and custom view modifiers through six main libraries that can be imported selectively or as a complete umbrella package.
 
 ## Development Commands
 
@@ -22,6 +22,7 @@ swift test --filter NimbusComponentsTests
 swift test --filter NimbusNotificationsTests
 swift test --filter NimbusOnboardingTests
 swift test --filter NimbusBezelsTests
+swift test --filter NimbusAlertsTests
 
 # Clean build artifacts
 swift package clean
@@ -34,13 +35,14 @@ swift test -Xswiftc -DUPDATE_SNAPSHOTS
 ```
 
 ### Modular Library Structure
-NimbusUI is organized into five distinct libraries for selective importing:
+NimbusUI is organized into six distinct libraries for selective importing:
 
 - **`NimbusCore`**: Core theming system, modifiers, utilities, and AppKit integrations
 - **`NimbusComponents`**: Main UI components (buttons, checkboxes, toggles, lists, scrollers)
 - **`NimbusNotifications`**: Complete notification system with semantic types and animations
 - **`NimbusOnboarding`**: Onboarding flows with FluidGradient and SmoothGradient animations
 - **`NimbusBezel`**: System-level bezel notifications with positioning and theming
+- **`NimbusAlerts`**: Modal and global window alert system with semantic styles
 - **`NimbusUI`**: Convenience umbrella library that includes all of the above
 
 ## Architecture
@@ -214,6 +216,18 @@ Sources/
 │   │       └── Preview/                   # Comprehensive preview examples
 │   └── Extensions/          # Onboarding convenience methods
 │       └── Feature+Extensions.swift       # AnyFeature static methods and content styling
+├── NimbusAlerts/            # Alert system library
+│   ├── NimbusAlerts.swift   # Library entry point
+│   ├── Components/
+│   │   └── Alert/           # Complete alert system
+│   │       ├── NimbusAlert.swift               # Main alert component
+│   │       ├── NimbusAlertStyle.swift          # Alert semantic styles and button helpers
+│   │       ├── NimbusAlertWindow.swift         # Global window alert implementation
+│   │       ├── NimbusAlertModalModifier.swift  # In-app modal alert modifier
+│   │       ├── View+NimbusAlert.swift          # View extension APIs
+│   │       ├── NimbusAlert+Extensions.swift    # Alert convenience methods
+│   │       └── Preview/                        # Alert preview examples
+│   │           └── NimbusAlert+Preview.swift
 └── NimbusUI/               # Umbrella library (convenience import)
 ```
 
@@ -282,6 +296,17 @@ import NimbusNotifications
 ContentView()
     .nimbusNotification(isPresented: $showAlert, type: .success, message: "Success!")
 
+// Alert system for modal and global alerts
+import NimbusAlerts
+ContentView()
+    .nimbusModalAlert(
+        isPresented: $showError,
+        style: .error,
+        title: "Connection Failed",
+        message: "Unable to connect to server",
+        actions: [.ok(), .cancel()]
+    )
+
 // Bezel system for system-level notifications
 import NimbusBezel
 NimbusBezel.show(
@@ -292,322 +317,134 @@ NimbusBezel.show(
 ```
 
 ### Button Customization with Convenience Methods
-NimbusUI provides SwiftUI-idiomatic convenience methods for button customization, following the same pattern as NimbusScroller:
+NimbusUI provides SwiftUI-idiomatic convenience methods for button customization:
 
 ```swift
-// Basic button styles (no customization needed)
-Button("Save") { }
-    .buttonStyle(.accent)
-    .controlSize(.regular)
+// Basic usage
+Button("Save") { }.buttonStyle(.accent).controlSize(.regular)
 
-// Button with custom corner radii and elevation
+// Custom styling
 Button("Custom") { }
     .buttonStyle(.primary)
     .cornerRadii(RectangleCornerRadii(16))
     .elevation(.medium)
     .controlSize(.large)
 
-// Label button with convenience methods
-Button(action: {}) {
-    Label("Delete", systemImage: "trash")
-}
-.buttonStyle(.accent)
-.controlSize(.regular)
-.hasDivider(true)
-.iconAlignment(.leading)
-
-// Label without divider and trailing icon
-Button(action: {}) {
-    Label("Next", systemImage: "arrow.right")
-}
-.buttonStyle(.accent)
-.controlSize(.small)
-.hasDivider(false)
-.iconAlignment(.trailing)
-
-// Advanced customization with multiple modifiers
-Button(action: {}) {
-    Label("Export", systemImage: "square.and.arrow.up")
-}
-.buttonStyle(.primary)
-.controlSize(.regular)
-.cornerRadii(RectangleCornerRadii(8))
-.elevation(.high)
-.labelConfiguration(hasDivider: true, iconAlignment: .leading, contentPadding: 8)
-
-// Icon-only square button
-Button(action: {}) {
-    Image(systemName: "gear")
-}
-.buttonStyle(.secondary)
-.controlSize(.regular)
-.iconOnly()
-
-// Wide banner button
-Button("Get Started Now") { }
+// Label with divider
+Button(action: {}) { Label("Delete", systemImage: "trash") }
     .buttonStyle(.accent)
-    .controlSize(.large)
-    .banner(aspectRatio: 3.0)
+    .hasDivider(true)
+    .iconAlignment(.leading)
 
-// ControlSize variations across button styles
-VStack {
-    Button("Primary Large") { }
-        .buttonStyle(.primary)
-        .controlSize(.large)
-    
-    Button("Secondary Regular") { }
-        .buttonStyle(.secondary)
-        .controlSize(.regular)
-    
-    Button("Outline Small") { }
-        .buttonStyle(.primaryOutline)
-        .controlSize(.small)
-    
-    Button("Mini Secondary Outline") { }
-        .buttonStyle(.secondaryOutline)
-        .controlSize(.mini)
-}
-
-// Toggle examples with shapes and customization
-@State private var isEnabled = false
-@State private var darkMode = true
-
-// Basic toggle with drag interaction
+// Toggle usage
 NimbusToggle(isOn: $isEnabled)
     .circularToggle()
-    .controlSize(.regular)
-
-// Toggle item with subtitle and custom positioning
-NimbusToggleItem(
-    "Dark Mode", 
-    subtitle: "Use dark theme throughout the app",
-    isOn: $darkMode,
-    togglePosition: .leading
-)
-.controlSize(.large)
-
-// Customized toggle with animation
-NimbusToggle(isOn: $isEnabled)
-    .squareToggle()
     .toggleKnobSize(22)
-    .toggleKnobPadding(6)
     .bouncyToggle()
 ```
 
-### Available Button Convenience Methods
+### Available Convenience Methods
 
-**Core Customization:**
-- `.cornerRadii(RectangleCornerRadii)` - Sets button corner radii
-- `.minHeight(CGFloat)` - Sets minimum button height
-- `.horizontalPadding(CGFloat)` - Sets horizontal padding
-- `.elevation(Elevation)` - Sets shadow depth
+**Button Methods:**
+- Core: `.cornerRadii()`, `.minHeight()`, `.elevation()`, `.horizontalPadding()`
+- Labels: `.hasDivider()`, `.iconAlignment()`, `.contentPadding()`
+- Layout: `.aspectRatio()`, `.iconOnly()`, `.banner()`
 
-**Label Configuration:**
-- `.hasDivider(Bool)` - Controls divider between icon and text
-- `.iconAlignment(HorizontalAlignment)` - Sets icon position (leading/trailing)
-- `.contentPadding(CGFloat)` - Sets spacing between icon and text
-
-**Aspect Ratio & Layout:**
-- `.aspectRatio(CGFloat, contentMode: ContentMode)` - Sets button aspect ratio
-- `.fixedHeight(Bool)` - Controls height behavior with aspect ratio
-
-**Convenience Combinations:**
-- `.labelConfiguration(hasDivider:iconAlignment:contentPadding:)` - Configure label settings in one call
-- `.iconOnly(size:)` - Configure for square icon-only usage
-- `.banner(aspectRatio:)` - Configure for wide banner buttons
-
-**Migration from Legacy API:**
-```swift
-// Old complex initializer approach
-Button("Save") { }
-    .buttonStyle(.primary(
-        cornerRadii: RectangleCornerRadii(12),
-        elevation: .medium,
-        hasDivider: true,
-        iconAlignment: .trailing
-    ))
-
-// New convenience method approach
-Button("Save") { }
-    .buttonStyle(.primary)
-    .cornerRadii(RectangleCornerRadii(12))
-    .elevation(.medium)
-    .hasDivider(true)
-    .iconAlignment(.trailing)
-```
-
-### Available Toggle Convenience Methods
-
-**Shape Configuration:**
-- `.circularToggle()` - Traditional iOS-style circular knob with capsule track
-- `.squareToggle()` - Modern square knob with rectangular track  
-- `.roundedToggle(cornerRadius:)` - Custom rounded rectangle knob and track
-
-**Size & Dimensions:**
-- `.toggleKnobSize(CGFloat)` - Sets knob diameter
-- `.toggleKnobPadding(CGFloat)` - Sets padding around knob inside track
-- `.trackWidth(CGFloat)` - Override auto-calculated track width
-- `.trackHeight(CGFloat)` - Override auto-calculated track height
-
-**Animation Styles:**
-- `.bouncyToggle()` - Bouncy spring animation with enhanced bounce
-- `.smoothToggle()` - Smooth spring animation (default feel)
-- `.quickToggle()` - Quick easeInOut animation for snappy interactions
-- `.toggleAnimation(Animation)` - Custom animation spring
-
-**Toggle Item Configuration:**
-- `.toggleItemSpacing(CGFloat)` - Space between toggle and text
-- `.toggleTextSpacing(CGFloat)` - Space between title and subtitle
-- `.toggleItemPadding(CGFloat)` - Padding around toggle items
-- `.toggleItemMinHeight(CGFloat)` - Minimum height for toggle items
-
-**Toggle Integration Notes:**
-Toggle components automatically respond to SwiftUI's native controlSize environment just like buttons and other controls. The convenience method pattern ensures consistent developer experience across all NimbusUI components.
+**Toggle Methods:**
+- Shapes: `.circularToggle()`, `.squareToggle()`, `.roundedToggle()`
+- Sizing: `.toggleKnobSize()`, `.toggleKnobPadding()`, `.trackWidth()`
+- Animation: `.bouncyToggle()`, `.smoothToggle()`, `.quickToggle()`
+- Layout: `.toggleItemSpacing()`, `.toggleItemPadding()`
 
 ### Notification System Usage
-The notification system provides semantic notifications with flexible presentation:
-
 ```swift
-import NimbusUI
-
-// Basic notification with auto-dismiss
+// Basic usage
 ContentView()
     .nimbusNotification(
         isPresented: $showSuccess,
         type: .success,
-        message: "Payment completed successfully!",
-        actionText: "View Details",
+        message: "Payment completed!",
         dismissBehavior: .temporary(3.0)
     )
 
-// Advanced notification with icon alignment and action handling
+// Advanced usage
 ContentView()
     .nimbusNotification(
         isPresented: $showWarning,
         type: .warning,
-        message: "Action needed! Update payment information in your profile.",
-        actionText: "Edit Profile",
+        message: "Action needed!",
+        actionText: "Fix",
         iconAlignment: .baseline,
-        dismissBehavior: .sticky,
-        onAction: { navigateToProfile() },
-        onDismiss: { handleDismiss() }
-    )
-
-// Long message with proper text wrapping
-ContentView()
-    .nimbusNotification(
-        isPresented: $showInfo,
-        type: .info,
-        message: "This is a very long informational message that demonstrates proper text wrapping without truncation while maintaining excellent readability.",
-        iconAlignment: .top,
-        dismissBehavior: .temporary(5.0)
+        onAction: { handleAction() }
     )
 ```
 
 ### Onboarding System Usage
-The onboarding system provides a flexible, generic content system for creating beautiful onboarding flows:
-
 ```swift
-import NimbusOnboarding
-
-// Basic usage with pre-styled content
+// Basic usage
 let features: [AnyFeature] = [
-    // Image feature with automatic styling
     AnyFeature.imageFeature(
-        title: "Welcome to Your App",
-        description: "Get started with our powerful platform",
-        image: Image(systemName: "sparkles"),
-        imageSize: 120
+        title: "Welcome",
+        description: "Get started with our platform",
+        image: Image(systemName: "sparkles")
     ),
-    
-    // Icon feature with SF Symbols
     AnyFeature.iconFeature(
         title: "Quick Actions",
-        description: "Access powerful features instantly",
-        systemName: "bolt.fill",
-        iconSize: 80
+        description: "Access powerful features",
+        systemName: "bolt.fill"
     )
 ]
 
 OnboardingView(features: features)
-    .environment(\.nimbusTheme, NimbusTheme.default)
 
-// Advanced usage with custom content
-let customFeatures: [AnyFeature] = [
-    // Custom ViewBuilder content
-    AnyFeature(
-        title: "Custom Interface",
-        description: "Experience beautiful custom designs"
-    ) {
-        RoundedRectangle(cornerRadius: 20)
-            .fill(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .frame(width: 120, height: 120)
-            .levitatingFeatureContent()  // Built-in animation effect
-    },
-    
-    // Interactive NimbusUI components
-    AnyFeature(
-        title: "Configure Settings",
-        description: "Set up your preferences"
-    ) {
-        VStack(spacing: 16) {
-            NimbusToggleItem(
-                "Enable notifications",
-                subtitle: "Stay updated with important alerts", 
-                isOn: .constant(true),
-                togglePosition: .leading
-            )
-            .controlSize(.small)
-            .toggleShape(.roundedRect(3))
-        }
-        .padding(20)
-        .background(Color.secondary.opacity(0.1))
-        .cornerRadius(12)
-    }
+// Custom content with animations
+AnyFeature(title: "Custom", description: "Beautiful designs") {
+    MyCustomView().levitatingFeatureContent()
+}
+
+// Features: Auto navigation, page control, footer links, theme integration
+```
+
+### Alert System Usage
+```swift
+// Modal alerts (in-app overlays)
+ContentView()
+    .nimbusModalAlert(
+        isPresented: $showSuccess,
+        style: .success,
+        title: "Upload Complete",
+        message: "Your file has been uploaded successfully.",
+        actions: [.ok()]
+    )
+
+// Global window alerts (system dialogs)
+ContentView()
+    .nimbusAlert(
+        "Confirm Delete",
+        message: "This action cannot be undone.",
+        isPresented: $showConfirmation,
+        actions: [
+            .destructive("Delete") { performDelete() },
+            .cancel()
+        ]
+    )
+
+// Alert styles and customization
+let actions: [NimbusAlertButton] = [
+    .ok(),
+    .cancel(),
+    .custom("Retry", role: nil) { retryAction() },
+    .destructive("Delete All") { deleteAll() }
 ]
-
-OnboardingView(features: customFeatures)
-
-// Content styling extensions
-MyCustomView()
-    .levitatingFeatureContent()           // Adds floating animation effect
-    .scaleFeatureContent(scale: 1.2)      // Adds scaling animation  
-    .centeredFeatureContent()             // Centers within available space
-    .fadeInFeatureContent(delay: 0.5)     // Adds fade-in effect with delay
-
-// Navigation and footer features:
-// - Automatic "Continue" → "Finish" button progression
-// - Back button appears conditionally with smooth transitions  
-// - Page control dots showing current progress
-// - Footer with Privacy Policy and Terms & Conditions using .nimbusLink style
-// - All animations respect theme.animationFast with environment override support
 ```
 
 ### Theme System Architecture
 
-**Core Design Tokens (Required - 17 properties):**
-- **Brand Colors** (4): `primaryColor`, `secondaryColor`, `tertiaryColor`, `accentColor`
-- **Semantic Colors** (4): `errorColor`, `successColor`, `warningColor`, `infoColor`
-- **Background Colors** (3): `backgroundColor`, `secondaryBackgroundColor`, `tertiaryBackgroundColor`
-- **Text Colors** (3): `primaryTextColor`, `secondaryTextColor`, `tertiaryTextColor`
-- **Border Colors** (2): `borderColor`, `secondaryBorderColor`
-- **Core Design** (1): `backgroundMaterial`, `cornerRadii`, `animation`, `animationFast`, `minHeight`, `horizontalPadding`, `elevation`
+**Required Core Tokens (17):** Brand colors (4), semantic colors (4), background colors (3), text colors (3), border colors (2), core design (1)
 
-**Component Design Tokens (Optional - 35+ properties):**
-- **Button Tokens**: `buttonCornerRadii`, `compactButtonCornerRadii`, `labelContentSpacing`
-- **List Tokens**: `listItemCornerRadii`, `listItemHeight`
-- **Checkbox Tokens**: `checkboxSize`, `checkboxCornerRadii`, `checkboxBorderWidth`, `checkboxItemSpacing`, etc.
-- **Notification Tokens**: `notificationTopPadding`, `notificationHorizontalPadding`, `notificationCornerRadii`, `notificationMinHeight`, `notificationIconSize`, `notificationPadding`, etc.
-- **Scroller Tokens**: `scrollerWidth`, `scrollerKnobWidth`, `scrollerKnobPadding`, `scrollerSlotCornerRadius`, etc.
+**Optional Component Tokens (35+):** Button, checkbox, toggle, notification, scroller, list, bezel, alert tokens with sensible defaults
 
-**Benefits of Optional Token System:**
-- ✅ **Minimal Implementation**: Only 17 required properties vs 45+ previously
-- ✅ **Selective Customization**: Override only what you need
-- ✅ **Future-Proof**: New components add defaults, existing themes unaffected
-- ✅ **Sensible Defaults**: Protocol extensions provide beautiful defaults
-- ✅ **Better Developer Experience**: Focus on brand colors, not implementation details
-
-All styling should go through the theme system with environment overrides when needed.
+**Benefits:** Minimal implementation (17 vs 45+ properties), selective customization, future-proof, better developer experience
 
 ## ControlSize System
 
@@ -637,40 +474,24 @@ let themeHeight = ControlSizeUtility.height(
 ```
 
 ### Theme Integration
-ControlSize values can be customized per theme through optional theme tokens:
+ControlSize values can be customized per theme:
 
 ```swift
 extension CustomTheme {
-    var buttonHeightLarge: CGFloat? { 60 }     // Custom large size
-    var buttonPaddingSmall: CGFloat? { 14 }    // Custom small padding
-    var buttonFontSizeRegular: CGFloat? { 16 } // Custom regular font
+    var buttonHeightLarge: CGFloat? { 60 }
+    var buttonPaddingSmall: CGFloat? { 14 }
 }
 ```
 
 ### Usage Patterns
 ```swift
-// Standard controlSize usage
-Button("Action") { }
-    .buttonStyle(.primary)
-    .controlSize(.large)
+// Standard usage
+Button("Action") { }.buttonStyle(.primary).controlSize(.large)
 
-// Mixed sizes in layouts
+// Mixed sizes
 HStack {
-    Button("Cancel") { }
-        .buttonStyle(.secondaryOutline)
-        .controlSize(.small)
-    
-    Button("Confirm") { }
-        .buttonStyle(.accent)
-        .controlSize(.regular)
-}
-
-// All button styles support all controlSize values
-VStack {
-    Button("Large Primary") { }.buttonStyle(.primary).controlSize(.large)
-    Button("Regular Accent") { }.buttonStyle(.accent).controlSize(.regular)
-    Button("Small Secondary") { }.buttonStyle(.secondary).controlSize(.small)
-    Button("Mini Outline") { }.buttonStyle(.primaryOutline).controlSize(.mini)
+    Button("Cancel") { }.buttonStyle(.secondaryOutline).controlSize(.small)
+    Button("Confirm") { }.buttonStyle(.accent).controlSize(.regular)
 }
 ```
 
@@ -695,257 +516,59 @@ The `NimbusAspectRatioModifier` provides:
 ```
 
 ### Usage Patterns
-
-#### Default Behavior (No Changes)
 ```swift
-// Standard button - no aspect ratio constraints applied
-Button("Save") { }
+// Default - no constraints
+Button("Save") { }.buttonStyle(.primary).controlSize(.regular)
+
+// Square icons
+Button { Image(systemName: "gear") }
     .buttonStyle(.primary)
-    .controlSize(.regular)
-// Behaves exactly as before - maxWidth: .infinity, controlSize-based minHeight
-```
+    .environment(\.nimbusAspectRatio, 1.0)
 
-#### Square Icon Buttons
-```swift
-// Perfect for toolbar icons and action buttons
-Button { } label: { Image(systemName: "gear") }
-    .buttonStyle(.primary)
-    .controlSize(.regular)
-    .environment(\.nimbusAspectRatio, 1.0)              // 1:1 square
-    .environment(\.nimbusAspectRatioContentMode, .fit)
-```
-
-#### Wide Banner Buttons
-```swift
-// Great for call-to-action buttons and banners
-Button("Get Started Now") { }
+// Wide banners
+Button("Get Started") { }
     .buttonStyle(.accent)
-    .controlSize(.large)
-    .environment(\.nimbusAspectRatio, 3.0)              // 3:1 wide
-    .environment(\.nimbusAspectRatioHasFixedHeight, true)
-```
-
-#### Responsive Proportional Buttons
-```swift
-// Maintains proportions while allowing flexibility
-Button("Continue") { }
-    .buttonStyle(.primary)
-    .controlSize(.regular)
-    .environment(\.nimbusAspectRatio, 2.5)              // 2.5:1 ratio
-    .environment(\.nimbusAspectRatioContentMode, .fit)
-    .environment(\.nimbusAspectRatioHasFixedHeight, false) // Allows vertical flexibility
+    .environment(\.nimbusAspectRatio, 3.0)
 ```
 
 ### Implementation Details
+The modifier uses `ControlSizeUtility.height(for:theme:override:)` ensuring theme consistency, environment overrides, and proper size adaptation across controlSizes.
 
-#### NimbusAspectRatioModifier Logic
-```swift
-// When no aspect ratio is configured (default)
-content.frame(maxWidth: .infinity, minHeight: controlSizeHeight, maxHeight: .infinity)
-
-// When aspect ratio is configured
-content
-    .frame(minWidth: calculatedMinWidth, maxWidth: .infinity, minHeight: controlSizeHeight, maxHeight: maxHeight)
-    .aspectRatio(aspectRatio, contentMode: contentMode)
-    .fixedSize(horizontal: contentMode == .fit, vertical: hasFixedHeight)
-```
-
-#### ControlSize Integration
-The modifier automatically uses `ControlSizeUtility.height(for:theme:override:)` for height calculations, ensuring:
-- ✅ **Theme Consistency**: Respects theme-specific controlSize overrides
-- ✅ **Environment Overrides**: Honors `nimbusMinHeight` environment values
-- ✅ **Size Adaptation**: Aspect ratios scale appropriately with different controlSizes
-
-### Architecture Benefits
-- **Opt-In Enhancement**: Zero impact on existing code, only applies when configured
-- **ControlSize Aware**: Seamlessly integrates with the controlSize system
-- **Theme Compatible**: Works with all themes and theme overrides
-- **Performance Optimized**: Only adds constraints when aspect ratio is specified
+### Benefits
+Opt-in enhancement with zero impact on existing code, controlSize aware, theme compatible, performance optimized.
 
 ## Bezel System
 
 ### Overview
-The NimbusBezel system provides system-level notification bezels that float above all applications, perfect for menubar applications and macOS system-style notifications. The system features comprehensive positioning control, theme integration, and a programmatic API designed for standalone usage.
+System-level notification bezels for menubar apps. Features 7 positioning options, theme integration, queue management, and programmatic API.
 
-### Core Features
-- **System-Level Display**: NSWindow-based implementation that floats above all applications but never becomes key
-- **7 Position Options**: Complete screen positioning with theme-aware offset controls
-- **Theme Integration**: Full theming support with customizable appearance and positioning offsets
-- **Queue Management**: Automatic sequential display of multiple bezels with timing control
-- **Programmatic API**: Both static convenience methods and direct instantiation patterns
-
-### Position System
+### Basic Usage
 ```swift
-public enum BezelPosition: CaseIterable {
-    case center         // Perfect mathematical center of screen (no theme offsets)
-    case top           // Center horizontally, positioned from top using bezelTopOffset
-    case bottom        // Center horizontally, positioned from bottom using bezelBottomOffset (default)
-    case topLeading    // Top-left corner using bezelTopOffset + bezelHorizontalOffset
-    case topTrailing   // Top-right corner using bezelTopOffset + bezelHorizontalOffset
-    case bottomLeading // Bottom-left corner using bezelBottomOffset + bezelHorizontalOffset
-    case bottomTrailing// Bottom-right corner using bezelBottomOffset + bezelHorizontalOffset
-}
-```
-
-### API Patterns
-
-#### Static Convenience API (Recommended)
-```swift
-// Basic usage with positioning
+// Simple bezel
 NimbusBezel.show(
     image: NSImage(named: NSImage.networkName),
+    text: "Connected",
     position: .bottomTrailing
 ).hide(after: .seconds(2))
 
-// With text and custom theme
-NimbusBezel.show(
-    image: NSImage(named: NSImage.statusAvailableName),
-    text: "Connected",
-    theme: MaritimeTheme(),
-    position: .top
-).hide(after: .seconds(3))
-
-// Multiple bezels queue automatically
-NimbusBezel.show(image: image1, text: "First").hide(after: .seconds(2))
-NimbusBezel.show(image: image2, text: "Second").hide(after: .seconds(2))
-NimbusBezel.show(image: image3, text: "Third").hide(after: .seconds(2))
-```
-
-#### Direct Instantiation API
-```swift
-// Advanced control over configuration
-let bezel = NimbusBezel(
-    image: NSImage(named: NSImage.cautionName),
-    text: "Network disconnected",
-    theme: CustomWarmTheme(),
-    colorScheme: .dark,
-    position: .center
-)
-
-bezel.appearance(NSAppearance(named: .darkAqua))
-bezel.show().hide(after: .seconds(4))
-
-// Manual dismiss control
-let persistentBezel = NimbusBezel.show(image: image, text: "Manual dismiss")
-// Later: persistentBezel.hide()
-```
-
-### Theme Integration
-Bezel positioning and appearance can be customized through theme tokens:
-
-```swift
-extension CustomTheme {
-    // Positioning offset control
-    var bezelTopOffset: CGFloat { 80.0 }        // Distance from top edge
-    var bezelBottomOffset: CGFloat { 40.0 }     // Distance from bottom edge
-    var bezelHorizontalOffset: CGFloat { 100.0 } // Distance from side edges
-    
-    // Visual appearance
-    var bezelSize: CGSize { CGSize(width: 220, height: 220) }
-    var bezelCornerRadius: CGFloat { 24.0 }
-    var bezelContentPadding: CGFloat { 24.0 }
-    var bezelBlurMaterial: NSVisualEffectView.Material { .hudWindow }
-    
-    // Animation timing
-    var bezelShowAnimationDuration: TimeInterval { 0.4 }
-    var bezelHideAnimationDuration: TimeInterval { 0.6 }
-}
-```
-
-### Implementation Details
-
-#### Positioning Logic
-The `positionBezel()` method uses screen coordinates and theme offsets:
-
-```swift
-switch position {
-case .center:
-    // Perfect mathematical center (no theme offset)
-    newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
-    newFrame.origin.y = (screenFrame.height - bezelSize.height) / 2
-    
-case .top:
-    // Center horizontally, offset from top using theme
-    newFrame.origin.x = (screenFrame.width - bezelSize.width) / 2
-    newFrame.origin.y = screenFrame.height - bezelSize.height - theme.bezelTopOffset
-    
-case .bottomTrailing:
-    // Corner position using both horizontal and bottom offsets
-    newFrame.origin.x = screenFrame.width - bezelSize.width - theme.bezelHorizontalOffset
-    newFrame.origin.y = theme.bezelBottomOffset
-    
-// ... other positions with theme-aware calculations
-}
-```
-
-#### System Integration
-- Uses `NSWindow.Level.cursorWindow` for proper layering above all applications
-- Uses `NSScreen.current` for accurate screen detection and positioning
-- Automatic system appearance detection and theme application
-- NSVisualEffectView integration for proper blur materials and vibrancy
-- CAMediaTimingFunction support for smooth show/hide animations
-
-### Development Patterns
-
-#### Menubar Application Usage
-Perfect for system-level status indicators and notifications:
-
-```swift
-// Volume control bezel
-func showVolumeBezel(level: Float) {
-    let volumeIcon = NSImage(named: NSImage.touchBarAudioOutputVolumeHighTemplateName)
-    NimbusBezel.show(
-        image: volumeIcon,
-        text: "Volume: \(Int(level * 100))%",
-        position: .bottomTrailing
-    ).hide(after: .seconds(1.5))
-}
-
-// Network status notification
-func showNetworkStatus(connected: Bool) {
-    let icon = NSImage(named: connected ? NSImage.networkName : NSImage.cautionName)
-    let message = connected ? "Network connected" : "Network disconnected"
-    
-    NimbusBezel.show(
-        image: icon,
-        text: message,
-        position: .top
-    ).hide(after: .seconds(2))
-}
-```
-
-#### Theme-Aware Development
-```swift
-// Bezels use explicit positioning with theme-aware offsets
-let bezel = NimbusBezel(image: image, theme: myTheme, position: .bottomTrailing)
-let centered = NimbusBezel(image: image, theme: myTheme, position: .center) // Mathematical center
-
-// Theme positioning offsets can be customized per-theme
-struct MenubarTheme: NimbusTheming {
-    // ... 17 required core properties
-    
-    // Custom offsets for menubar app positioning
-    var bezelBottomOffset: CGFloat { 20 }       // Closer to screen bottom
-    var bezelHorizontalOffset: CGFloat { 20 }   // Closer to screen edge
-    var bezelTopOffset: CGFloat { 40 }          // Less space from top
-}
-
-// Usage with custom theme
+// Custom theme
 NimbusBezel.show(
     image: volumeIcon,
     text: "Volume: 75%",
     theme: MenubarTheme(),
-    position: .bottomTrailing  // Uses custom offsets from theme
-).hide(after: .seconds(1.5))
+    position: .top
+)
 ```
 
-### Architecture Benefits
-- **System-Level Integration**: Proper NSWindow configuration for floating above all applications
-- **Theme Consistency**: All positioning and appearance controlled through theme system
-- **Queue Management**: Automatic handling of multiple bezels with sequential display
-- **Memory Efficient**: Bezels are properly cleaned up after hide animations complete
-- **Accessibility**: Bezels don't interfere with VoiceOver or keyboard navigation
-- **Multi-Screen Aware**: Automatically positions relative to current screen
+### Positions
+7 options: center, top, bottom, topLeading, topTrailing, bottomLeading, bottomTrailing. Theme-aware offsets for positioning.
+
+### Features
+- NSWindow-based floating above all apps
+- Automatic queue management
+- Theme integration for appearance/positioning
+- Multi-screen aware
+- Accessibility compatible
 
 ## Known Issues & Workarounds
 
@@ -1024,147 +647,58 @@ Use the Task tool with specialized design system knowledge for:
 - **Implementation Structure**: Follow `Button+Extensions.swift` pattern with clear method grouping and comprehensive documentation
 - **Naming Convention**: Use descriptive method names that match the property they configure (e.g., `.strokeWidth()`, `.cornerRadii()`)
 
-**Example Implementation Pattern:**
+**Implementation Pattern:**
 ```swift
-// ComponentName+Extensions.swift
 public extension ComponentName {
-    // MARK: - Core Customization
-    
-    /// Sets the component size
     func size(_ size: CGFloat) -> some View {
         environment(\.nimbusComponentSize, size)
     }
     
-    /// Sets the component corner radii
     func cornerRadii(_ radii: RectangleCornerRadii) -> some View {
         environment(\.nimbusComponentCornerRadii, radii)
     }
-    
-    // MARK: - Behavioral Configuration
-    
-    /// Controls component interaction behavior
-    func interactionEnabled(_ enabled: Bool) -> some View {
-        environment(\.nimbusComponentInteractionEnabled, enabled)
-    }
-    
-    // MARK: - Convenience Combinations
-    
-    /// Configures component with common settings
-    func customConfiguration(
-        size: CGFloat = 24,
-        cornerRadii: RectangleCornerRadii = RectangleCornerRadii(4)
-    ) -> some View {
-        self
-            .environment(\.nimbusComponentSize, size)
-            .environment(\.nimbusComponentCornerRadii, cornerRadii)
-    }
 }
 ```
 
-**Benefits of This Pattern:**
-- ✅ **SwiftUI Idiomatic**: Matches native SwiftUI modifier patterns
-- ✅ **Developer Experience**: Chainable, discoverable, well-documented
-- ✅ **Consistency**: All components use the same customization approach
-- ✅ **Type Safety**: Compile-time validation of configuration values
-- ✅ **Future-Proof**: Easy to add new customization options
+**Benefits:** SwiftUI idiomatic, chainable, consistent, type-safe, future-proof
 
 #### Environment Variable Usage Rule (CRITICAL)
-**NEVER use environment variables directly in code - ALWAYS use convenience methods for ALL NimbusUI components:**
+**NEVER use environment variables directly - ALWAYS use convenience methods:**
 
-❌ **WRONG - Direct Environment Usage (Multiple Components):**
+❌ **WRONG:**
 ```swift
-// Checkbox - WRONG
 NimbusCheckbox(isOn: $isChecked)
     .environment(\.nimbusCheckboxStrokeWidth, 2.5)
-    .environment(\.nimbusCheckboxLineCap, .round)
     .environment(\.nimbusCheckboxSize, 28)
-
-// Button - WRONG  
-Button("Save") { }
-    .buttonStyle(.primary)
-    .environment(\.nimbusButtonCornerRadii, RectangleCornerRadii(12))
-    .environment(\.nimbusElevation, .medium)
-
-// Toggle - WRONG
-NimbusToggle(isOn: $isToggled)
-    .environment(\.nimbusToggleKnobSize, 24)
-    .environment(\.nimbusToggleKnobPadding, 6)
-    .environment(\.nimbusToggleShape, .circle)
-
-// Scroller - WRONG
-NimbusScroller(...)
-    .environment(\.nimbusScrollerWidth, 16)
-    .environment(\.nimbusScrollerKnobWidth, 12)
 ```
 
-✅ **CORRECT - Convenience Methods (Multiple Components):**
+✅ **CORRECT:**
 ```swift
-// Checkbox - CORRECT
 NimbusCheckbox(isOn: $isChecked)
     .strokeWidth(2.5)
-    .lineCap(.round)
     .size(28)
-
-// Button - CORRECT
-Button("Save") { }
-    .buttonStyle(.primary)
-    .cornerRadii(RectangleCornerRadii(12))
-    .elevation(.medium)
-
-// Toggle - CORRECT
-NimbusToggle(isOn: $isToggled)
-    .toggleKnobSize(24)
-    .toggleKnobPadding(6)
-    .circularToggle()
-
-// Scroller - CORRECT  
-NimbusScroller(...)
-    .scrollerWidth(16)
-    .knobWidth(12)
 ```
 
-**Why This Universal Rule Exists:**
-- **Developer Experience**: Convenience methods are discoverable via Xcode autocomplete across ALL components
-- **Type Safety**: Methods provide compile-time validation of parameters for every component
-- **Documentation**: Methods include comprehensive inline documentation for every customization option
-- **Universal Consistency**: ALL components follow the same customization pattern (Checkbox, Button, Scroller, etc.)
-- **Future-Proof**: Internal environment keys can change without breaking user code across the entire design system
-- **Chainable API**: Methods create clean, readable SwiftUI modifier chains for every component
-- **Design System Cohesion**: Ensures a unified developer experience across the entire NimbusUI library
+**Why:** Developer experience, type safety, documentation, consistency, future-proof, chainable API. Applies to ALL components and properties.
 
-**Universal Application:**
-- ✅ **ALL Current Components**: Buttons, Checkboxes, Toggles, Scrollers, Notifications, etc.
-- ✅ **ALL Future Components**: This rule applies to every new component added to NimbusUI
-- ✅ **ALL Customization Properties**: Size, colors, corner radii, spacing, interactions, etc.
+#### Theme Development
+**Examples by Complexity:**
+- `MinimalTheme`: 17 core properties (starting point)
+- `MaritimeTheme`: Core + scroller overrides
+- `CustomWarmTheme`: Core + button/scroller tokens
+- `NimbusTheme`: Full backward compatibility
 
-**Exception:** Only use environment variables directly in component extensions when implementing the convenience methods themselves.
-
-#### Theme Examples by Complexity
-- **Minimal Theme**: Only 17 core properties - `MinimalTheme` (perfect starting point)
-- **Selective Override**: Core + few component tokens - `MaritimeTheme` (scroller customization)
-- **Full Customization**: Core + many component tokens - `CustomWarmTheme` (buttons + scroller)
-- **Legacy Approach**: All properties explicitly defined - `NimbusTheme` (backward compatibility)
-
-#### Theme File Locations & Examples
-- **`MinimalThemeExample.swift`**: Complete minimal theme (17 properties) with comprehensive showcase demonstrating all components work with defaults
-- **`MaritimeTheme.swift`**: Professional theme with selective scroller overrides
-- **`CustomThemeExample.swift`**: Extensive warm theme with button and scroller customization + full component showcase
-- **`NimbusTheme.swift`**: Clean default theme using protocol extension defaults
-
-#### Usage Patterns for Theme Development
+**Usage Pattern:**
 ```swift
-// Start with minimal approach
 struct MyBrandTheme: NimbusTheming {
-    // Implement 17 required properties only
     func primaryColor(for scheme: ColorScheme) -> Color { Color(hex: "#007AFF") }
     // ... 16 more core properties
-    // All 30+ component tokens automatically use beautiful defaults!
 }
 
-// Add selective overrides as needed
+// Add overrides as needed
 extension MyBrandTheme {
-    var checkboxSize: CGFloat { 20 } // Only if you need custom checkboxes
-    var scrollerWidth: CGFloat { 12 } // Only if you need custom scrollers
+    var checkboxSize: CGFloat { 20 }
+    var scrollerWidth: CGFloat { 12 }
 }
 ```
 
